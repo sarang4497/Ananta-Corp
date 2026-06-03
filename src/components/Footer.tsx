@@ -1,6 +1,7 @@
 import {getTranslations} from 'next-intl/server';
 import {Mail, Phone, MapPin} from 'lucide-react';
 import {Link} from '@/i18n/navigation';
+import {Logo} from './Logo';
 import {PRODUCT_CATEGORIES} from './nav-menu';
 import {whatsappUrl} from '@/lib/whatsapp';
 
@@ -60,15 +61,7 @@ export async function Footer() {
         <div className="grid gap-x-8 gap-y-7 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1.5fr] [&>*]:min-w-0">
           {/* Brand */}
           <div className="flex flex-col gap-2.5">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 no-underline"
-              aria-label="Ananta Corporation — home"
-            >
-              <span className="text-lg font-bold tracking-tight text-white">
-                Ananta Corporation
-              </span>
-            </Link>
+            <Logo variant="dark" />
             <p className="max-w-xs text-sm leading-snug text-white/90">{tf('descriptor')}</p>
             <p className="text-xs leading-snug text-white/75">{tf('gstin')}</p>
             <div className="mt-1 flex items-center gap-3">
