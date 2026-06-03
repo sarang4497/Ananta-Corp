@@ -70,7 +70,7 @@ export default async function CategoryPage({params}: Params) {
           className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage:
-              'linear-gradient(160deg, rgba(79,70,229,0.07) 0%, rgba(255,255,255,0) 50%, rgba(249,115,22,0.05) 100%)'
+              'linear-gradient(160deg, rgba(29,78,216,0.07) 0%, rgba(255,255,255,0) 50%, rgba(249,115,22,0.05) 100%)'
           }}
         />
         <div className="shell relative flex flex-col gap-6 pb-10 pt-10 sm:pt-14">

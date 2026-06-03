@@ -20,7 +20,7 @@ const sizes: Record<ButtonSize, string> = {
 const variants: Record<ButtonVariant, string> = {
   // Brand indigo gradient, white text, lift + glow on hover.
   primary:
-    'bg-gradient-brand text-white shadow-[0_10px_30px_-12px_rgba(79,70,229,0.6)] ' +
+    'bg-gradient-brand text-white shadow-[0_10px_30px_-12px_rgba(29,78,216,0.6)] ' +
     'hover:-translate-y-0.5 hover:shadow-glow',
   // White surface with an indigo border.
   secondary:
@@ -39,8 +39,8 @@ const variants: Record<ButtonVariant, string> = {
     'hover:-translate-y-0.5 hover:bg-orange-deep hover:shadow-[0_18px_40px_-12px_rgba(234,88,12,0.55)]',
   // Brand indigo solid (legacy name kept for shared components).
   blue:
-    'bg-blue text-white shadow-[0_10px_30px_-12px_rgba(79,70,229,0.6)] ' +
-    'hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(79,70,229,0.55)]'
+    'bg-blue text-white shadow-[0_10px_30px_-12px_rgba(29,78,216,0.6)] ' +
+    'hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(29,78,216,0.55)]'
 };
 
 /** Shared class string so interactive client leaves can reuse Button styling. */

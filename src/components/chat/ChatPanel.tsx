@@ -147,7 +147,7 @@ export default function ChatPanel({
     <div
       role="dialog"
       aria-label={t('title')}
-      className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-[0_30px_80px_-24px_rgba(79,70,229,0.55)]"
+      className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-[0_30px_80px_-24px_rgba(29,78,216,0.55)]"
     >
       {/* Header (pinned) — assistant identity over a soft brand-gradient wash. */}
       <div
@@ -202,7 +202,7 @@ export default function ChatPanel({
               className={cn(
                 'max-w-[88%] rounded-2xl px-3 py-2 text-[13px] leading-relaxed',
                 m.role === 'user'
-                  ? 'whitespace-pre-wrap rounded-br-md bg-gradient-brand text-white shadow-[0_6px_18px_-6px_rgba(79,70,229,0.55)]'
+                  ? 'whitespace-pre-wrap rounded-br-md bg-gradient-brand text-white shadow-[0_6px_18px_-6px_rgba(29,78,216,0.55)]'
                   : 'rounded-bl-md border border-border/60 bg-bg text-ink shadow-sm'
               )}
             >

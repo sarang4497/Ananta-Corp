@@ -28,7 +28,7 @@ export function CtaBand({
           className="relative overflow-hidden rounded-3xl px-6 py-12 text-center text-white sm:px-12 sm:py-16"
           style={{
             backgroundImage:
-              'linear-gradient(115deg, #312e81 0%, #4338CA 50%, #4F46E5 85%, #7c3aed 110%)'
+              'linear-gradient(115deg, #1e3a8a 0%, #1E40AF 50%, #1D4ED8 85%, #2563eb 110%)'
           }}
         >
           {/* Warm orange glow bleeding in from the corner. */}

@@ -69,7 +69,7 @@ export default async function HomePage({params}: Params) {
           className="pointer-events-none absolute inset-0"
           style={{
             backgroundImage:
-              'linear-gradient(160deg, rgba(79,70,229,0.06) 0%, rgba(255,255,255,0) 45%, rgba(249,115,22,0.05) 100%)'
+              'linear-gradient(160deg, rgba(29,78,216,0.06) 0%, rgba(255,255,255,0) 45%, rgba(249,115,22,0.05) 100%)'
           }}
         />
         <div className="shell relative grid items-center gap-10 py-14 sm:py-20 lg:grid-cols-[1.15fr_1fr] lg:gap-14">

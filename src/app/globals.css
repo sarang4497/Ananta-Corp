@@ -2,20 +2,23 @@
 
 /* ----------------------------------------------------------------------------
    Design tokens — Tailwind v4 CSS-first @theme.
-   Ananta Corporation brand: PRIMARY deep indigo (#4338CA / #4F46E5) for brand
-   elements and dark sections; ACCENT warm orange (#F97316, light #FB923C,
-   deep #EA580C) for CTAs, highlights and hovers; warm off-white neutrals.
-   HARD RULE: no pure black anywhere. Text/borders/shadows use --ink (dark
-   indigo-slate) or indigo/orange tinted rgba — never #000.
+   Ananta Corporation brand: PRIMARY navy-royal blue (#1E40AF, brighter step
+   #1D4ED8 for hover/interactive) for brand elements and dark sections; ACCENT
+   warm orange (#F97316, light #FB923C, deep #EA580C) for CTAs, highlights and
+   hovers; warm off-white neutrals. HARD RULE: no pure black anywhere.
+   Text/borders/shadows use --ink (dark blue-slate) or blue/orange tinted
+   rgba — never #000.
 ---------------------------------------------------------------------------- */
 @theme {
   --color-bg: #ffffff;
   --color-bg-soft: #fafaf9;
   --color-bg-warm: #f5f5f4;
-  /* Legacy alias kept for shared components (chat, focus rings) — now indigo. */
-  --color-blue: #4f46e5;
-  --color-indigo: #4338ca;
-  --color-indigo-bright: #4f46e5;
+  /* Legacy alias kept for shared components (chat, focus rings) — the bright
+     blue interactive step. NOTE: the `indigo` token NAME is kept for class
+     compatibility, but its VALUE is now the navy-royal blue primary. */
+  --color-blue: #1d4ed8;
+  --color-indigo: #1e40af;
+  --color-indigo-bright: #1d4ed8;
   --color-orange: #f97316;
   --color-orange-light: #fb923c;
   --color-orange-deep: #ea580c;
@@ -23,13 +26,13 @@
   --color-green: #22c55e;
   --color-ink: #1e1b3a;
   --color-muted: #64748b;
-  --color-border: rgba(67, 56, 202, 0.12);
+  --color-border: rgba(30, 64, 175, 0.12);
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  --shadow-glow: 0 24px 60px -24px rgba(79, 70, 229, 0.35);
-  --shadow-card: 0 1px 2px rgba(67, 56, 202, 0.06), 0 12px 32px -16px rgba(67, 56, 202, 0.18);
+  --shadow-glow: 0 24px 60px -24px rgba(29, 78, 216, 0.35);
+  --shadow-card: 0 1px 2px rgba(30, 64, 175, 0.06), 0 12px 32px -16px rgba(30, 64, 175, 0.18);
   --shadow-orange: 0 10px 30px -12px rgba(249, 115, 22, 0.55);
 
   --radius-2xl: 1rem;
@@ -50,9 +53,9 @@
   --bg: #ffffff;
   --bg-soft: #fafaf9;
   --bg-warm: #f5f5f4;
-  --blue: #4f46e5;
-  --indigo: #4338ca;
-  --indigo-bright: #4f46e5;
+  --blue: #1d4ed8;
+  --indigo: #1e40af;
+  --indigo-bright: #1d4ed8;
   --orange: #f97316;
   --orange-light: #fb923c;
   --orange-deep: #ea580c;
@@ -60,13 +63,13 @@
   --green: #22c55e;
   --ink: #1e1b3a;
   --muted: #64748b;
-  --border: rgba(67, 56, 202, 0.12);
-  --shadow: 0 24px 60px -24px rgba(79, 70, 229, 0.35);
-  /* Brand gradients: indigo core; the accent blend adds a subtle drift into
-     warm orange for hero/banner moments. */
-  --gradient-brand: linear-gradient(120deg, #4f46e5, #4338ca);
-  --gradient-accent: linear-gradient(110deg, #4338ca 0%, #4f46e5 55%, #ea580c 130%);
-  --gradient-wordmark: linear-gradient(100deg, #4338ca 20%, #4f46e5 55%, #f97316 105%);
+  --border: rgba(30, 64, 175, 0.12);
+  --shadow: 0 24px 60px -24px rgba(29, 78, 216, 0.35);
+  /* Brand gradients: navy-blue core; the accent blend adds a subtle drift into
+     warm orange for hero/banner moments (blue → orange). */
+  --gradient-brand: linear-gradient(120deg, #1d4ed8, #1e40af);
+  --gradient-accent: linear-gradient(110deg, #1e40af 0%, #1d4ed8 55%, #ea580c 130%);
+  --gradient-wordmark: linear-gradient(100deg, #1e40af 20%, #1d4ed8 55%, #f97316 105%);
 
   /* Full-bleed layout: every section spans the viewport with a strict 0.75cm
      gutter on the left/right. --nav-h is the sticky navbar's exact height. */
@@ -188,7 +191,7 @@ html {
   }
 
   ::selection {
-    background: rgba(79, 70, 229, 0.18);
+    background: rgba(29, 78, 216, 0.18);
     color: var(--ink);
   }
 

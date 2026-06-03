@@ -47,7 +47,7 @@ export async function sendVerificationCode(email: string, code: string): Promise
     html: `
       <div style="font-family:system-ui,sans-serif;color:#15183b;max-width:480px">
         <p>Your verification code is:</p>
-        <p style="font-size:32px;font-weight:700;letter-spacing:6px;color:#4f46e5">${code}</p>
+        <p style="font-size:32px;font-weight:700;letter-spacing:6px;color:#1d4ed8">${code}</p>
         <p style="color:#5b6385">It expires in 10 minutes. If you didn't request this, you can ignore this email.</p>
       </div>`
   });

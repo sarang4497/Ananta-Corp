@@ -35,7 +35,7 @@ const headingCls =
   'mb-1 text-xs font-bold uppercase tracking-[0.18em] text-orange-light';
 
 /**
- * Deep-indigo footer, white text, orange column headings. Dense and premium.
+ * Deep navy-blue footer, white text, orange column headings. Dense and premium.
  * Server Component; Inter throughout.
  */
 export async function Footer() {
@@ -47,7 +47,7 @@ export async function Footer() {
     <footer
       className="relative mt-12 font-[family-name:var(--font-inter)] text-white sm:mt-16"
       style={{
-        backgroundImage: 'linear-gradient(115deg, #312e81 0%, #4338CA 55%, #4F46E5 100%)'
+        backgroundImage: 'linear-gradient(115deg, #1e3a8a 0%, #1E40AF 55%, #1D4ED8 100%)'
       }}
     >
       {/* Thin orange brand line along the top edge. */}

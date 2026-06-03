@@ -7,7 +7,7 @@ type Accent = 'blue' | 'indigo' | 'orange' | 'green' | 'red' | 'none';
 const accentGlow: Record<Accent, string> = {
   blue: 'hover:shadow-[0_24px_60px_-24px_rgba(24,119,242,0.45)] hover:border-blue/30',
   indigo:
-    'hover:shadow-[0_24px_60px_-24px_rgba(79,70,229,0.45)] hover:border-indigo/30',
+    'hover:shadow-[0_24px_60px_-24px_rgba(29,78,216,0.45)] hover:border-indigo/30',
   orange:
     'hover:shadow-[0_24px_60px_-24px_rgba(249,115,22,0.4)] hover:border-orange/30',
   green:

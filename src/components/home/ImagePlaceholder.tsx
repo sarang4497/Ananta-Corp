@@ -24,7 +24,7 @@ export function ImagePlaceholder({
       )}
       style={{
         backgroundImage:
-          'linear-gradient(135deg, rgba(79,70,229,0.07) 0%, rgba(67,56,202,0.05) 55%, rgba(249,115,22,0.08) 100%)'
+          'linear-gradient(135deg, rgba(29,78,216,0.07) 0%, rgba(30,64,175,0.05) 55%, rgba(249,115,22,0.08) 100%)'
       }}
     >
       {/* Faint grid texture for an architectural feel. */}
@@ -32,7 +32,7 @@ export function ImagePlaceholder({
         className="absolute inset-0 opacity-40"
         style={{
           backgroundImage:
-            'linear-gradient(to right, rgba(67,56,202,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(67,56,202,0.05) 1px, transparent 1px)',
+            'linear-gradient(to right, rgba(30,64,175,0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(30,64,175,0.05) 1px, transparent 1px)',
           backgroundSize: '28px 28px'
         }}
       />
