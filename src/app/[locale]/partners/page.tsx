@@ -1,10 +1,10 @@
 import type {Metadata} from 'next';
+import Image from 'next/image';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 import {ArrowRight} from 'lucide-react';
 import {Link} from '@/i18n/navigation';
 import {PageHero} from '@/components/PageHero';
 import {Reveal} from '@/components/ui/Reveal';
-import {ImagePlaceholder} from '@/components/home/ImagePlaceholder';
 import {CtaBand} from '@/components/home/CtaBand';
 import {buttonClassName} from '@/components/ui/Button';
 import {categoryHref, type CategorySlug} from '@/data/products';
@@ -12,11 +12,31 @@ import {buildAlternates} from '@/lib/metadata';
 
 type Params = {params: Promise<{locale: string}>};
 
-/** Anchor ids match the Partners dropdown hashes. */
-const PARTNER_SECTIONS: {id: string; key: string; categories: CategorySlug[]}[] = [
-  {id: 'action-tesa', key: 'actionTesa', categories: ['mdf', 'pre-laminated-particle-board']},
-  {id: 'duroply', key: 'duroply', categories: ['plywood', 'flush-door']},
-  {id: 'tenon-smart-lock', key: 'tenonSmartLock', categories: ['smart-locks']}
+/** Anchor ids match the Partners dropdown hashes; logos are self-hosted. */
+const PARTNER_SECTIONS: {
+  id: string;
+  key: string;
+  categories: CategorySlug[];
+  logo: {src: string; width: number; height: number};
+}[] = [
+  {
+    id: 'action-tesa',
+    key: 'actionTesa',
+    categories: ['mdf', 'pre-laminated-particle-board'],
+    logo: {src: '/images/brands/action-tesa.png', width: 2139, height: 832}
+  },
+  {
+    id: 'duroply',
+    key: 'duroply',
+    categories: ['plywood', 'flush-door'],
+    logo: {src: '/images/brands/duroply.png', width: 127, height: 44}
+  },
+  {
+    id: 'tenon-smart-lock',
+    key: 'tenonSmartLock',
+    categories: ['smart-locks'],
+    logo: {src: '/images/brands/tenon-smart-lock.png', width: 151, height: 31}
+  }
 ];
 
 export async function generateMetadata({params}: Params): Promise<Metadata> {
@@ -50,10 +70,15 @@ export default async function PartnersPage({params}: Params) {
                 i % 2 === 1 ? 'lg:[&>*:first-child]:order-2' : ''
               }`}
             >
-              <ImagePlaceholder
-                label={t(`${section.key}.logoLabel`)}
-                className="h-48 w-full sm:h-56"
-              />
+              <div className="flex h-48 w-full items-center justify-center rounded-2xl border border-border bg-white p-10 sm:h-56">
+                <Image
+                  src={section.logo.src}
+                  alt={`${tn(section.key)} logo`}
+                  width={section.logo.width}
+                  height={section.logo.height}
+                  className="max-h-full w-auto max-w-full object-contain"
+                />
+              </div>
               <div className="flex flex-col items-start gap-3.5">
                 <span className="inline-flex items-center rounded-full bg-orange/10 px-3 py-1 text-xs font-bold uppercase tracking-[0.14em] text-orange-deep">
                   {t('partnerBadge')}

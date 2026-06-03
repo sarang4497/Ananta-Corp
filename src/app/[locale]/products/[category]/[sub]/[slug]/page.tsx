@@ -68,6 +68,12 @@ export default async function ProductDetailPage({params}: Params) {
     `Hello! I'm interested in ${product.name}. Please share price and availability details.`
   );
 
+  /** Real, self-hosted shots: product photos first, décor swatch (prelam) last. */
+  const gallery = [
+    ...(product.images ?? []),
+    ...(product.decorImage ? [product.decorImage] : [])
+  ];
+
   return (
     <>
       <section className="shell pt-8 sm:pt-10">
@@ -84,17 +90,17 @@ export default async function ProductDetailPage({params}: Params) {
 
       {/* Top: gallery + buy box */}
       <section className="shell grid gap-10 pb-14 pt-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
-        {/* Gallery placeholder (real swatch for prelam SKUs). */}
+        {/* Gallery — real self-hosted shots; placeholder only when none exist. */}
         <Reveal trigger="load" className="flex flex-col gap-3">
-          {product.decorImage ? (
-            <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-border sm:h-[26rem]">
+          {gallery[0] ? (
+            <div className="relative h-80 w-full overflow-hidden rounded-2xl border border-border bg-white sm:h-[26rem]">
               <Image
-                src={product.decorImage}
+                src={gallery[0]}
                 alt={product.name}
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
+                className={product.images?.length ? 'object-contain p-6' : 'object-cover'}
               />
             </div>
           ) : (
@@ -106,14 +112,19 @@ export default async function ProductDetailPage({params}: Params) {
           )}
           <div className="grid grid-cols-4 gap-3">
             {[0, 1, 2, 3].map((i) =>
-              product.decorImage && i === 0 ? (
-                <div key={i} className="relative h-20 overflow-hidden rounded-xl border-2 border-orange">
+              gallery[i] ? (
+                <div
+                  key={i}
+                  className={`relative h-20 overflow-hidden rounded-xl bg-white ${
+                    i === 0 ? 'border-2 border-orange' : 'border border-border'
+                  }`}
+                >
                   <Image
-                    src={product.decorImage}
+                    src={gallery[i]}
                     alt=""
                     fill
                     sizes="120px"
-                    className="object-cover"
+                    className={gallery[i] === product.decorImage ? 'object-cover' : 'object-contain p-1.5'}
                   />
                 </div>
               ) : (

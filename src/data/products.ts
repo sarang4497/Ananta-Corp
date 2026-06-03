@@ -23,6 +23,8 @@ export type Category = {
   slug: CategorySlug;
   /** Translation key in the `nav` namespace + `catalog.categories.*`. */
   key: string;
+  /** Self-hosted category visual (downloaded from the original site). */
+  image: string;
   subs: {slug: string; key: string}[];
 };
 
@@ -30,6 +32,7 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'plywood',
     key: 'plywood',
+    image: '/images/categories/plywood.jpg',
     subs: [
       {slug: 'moisture-resistant', key: 'moistureResistant'},
       {slug: 'boiling-water-proof', key: 'boilingWaterProof'}
@@ -38,6 +41,7 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'mdf',
     key: 'mdf',
+    image: '/images/categories/mdf.jpg',
     subs: [
       {slug: 'interior-grade', key: 'interiorGrade'},
       {slug: 'exterior-grade', key: 'exteriorGrade'},
@@ -47,21 +51,25 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'high-moisture-resistant-board-moist-master',
     key: 'moistMaster',
+    image: '/images/categories/high-moisture-resistant-board-moist-master.jpg',
     subs: [{slug: 'moist-master', key: 'moistMasterSub'}]
   },
   {
     slug: 'pre-laminated-particle-board',
     key: 'prelam',
+    image: '/images/categories/pre-laminated-particle-board.jpg',
     subs: [{slug: 'boards', key: 'boards'}]
   },
   {
     slug: 'flush-door',
     key: 'flushDoor',
+    image: '/images/categories/flush-door.jpg',
     subs: [{slug: 'door', key: 'door'}]
   },
   {
     slug: 'smart-locks',
     key: 'smartLocks',
+    image: '/images/categories/smart-locks.png',
     subs: [{slug: 'locks', key: 'locks'}]
   }
 ];
@@ -84,6 +92,11 @@ export type Product = {
   sizesNote?: string;
   standards: string[];
   useCases: string[];
+  /**
+   * Self-hosted product photos (downloaded from the original site's R2
+   * bucket). First entry is the primary shot used on cards and the gallery.
+   */
+  images?: string[];
   /** Self-hosted décor swatch (prelam SKUs). */
   decorImage?: string;
   /** Smart locks: no fabricated specs — note that details come on request. */
@@ -94,6 +107,7 @@ export const PRODUCTS: Product[] = [
   // ── PLYWOOD ────────────────────────────────────────────────────────────────
   {
     slug: 'duroply-mr-moisture-resistant-plywood',
+    images: ['/images/products/duroply-mr-moisture-resistant-plywood.jpg', '/images/products/duroply-mr-moisture-resistant-plywood-2.webp'],
     name: 'Duroply - MR Moisture Resistant Plywood',
     brand: 'Duroply',
     category: 'plywood',
@@ -129,6 +143,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'duroply-bwp-boiling-water-proof-plywood',
+    images: ['/images/products/duroply-bwp-boiling-water-proof-plywood.jpg', '/images/products/duroply-bwp-boiling-water-proof-plywood-2.webp'],
     name: 'Duroply - BWP Boiling Water Proof Plywood',
     brand: 'Duroply',
     category: 'plywood',
@@ -165,6 +180,7 @@ export const PRODUCTS: Product[] = [
   // ── MDF ───────────────────────────────────────────────────────────────────
   {
     slug: 'action-tesa-interior-grade-mdf',
+    images: ['/images/products/action-tesa-interior-grade-mdf.jpg', '/images/products/action-tesa-interior-grade-mdf-2.webp'],
     name: 'Action Tesa - Interior Grade MDF',
     brand: 'Action TESA',
     category: 'mdf',
@@ -199,6 +215,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'action-tesa-exterior-grade-mdf',
+    images: ['/images/products/action-tesa-exterior-grade-mdf.jpg', '/images/products/action-tesa-exterior-grade-mdf-2.jpg'],
     name: 'Action Tesa - Exterior Grade MDF',
     brand: 'Action TESA',
     category: 'mdf',
@@ -233,6 +250,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'action-tesa-hdhmr-board',
+    images: ['/images/products/action-tesa-hdhmr-board.jpg'],
     name: 'Action Tesa - HDHMR Board',
     brand: 'Action TESA',
     category: 'mdf',
@@ -268,6 +286,7 @@ export const PRODUCTS: Product[] = [
   // ── MOIST MASTER HMR ──────────────────────────────────────────────────────
   {
     slug: 'action-tesa-moist-master-hmr-board',
+    images: ['/images/products/action-tesa-moist-master-hmr-board.jpg', '/images/products/action-tesa-moist-master-hmr-board-2.webp'],
     name: 'Action Tesa - Moist Master HMR Board',
     brand: 'Action TESA',
     category: 'high-moisture-resistant-board-moist-master',
@@ -303,6 +322,7 @@ export const PRODUCTS: Product[] = [
   // ── PRE-LAMINATED PARTICLE BOARD (5 SKUs) ─────────────────────────────────
   {
     slug: 'action-tesa-prelam-particle-board-1103-frosty-white',
+    images: ['/images/products/action-tesa-prelam-particle-board-1103-frosty-white.jpg'],
     name: 'Action Tesa - Prelam Particle Board 1103 – Frosty White',
     brand: 'Action TESA',
     category: 'pre-laminated-particle-board',
@@ -331,6 +351,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'action-tesa-prelam-particle-board-1104-silver-grey',
+    images: ['/images/products/action-tesa-prelam-particle-board-1104-silver-grey.jpg'],
     name: 'Action Tesa - Prelam Particle Board 1104 – Silver Grey',
     brand: 'Action TESA',
     category: 'pre-laminated-particle-board',
@@ -358,6 +379,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'action-tesa-prelam-particle-board-1142-pebble-beach',
+    images: ['/images/products/action-tesa-prelam-particle-board-1142-pebble-beach.jpg'],
     name: 'Action Tesa - Prelam Particle Board 1142 - Pebble Beach',
     brand: 'Action TESA',
     category: 'pre-laminated-particle-board',
@@ -385,6 +407,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'action-tesa-prelam-particle-board-3009-classic-planked-walnut',
+    images: ['/images/products/action-tesa-prelam-particle-board-3009-classic-planked-walnut.jpg'],
     name: 'Action Tesa - Prelam Particle Board 3009 – Classic Planked Walnut',
     brand: 'Action TESA',
     category: 'pre-laminated-particle-board',
@@ -412,6 +435,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'action-tesa-prelam-particle-board-3018-mangfall-beech',
+    images: ['/images/products/action-tesa-prelam-particle-board-3018-mangfall-beech.jpg'],
     name: 'Action Tesa - Prelam Particle Board 3018 – Mangfall Beech',
     brand: 'Action TESA',
     category: 'pre-laminated-particle-board',
@@ -440,6 +464,7 @@ export const PRODUCTS: Product[] = [
   // ── FLUSH DOOR ────────────────────────────────────────────────────────────
   {
     slug: 'duro-flush-door',
+    images: ['/images/products/duro-flush-door.jpg', '/images/products/duro-flush-door-2.webp'],
     name: 'Duro - Flush Door',
     brand: 'Duroply',
     category: 'flush-door',
@@ -472,6 +497,7 @@ export const PRODUCTS: Product[] = [
   // ── SMART LOCKS (8 SKUs — honest, type-based copy; no fabricated specs) ───
   {
     slug: 'automatic-sliding-smart-lock',
+    images: ['/images/products/automatic-sliding-smart-lock.jpg', '/images/products/automatic-sliding-smart-lock-2.jpg'],
     name: 'Automatic Sliding Smart Lock',
     brand: 'Tenon Smart Lock',
     category: 'smart-locks',
@@ -497,6 +523,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'fingerprint-smart-door-lock-with-app',
+    images: ['/images/products/fingerprint-smart-door-lock-with-app.jpg', '/images/products/fingerprint-smart-door-lock-with-app-2.jpg'],
     name: 'Fingerprint Smart Door Lock with App',
     brand: 'Tenon Smart Lock',
     category: 'smart-locks',
@@ -522,6 +549,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'high-end-smart-main-door-lock',
+    images: ['/images/products/high-end-smart-main-door-lock.jpg', '/images/products/high-end-smart-main-door-lock-2.jpg'],
     name: 'High-End Smart Main Door Lock',
     brand: 'Tenon Smart Lock',
     category: 'smart-locks',
@@ -547,6 +575,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'mini-smart-lever-lock-for-interior-doors',
+    images: ['/images/products/mini-smart-lever-lock-for-interior-doors.webp', '/images/products/mini-smart-lever-lock-for-interior-doors-2.webp'],
     name: 'Mini Smart Lever Lock for Interior Doors',
     brand: 'Tenon Smart Lock',
     category: 'smart-locks',
@@ -572,6 +601,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'palm-vein-face-recognition-smart-lock',
+    images: ['/images/products/palm-vein-face-recognition-smart-lock.jpg', '/images/products/palm-vein-face-recognition-smart-lock-2.jpg'],
     name: 'Palm Vein & Face Recognition Smart Lock',
     brand: 'Tenon Smart Lock',
     category: 'smart-locks',
@@ -624,6 +654,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'smart-lever-handle-lock',
+    images: ['/images/products/smart-lever-handle-lock.jpg', '/images/products/smart-lever-handle-lock-2.jpg'],
     name: 'Smart Lever Handle Lock',
     brand: 'Tenon Smart Lock',
     category: 'smart-locks',
@@ -649,6 +680,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     slug: 'wifi-smart-door-lock',
+    images: ['/images/products/wifi-smart-door-lock.jpg', '/images/products/wifi-smart-door-lock-2.jpg'],
     name: 'WiFi Smart Door Lock',
     brand: 'Tenon Smart Lock',
     category: 'smart-locks',

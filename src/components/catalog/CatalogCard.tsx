@@ -7,8 +7,9 @@ import {productHref, type Product} from '@/data/products';
 
 /**
  * The standard product card used on /products, category, subcategory and
- * related-products rows. Prelam SKUs show their real (self-hosted) décor
- * swatch; everything else gets the styled placeholder until photography lands.
+ * related-products rows. Shows the real (self-hosted) product photo when one
+ * exists, falls back to the décor swatch for prelam SKUs, and keeps the
+ * styled placeholder only for SKUs with no asset yet.
  */
 export function CatalogCard({
   product,
@@ -21,9 +22,20 @@ export function CatalogCard({
   viewLabel: string;
   priceLabel: string;
 }) {
+  const photo = product.images?.[0];
   return (
     <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-card transition-[transform,box-shadow,border-color] duration-300 will-change-transform hover:-translate-y-1 hover:border-orange/30 hover:shadow-[0_24px_60px_-24px_rgba(249,115,22,0.4)]">
-      {product.decorImage ? (
+      {photo ? (
+        <div className="relative h-44 w-full overflow-hidden border-b border-border bg-white">
+          <Image
+            src={photo}
+            alt={product.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-contain p-3 transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+      ) : product.decorImage ? (
         <div className="relative h-44 w-full overflow-hidden border-b border-border">
           <Image
             src={product.decorImage}

@@ -1,4 +1,5 @@
 import type {Metadata} from 'next';
+import Image from 'next/image';
 import {notFound} from 'next/navigation';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 import {ArrowRight, CheckCircle2, Ruler, Palette} from 'lucide-react';
@@ -80,15 +81,30 @@ export default async function CategoryPage({params}: Params) {
               {label: tn(cat.key)}
             ]}
           />
-          <Reveal trigger="load" className="flex max-w-3xl flex-col items-start gap-4">
-            <span className="grid h-14 w-14 place-items-center rounded-2xl bg-indigo/8 text-indigo">
-              <Icon className="h-7 w-7" aria-hidden />
-            </span>
-            <h1 className="text-balance text-4xl font-bold leading-tight tracking-tight text-ink sm:text-5xl">
-              {t('heading')}
-            </h1>
-            <p className="text-pretty text-lg leading-relaxed text-muted">{t('intro')}</p>
-          </Reveal>
+          <div className="grid items-center gap-8 lg:grid-cols-[1.4fr_1fr] lg:gap-12">
+            <Reveal trigger="load" className="flex max-w-3xl flex-col items-start gap-4">
+              <span className="grid h-14 w-14 place-items-center rounded-2xl bg-indigo/8 text-indigo">
+                <Icon className="h-7 w-7" aria-hidden />
+              </span>
+              <h1 className="text-balance text-4xl font-bold leading-tight tracking-tight text-ink sm:text-5xl">
+                {t('heading')}
+              </h1>
+              <p className="text-pretty text-lg leading-relaxed text-muted">{t('intro')}</p>
+            </Reveal>
+            {/* Real category visual from the original site. */}
+            <Reveal trigger="load" delay={0.12} className="hidden lg:block">
+              <div className="relative h-72 w-full overflow-hidden rounded-2xl border border-border shadow-card">
+                <Image
+                  src={cat.image}
+                  alt={tn(cat.key)}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 0px, 33vw"
+                  className="object-cover"
+                />
+              </div>
+            </Reveal>
+          </div>
         </div>
       </section>
 

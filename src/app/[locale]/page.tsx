@@ -1,4 +1,5 @@
 import type {Metadata} from 'next';
+import Image from 'next/image';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 import {ArrowRight, Wrench, Users, Warehouse, Truck, BadgeCheck} from 'lucide-react';
 import {Link} from '@/i18n/navigation';
@@ -6,7 +7,6 @@ import {Reveal, RevealItem} from '@/components/ui/Reveal';
 import {SectionHeading} from '@/components/ui/SectionHeading';
 import {Card} from '@/components/ui/Card';
 import {buttonClassName} from '@/components/ui/Button';
-import {ImagePlaceholder} from '@/components/home/ImagePlaceholder';
 import {TrustStrip} from '@/components/home/TrustStrip';
 import {CatalogCard} from '@/components/catalog/CatalogCard';
 import {Testimonials, type Testimonial} from '@/components/home/Testimonials';
@@ -31,6 +31,13 @@ export async function generateMetadata({params}: Params): Promise<Metadata> {
 
 /** USP icons, in copy order (Technical · Design+Execution · Stock · Logistics). */
 const USP_ICONS = [Wrench, Users, Warehouse, Truck];
+
+/** Partner brand logos (self-hosted, from the original site). */
+const BRAND_LOGOS: Record<string, {src: string; width: number; height: number}> = {
+  'Action TESA': {src: '/images/brands/action-tesa.png', width: 2139, height: 832},
+  Duroply: {src: '/images/brands/duroply.png', width: 127, height: 44},
+  'Tenon Smart Lock': {src: '/images/brands/tenon-smart-lock.png', width: 151, height: 31}
+};
 
 /** Featured SKUs shown on the homepage, by slug. */
 const FEATURED_SLUGS = [
@@ -108,13 +115,18 @@ export default async function HomePage({params}: Params) {
             </RevealItem>
           </Reveal>
 
-          {/* Hero visual placeholder — real photography lands in the asset batch. */}
+          {/* Hero visual — interior shot from the original site's hero slider. */}
           <Reveal trigger="load" delay={0.15}>
-            <ImagePlaceholder
-              label={t('hero.imageLabel')}
-              className="h-72 w-full sm:h-96 lg:h-[28rem]"
-              iconSize={40}
-            />
+            <div className="relative h-72 w-full overflow-hidden rounded-2xl border border-border shadow-card sm:h-96 lg:h-[28rem]">
+              <Image
+                src="/images/hero/plywood-slider.png"
+                alt="Warm wood-panelled living room built with premium plywood"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 45vw"
+                className="object-cover"
+              />
+            </div>
           </Reveal>
         </div>
       </section>
@@ -137,9 +149,21 @@ export default async function HomePage({params}: Params) {
         >
           {PRODUCT_CATEGORIES.map((cat, i) => {
             const Icon = CATEGORY_ICONS[cat.key];
+            const image = CATEGORIES.find((c) => c.key === cat.key)?.image;
             return (
               <RevealItem key={cat.key} className="h-full">
-                <Card href={cat.href} accent="orange" className="h-full gap-3">
+                <Card href={cat.href} accent="orange" className="group h-full gap-3">
+                  {image && (
+                    <div className="relative -mx-2 -mt-2 mb-1 h-40 overflow-hidden rounded-xl border border-border">
+                      <Image
+                        src={image}
+                        alt={categories[i].title}
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                    </div>
+                  )}
                   <span className="grid h-12 w-12 place-items-center rounded-xl bg-indigo/8 text-indigo transition-colors">
                     <Icon className="h-6 w-6" aria-hidden />
                   </span>
@@ -272,21 +296,34 @@ export default async function HomePage({params}: Params) {
           <SectionHeading eyebrow={t('brands.eyebrow')} title={t('brands.heading')} sub={t('brands.sub')} />
         </Reveal>
         <Reveal stagger={0.08} className="mx-auto mt-10 grid max-w-3xl grid-cols-1 gap-5 sm:grid-cols-3">
-          {brands.map((brand) => (
-            <RevealItem key={brand}>
-              <Link
-                href="/partners"
-                className="group flex h-28 flex-col items-center justify-center gap-1.5 rounded-2xl border border-border bg-bg no-underline shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-orange/30 hover:shadow-glow"
-              >
-                <span className="text-lg font-bold tracking-tight text-ink group-hover:text-indigo">
-                  {brand}
-                </span>
-                <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
-                  {t('brands.logoNote')}
-                </span>
-              </Link>
-            </RevealItem>
-          ))}
+          {brands.map((brand) => {
+            const logo = BRAND_LOGOS[brand];
+            return (
+              <RevealItem key={brand}>
+                <Link
+                  href="/partners"
+                  className="group flex h-28 flex-col items-center justify-center gap-2 rounded-2xl border border-border bg-bg px-6 no-underline shadow-card transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-orange/30 hover:shadow-glow"
+                >
+                  {logo ? (
+                    <Image
+                      src={logo.src}
+                      alt={`${brand} logo`}
+                      width={logo.width}
+                      height={logo.height}
+                      className="h-12 w-auto max-w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-lg font-bold tracking-tight text-ink group-hover:text-indigo">
+                      {brand}
+                    </span>
+                  )}
+                  <span className="text-[11px] font-medium uppercase tracking-[0.16em] text-muted">
+                    {brand}
+                  </span>
+                </Link>
+              </RevealItem>
+            );
+          })}
         </Reveal>
       </section>
 
