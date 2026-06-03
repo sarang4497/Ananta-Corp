@@ -1,0 +1,466 @@
+@import "tailwindcss";
+
+/* ----------------------------------------------------------------------------
+   Design tokens — Tailwind v4 CSS-first @theme.
+   These also generate utilities (bg-bg, text-ink, text-blue, border-border…).
+   HARD RULE: no black anywhere. Text/borders/shadows use --ink or blue/indigo
+   tinted rgba — never #000.
+---------------------------------------------------------------------------- */
+@theme {
+  --color-bg: #ffffff;
+  --color-bg-soft: #f5f4ff;
+  --color-blue: #1877f2;
+  --color-indigo: #4f46e5;
+  --color-red: #ef4444;
+  --color-orange: #f97316;
+  --color-green: #22c55e;
+  --color-ink: #15183b;
+  --color-muted: #5b6385;
+  --color-border: rgba(79, 70, 229, 0.12);
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+
+  --shadow-glow: 0 24px 60px -24px rgba(24, 119, 242, 0.35);
+  --shadow-card: 0 1px 2px rgba(24, 119, 242, 0.06), 0 12px 32px -16px rgba(79, 70, 229, 0.18);
+
+  --radius-2xl: 1rem;
+
+  /* Full nav row (links + Let's Talk + language, all inline) appears from here;
+     below this the navbar collapses to the hamburger drawer. */
+  --breakpoint-nav: 1300px;
+
+  --animate-wa-pulse: wa-pulse 2.4s ease-out infinite;
+  --animate-blink: blink 1s step-end infinite;
+  --animate-hero-zoom: hero-zoom 26s ease-in-out infinite alternate;
+  --animate-marquee: marquee 6s linear infinite;
+  --animate-drift: drift 26s ease-in-out infinite;
+  --animate-drift-slow: drift 38s ease-in-out infinite reverse;
+  --animate-shimmer: shimmer 5s linear infinite;
+}
+
+/* Raw tokens exposed as plain CSS variables (exact names from the brief), used
+   for gradient/shadow composition and direct style references. */
+:root {
+  --bg: #ffffff;
+  --bg-soft: #f5f4ff;
+  --blue: #1877f2;
+  --indigo: #4f46e5;
+  --red: #ef4444;
+  --orange: #f97316;
+  --green: #22c55e;
+  --ink: #15183b;
+  --muted: #5b6385;
+  --border: rgba(79, 70, 229, 0.12);
+  --shadow: 0 24px 60px -24px rgba(24, 119, 242, 0.35);
+  --gradient-brand: linear-gradient(120deg, #1877f2, #4f46e5);
+  --gradient-spectrum: linear-gradient(120deg, #1877f2, #4f46e5, #ef4444, #f97316, #22c55e);
+  /* Brand wordmark: hybrid blue → indigo → red → orange (no green). */
+  --gradient-wordmark: linear-gradient(100deg, #1877f2, #4f46e5, #ef4444, #f97316);
+
+  /* Full-bleed layout: every section spans the viewport with a strict 0.75cm
+     gutter on the left/right. --nav-h is the sticky navbar's exact height;
+     --pinned-h is the full pinned block (navbar [+ homepage banner], set per
+     page by <PinnedBanner>) used for anchor scroll offset + the hero height. */
+  --gutter: 1.5cm;
+  --nav-h: 4.32rem;
+  --pinned-h: var(--nav-h);
+}
+
+/* Offset anchored sections so they aren't hidden behind the pinned block. */
+html {
+  scroll-padding-top: var(--pinned-h);
+}
+:where([id]) {
+  scroll-margin-top: var(--pinned-h);
+}
+
+/* Typewriter caret blink. */
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Slow cinematic zoom for the hero background video. */
+@keyframes hero-zoom {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.12);
+  }
+}
+
+/* Sticky WhatsApp button — gentle expanding-ring pulse. */
+@keyframes wa-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+  }
+  70% {
+    box-shadow: 0 0 0 16px rgba(37, 211, 102, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  33% {
+    transform: translate3d(5%, -4%, 0) scale(1.12);
+  }
+  66% {
+    transform: translate3d(-4%, 5%, 0) scale(0.94);
+  }
+}
+
+/* Chat assistant: mic recording pulse + live waveform bars (CSS only). */
+@keyframes chat-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(239, 68, 68, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  }
+}
+
+@keyframes chat-wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+
+@keyframes chat-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero announcement pill: a slowly travelling brand-spectrum gradient border.
+   The inner fill layer is painted on padding-box; only the border-box gradient
+   slides, so the border shimmers. Pure CSS — no JS. */
+@keyframes shimmer {
+  to {
+    background-position:
+      0 0,
+      -200% 0;
+  }
+}
+
+@layer utilities {
+  /* Full-bleed section shell: full width with the fixed 0.75cm side gutters.
+     Replaces the old `mx-auto max-w-[…] px-…` centered-container approach. */
+  .shell {
+    padding-left: var(--gutter);
+    padding-right: var(--gutter);
+  }
+  .chat-pulse {
+    animation: chat-pulse 1.4s ease-out infinite;
+  }
+  .chat-wave-bar {
+    transform-origin: center;
+    animation: chat-wave 0.9s ease-in-out infinite;
+  }
+  .chat-rise {
+    animation: chat-rise 0.22s ease-out both;
+  }
+  .hero-pill-shimmer {
+    border: 1px solid transparent;
+    background:
+      linear-gradient(var(--bg-soft), var(--bg-soft)) padding-box,
+      linear-gradient(
+          90deg,
+          #1877f2,
+          #4f46e5,
+          #f97316,
+          #22c55e,
+          #1877f2
+        )
+        border-box;
+    background-size:
+      100% 100%,
+      200% 100%;
+    background-position:
+      0 0,
+      0 0;
+    animation: var(--animate-shimmer);
+  }
+}
+
+/* ============================================================================
+   Offering demos — pure-CSS, ~20s looping animations (no video, no JS clock).
+   Play/pause is driven by the cascaded `--play` custom property, set by
+   OfferingDemo when the demo scrolls in/out of view.
+   Each animation uses `forwards` and its 100% keyframe IS the settled final
+   frame, so prefers-reduced-motion (collapsed to a single instant run by the
+   base reset below) lands exactly on that final frame as the static fallback.
+============================================================================ */
+@keyframes d-appear {
+  0% { opacity: 0; transform: translateY(10px) scale(0.97); }
+  12%, 100% { opacity: 1; transform: none; }
+}
+@keyframes d-pop {
+  0% { opacity: 0; transform: scale(0.4); }
+  10%, 100% { opacity: 1; transform: scale(1); }
+}
+@keyframes d-bar {
+  0% { transform: scaleX(0); }
+  70%, 100% { transform: scaleX(1); }
+}
+@keyframes d-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes d-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5%); }
+}
+
+/* Demo 1 — app flow: three phone screens cross-fade (login → book → success). */
+@keyframes d1-login { 0%, 26% { opacity: 1; } 31%, 100% { opacity: 0; } }
+@keyframes d1-book { 0%, 31% { opacity: 0; } 36%, 60% { opacity: 1; } 66%, 100% { opacity: 0; } }
+@keyframes d1-success { 0%, 66% { opacity: 0; transform: scale(0.9); } 74%, 100% { opacity: 1; transform: scale(1); } }
+
+/* Demo 2 — ERP: messy sheet fades out, clean dashboard fades in. */
+@keyframes d2-out { 0%, 18% { opacity: 1; transform: none; } 42%, 100% { opacity: 0.12; transform: translateX(-6%) scale(0.97); } }
+@keyframes d2-in { 0%, 40% { opacity: 0; transform: translateX(6%); } 58%, 100% { opacity: 1; transform: none; } }
+@keyframes d2-sort { 0%, 55% { transform: translateY(0); } 72%, 100% { transform: translateY(calc(-100% - 0.5rem)); } }
+
+/* Demo 4 — brain: a question types itself, then the answer streams in. */
+@keyframes d4-type { 0% { width: 0; } 20%, 100% { width: 100%; } }
+@keyframes d4-line { 0%, 24% { opacity: 0; transform: translateY(6px); } 34%, 100% { opacity: 1; transform: none; } }
+@keyframes d4-line2 { 0%, 30% { opacity: 0; transform: translateY(6px); } 40%, 100% { opacity: 1; transform: none; } }
+@keyframes d4-chip { 0%, 46% { opacity: 0; transform: scale(0.6); } 56%, 100% { opacity: 1; transform: scale(1); } }
+
+/* Demo 5 — acquisition: a meeting block drops onto the calendar. */
+@keyframes d5-drop { 0%, 60% { opacity: 0; transform: translateY(-90%); } 72%, 100% { opacity: 1; transform: translateY(0); } }
+
+/* Demo 6 — authority: a search result climbs to #1. */
+@keyframes d6-climb { 0%, 45% { transform: translateY(calc(200% + 1rem)); } 65%, 100% { transform: translateY(0); } }
+
+@layer utilities {
+  .dplay { animation-play-state: var(--play, running); }
+  .d-appear { animation: d-appear 20s ease-out infinite forwards; }
+  .d-pop { animation: d-pop 20s cubic-bezier(0.34, 1.56, 0.64, 1) infinite forwards; }
+  .d-bar { transform-origin: left; animation: d-bar 20s ease-out infinite forwards; }
+  .d-blink { animation: d-blink 1.1s steps(1) infinite; }
+  .d-float { animation: d-float 6s ease-in-out infinite; }
+  .d1-login { animation: d1-login 20s linear infinite forwards; }
+  .d1-book { animation: d1-book 20s linear infinite forwards; }
+  .d1-success { animation: d1-success 20s ease-out infinite forwards; }
+  .d2-out { animation: d2-out 20s ease-in-out infinite forwards; }
+  .d2-in { animation: d2-in 20s ease-out infinite forwards; }
+  .d2-sort { animation: d2-sort 20s cubic-bezier(0.34, 1.56, 0.64, 1) infinite forwards; }
+  .d4-type { white-space: nowrap; overflow: hidden; animation: d4-type 20s steps(36, end) infinite forwards; }
+  .d4-line { animation: d4-line 20s ease-out infinite forwards; }
+  .d4-line2 { animation: d4-line2 20s ease-out infinite forwards; }
+  .d4-chip { animation: d4-chip 20s cubic-bezier(0.34, 1.56, 0.64, 1) infinite forwards; }
+  .d5-drop { animation: d5-drop 20s cubic-bezier(0.34, 1.56, 0.64, 1) infinite forwards; }
+  .d6-climb { animation: d6-climb 20s cubic-bezier(0.5, 0, 0.2, 1) infinite forwards; }
+}
+
+@layer base {
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: rgba(24, 119, 242, 0.18);
+    color: var(--ink);
+  }
+
+  /* Lenis smooth scroll baseline */
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+  .lenis.lenis-stopped {
+    overflow: clip;
+  }
+}
+
+@layer utilities {
+  .bg-gradient-brand {
+    background-image: var(--gradient-brand);
+  }
+  .bg-gradient-spectrum {
+    background-image: var(--gradient-spectrum);
+  }
+  .text-gradient-brand {
+    background-image: var(--gradient-brand);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-spectrum {
+    background-image: var(--gradient-spectrum);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .text-gradient-wordmark {
+    background-image: var(--gradient-wordmark);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* ============================================================================
+   Premium demo system — whiteboard stage + scripted cursor journeys.
+   The motion is orchestrated in JS (motion/react). Only the *ambient* bits
+   (paper grid, the live pulse dot, funnel particles) live here as CSS, paused
+   off-screen via the cascaded `--play` custom property set by <Whiteboard>.
+============================================================================ */
+.demo-grid {
+  background-image:
+    linear-gradient(to right, rgba(79, 70, 229, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(79, 70, 229, 0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
+  -webkit-mask-image: radial-gradient(125% 125% at 50% 35%, #000 42%, transparent 100%);
+  mask-image: radial-gradient(125% 125% at 50% 35%, #000 42%, transparent 100%);
+}
+
+@keyframes demo-ping {
+  0% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(2.8); opacity: 0; }
+}
+.demo-ping {
+  position: relative;
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+}
+.demo-ping::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: inherit;
+  animation: demo-ping 1.8s ease-out infinite;
+  animation-play-state: var(--play, running);
+}
+
+/* Demo 5 — particles streaming down through the funnel stages. */
+@keyframes demo-fall {
+  0% { transform: translateY(-12%); opacity: 0; }
+  12% { opacity: 1; }
+  88% { opacity: 1; }
+  100% { transform: translateY(760%); opacity: 0; }
+}
+.demo-fall {
+  animation: demo-fall 2.8s linear infinite;
+  animation-play-state: var(--play, running);
+}
+
+/* Soft conveyor sheen used on processing nodes / loading rails. */
+@keyframes demo-sheen {
+  0% { background-position: -120% 0; }
+  100% { background-position: 220% 0; }
+}
+.demo-sheen {
+  background: linear-gradient(
+    100deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.55) 50%,
+    transparent 70%
+  );
+  background-size: 220% 100%;
+  animation: demo-sheen 1.8s linear infinite;
+  animation-play-state: var(--play, running);
+}
+
+/* Always-visible office labels on the contact map (Leaflet permanent tooltip)
+   styled as a clean branded pill — white, --ink text, no black, no arrow. */
+.leaflet-tooltip.office-label {
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid rgba(79, 70, 229, 0.18);
+  border-radius: 9999px;
+  padding: 3px 10px;
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 6px 16px -6px rgba(24, 119, 242, 0.4);
+}
+.leaflet-tooltip.office-label::before {
+  display: none;
+}
+
+/* Subtle sheen sweep for primary CTAs (premium, not gimmicky). It starts and
+   stays off-screen, so prefers-reduced-motion (which freezes it via the reset
+   below) simply shows no sheen. */
+@keyframes btn-sheen {
+  0% {
+    transform: translateX(-130%) skewX(-12deg);
+  }
+  55%,
+  100% {
+    transform: translateX(260%) skewX(-12deg);
+  }
+}
+.btn-sheen {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-sheen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    100deg,
+    transparent 38%,
+    rgba(255, 255, 255, 0.35) 50%,
+    transparent 62%
+  );
+  transform: translateX(-130%) skewX(-12deg);
+  animation: btn-sheen 5.5s ease-in-out infinite;
+}
+
+/* Respect users who prefer less motion: kill ambient CSS animations. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
