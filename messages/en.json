@@ -2,31 +2,182 @@
   "home": {
     "meta": {
       "title": "Ananta Corporation | Plywood & MDF Supplier in Ahmedabad",
-      "description": "Ananta Corporation is a trusted plywood, MDF, HMR board, pre-laminated particle board and flush door supplier in Ahmedabad, Gujarat. Bulk material supply for interior designers, builders and contractors with reliable delivery."
+      "description": "Ananta Corporation is a trusted plywood, MDF, HMR board, pre-laminated particle board, flush door and smart lock supplier in Ahmedabad, Gujarat. Bulk material supply for interior designers, builders and contractors with reliable delivery."
     },
     "hero": {
-      "eyebrow": "Ananta Corporation",
-      "title": "Your Trusted Partner for Home Material Supply!",
-      "sub": "Authorized supplier of Duroply, Action Tesa and Tenon Smart Lock — plywood, MDF, HMR boards, pre-laminated particle boards, flush doors and smart locks, supplied in bulk across Gujarat."
+      "badge": "Authorized distributor of Duroply & Action Tesa",
+      "titlePre": "Your Trusted Partner for",
+      "titleAccent": "Home Material Supply",
+      "sub": "Bulk plywood, MDF, boards, flush doors & smart locks for architects, builders, contractors, interior designers & furniture manufacturers across Gujarat and beyond.",
+      "ctaProducts": "Explore Products",
+      "ctaWhatsapp": "Get Price on WhatsApp",
+      "imageLabel": "Hero image coming soon"
     },
-    "intro": "Since 2020 we've supplied quality-certified materials to interior designers, architects, builders, contractors and furniture manufacturers — with ready stock, fast logistics and bulk pricing. The full product catalog is coming to this site soon.",
-    "ctaContact": "Contact us",
-    "ctaWhatsapp": "Chat on WhatsApp"
+    "trust": [
+      "Since 2020",
+      "11,000 sq. ft. Ready Stock",
+      "IS 303 / IS 710 / IS 2202 certified",
+      "CARB E1 & E2",
+      "Express Delivery"
+    ],
+    "categories": {
+      "eyebrow": "Our Range",
+      "heading": "Six categories. One reliable supplier.",
+      "sub": "Quality-certified materials from authorized brand partners — stocked, priced for bulk, and delivered fast.",
+      "cta": "Explore range",
+      "items": [
+        {
+          "title": "Plywood",
+          "body": "Duroply MR & BWP plywood for furniture, kitchens and wet areas — IS 303 and IS 710 certified."
+        },
+        {
+          "title": "MDF",
+          "body": "Action Tesa interior, exterior and HDHMR boards in thicknesses from 1.9 mm to 25 mm."
+        },
+        {
+          "title": "Moist Master HMR Board",
+          "body": "High moisture resistant boards engineered for modular kitchens and humid spaces."
+        },
+        {
+          "title": "Pre-Laminated Particle Board",
+          "body": "Ready-to-use prelam boards in 150+ colours, woodgrains and textures."
+        },
+        {
+          "title": "Flush Door",
+          "body": "Durodoor flush doors — solid block-board core, 100% boiling water proof, termite-resistant."
+        },
+        {
+          "title": "Smart Locks",
+          "body": "Tenon smart locks — fingerprint, WiFi, palm-vein and face recognition for every door."
+        }
+      ]
+    },
+    "usps": {
+      "eyebrow": "Why Choose Us",
+      "heading": "Built on supply you can plan around.",
+      "sub": "We combine technical material knowledge with dependable logistics, so your projects never wait on materials.",
+      "items": [
+        {
+          "title": "Technical Expertise",
+          "body": "Engineering-first guidance on detailing and material selection for residential and industrial projects."
+        },
+        {
+          "title": "Design + Execution Support",
+          "body": "Close collaboration with interior designers and architects to align design intent with reliable execution."
+        },
+        {
+          "title": "Ready Stock Infrastructure",
+          "body": "Ready-to-dispatch inventory backed by 11,000 sq. ft. of warehouse and workshop space."
+        },
+        {
+          "title": "Fast Logistics Network",
+          "body": "An established territorial network and supply-chain relationships for efficient delivery and consistent turnaround."
+        }
+      ]
+    },
+    "featured": {
+      "eyebrow": "Featured Products",
+      "heading": "Proven materials, ready to dispatch.",
+      "sub": "A snapshot of the range — every product comes with real-time pricing and stock updates on WhatsApp.",
+      "view": "View Details",
+      "price": "Get Price on WhatsApp",
+      "viewAll": "View all products",
+      "items": [
+        {"name": "Duroply - MR Moisture Resistant Plywood", "brand": "Duroply"},
+        {"name": "Duroply - BWP Boiling Water Proof Plywood", "brand": "Duroply"},
+        {"name": "Action Tesa - Interior Grade MDF", "brand": "Action TESA"},
+        {"name": "Action Tesa - HDHMR Board", "brand": "Action TESA"}
+      ]
+    },
+    "brands": {
+      "eyebrow": "Our Partners",
+      "heading": "Trusted brands, supplied with authority.",
+      "sub": "We collaborate with trusted brands to deliver consistent quality and reliable supply.",
+      "logoNote": "Logo coming soon",
+      "items": ["Action TESA", "Duroply", "Tenon Smart Lock"]
+    },
+    "testimonials": {
+      "eyebrow": "Customer Say!",
+      "heading": "Trusted on real project sites.",
+      "sub": "Contractors, fabricators and manufacturers on what it's like to source from Ananta Corporation.",
+      "items": [
+        {
+          "quote": "They provided us all the ordered material and maintain ready stock of a wide range of MDF, plywood, and flush doors. Very reliable for project execution timelines.",
+          "name": "Nisarg Patel",
+          "role": "Project Manager"
+        },
+        {
+          "quote": "All MDF ranges and thicknesses for interior, exterior, and HDMR were readily available. It saved us a lot of coordination time and delays on site.",
+          "name": "Narendrabhai Patel",
+          "role": "Interior Contractor"
+        },
+        {
+          "quote": "They delivered customized MDF articles as per our drawings using CNC machines. Quality was 100% checked and finishing was precise. Great technical support.",
+          "name": "Ketanbhai Shah",
+          "role": "Furniture Fabricator"
+        },
+        {
+          "quote": "We've been sourcing plywood and MDF from Ananta Corporation for over a year now. Consistent quality, accurate thickness, and on-time delivery every single time. Makes our execution work much smoother.",
+          "name": "Rakesh Patel",
+          "role": "Interior Contractor, Ahmedabad"
+        },
+        {
+          "quote": "As a furniture manufacturer, material quality matters the most. Their MR and BWP plywood quality is reliable and finishing is excellent. Very transparent pricing as well.",
+          "name": "Ashok Vavadiya",
+          "role": "Furniture Manufacturer"
+        },
+        {
+          "quote": "Delivery was quick and properly packed. No damaged sheets, no confusion in sizes. This level of professionalism is rare in material supply businesses.",
+          "name": "Kunal Mehta",
+          "role": "Site Supervisor"
+        }
+      ]
+    },
+    "cta": {
+      "heading": "Need materials for your project?",
+      "sub": "Get pricing and availability — our team replies fast with real stock and delivery timelines.",
+      "note": "End-to-end: Material Supply + Custom Furniture",
+      "whatsapp": "Get Price on WhatsApp",
+      "contact": "Or send an enquiry"
+    }
   },
   "nav": {
+    "products": "Products",
+    "partners": "Partners",
+    "about": "About",
     "contact": "Contact",
-    "cta": "Get a Quote",
+    "cta": "Get Price on WhatsApp",
+    "viewAllProducts": "View All Products",
+    "viewAllPartners": "View All Partners",
+    "overview": "Overview",
+    "plywood": "Plywood",
+    "mdf": "MDF",
+    "moistMaster": "High Moisture Resistant Board (Moist Master)",
+    "prelam": "Pre-Laminated Particle Board",
+    "flushDoor": "Flush Door",
+    "smartLocks": "Smart Locks",
+    "moistureResistant": "Moisture Resistant",
+    "boilingWaterProof": "Boiling Water Proof",
+    "interiorGrade": "Interior Grade",
+    "exteriorGrade": "Exterior Grade",
+    "hdhmr": "HDHMR",
+    "actionTesa": "Action TESA",
+    "duroply": "Duroply",
+    "tenonSmartLock": "Tenon Smart Lock",
     "openMenu": "Open menu",
     "closeMenu": "Close menu"
   },
   "footer": {
     "descriptor": "Your trusted partner in quality products and exceptional service.",
     "gstin": "GSTIN: 24ACDFA7104Q1ZB",
-    "links": "Information",
+    "information": "Information",
+    "products": "Products",
     "contact": "Contact Us",
     "whatsapp": "WhatsApp",
     "address": "293/2, Godown No. 17, Nanukaka Estate, Opp. Sub Station, Pirana Road, Piplaj, Ahmedabad, Gujarat 382405",
-    "rights": "All Rights Reserved."
+    "rights": "All Rights Reserved.",
+    "legalPrivacy": "Privacy Policy",
+    "legalTerms": "Terms of Service"
   },
   "contact": {
     "meta": {

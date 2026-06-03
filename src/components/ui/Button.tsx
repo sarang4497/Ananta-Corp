@@ -2,7 +2,7 @@ import type {ComponentProps, ReactNode} from 'react';
 import {Link} from '@/i18n/navigation';
 import {cn} from '@/lib/cn';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'green' | 'navy' | 'blue';
+export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'green' | 'orange' | 'blue';
 export type ButtonSize = 'sm' | 'md' | 'lg';
 
 const base =
@@ -18,9 +18,9 @@ const sizes: Record<ButtonSize, string> = {
 };
 
 const variants: Record<ButtonVariant, string> = {
-  // Brand gradient, white text, lift + glow on hover.
+  // Brand indigo gradient, white text, lift + glow on hover.
   primary:
-    'bg-gradient-brand text-white shadow-[0_10px_30px_-12px_rgba(24,119,242,0.6)] ' +
+    'bg-gradient-brand text-white shadow-[0_10px_30px_-12px_rgba(79,70,229,0.6)] ' +
     'hover:-translate-y-0.5 hover:shadow-glow',
   // White surface with an indigo border.
   secondary:
@@ -29,18 +29,18 @@ const variants: Record<ButtonVariant, string> = {
   // Minimal, text-only.
   ghost:
     'bg-transparent text-ink hover:-translate-y-0.5 hover:bg-bg-soft',
-  // Solid green CTA, white text, lift on hover.
+  // Solid green CTA (WhatsApp contexts), white text, lift on hover.
   green:
     'bg-green text-white shadow-[0_10px_30px_-12px_rgba(34,197,94,0.6)] ' +
     'hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(34,197,94,0.55)]',
-  // Deep navy-blue CTA, white text, lift on hover.
-  navy:
-    'bg-[#15183b] text-white shadow-[0_10px_30px_-12px_rgba(21,24,59,0.55)] ' +
-    'hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(21,24,59,0.5)]',
-  // Bright brand blue CTA (matches the Next-Gen banner blue), white text.
+  // Action orange — the brand CTA ("Get Price on WhatsApp"), white text.
+  orange:
+    'bg-orange text-white shadow-orange ' +
+    'hover:-translate-y-0.5 hover:bg-orange-deep hover:shadow-[0_18px_40px_-12px_rgba(234,88,12,0.55)]',
+  // Brand indigo solid (legacy name kept for shared components).
   blue:
-    'bg-[#1877f2] text-white shadow-[0_10px_30px_-12px_rgba(24,119,242,0.6)] ' +
-    'hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(24,119,242,0.55)]'
+    'bg-blue text-white shadow-[0_10px_30px_-12px_rgba(79,70,229,0.6)] ' +
+    'hover:-translate-y-0.5 hover:shadow-[0_18px_40px_-12px_rgba(79,70,229,0.55)]'
 };
 
 /** Shared class string so interactive client leaves can reuse Button styling. */
