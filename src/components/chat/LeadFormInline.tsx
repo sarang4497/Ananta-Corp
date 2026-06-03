@@ -80,7 +80,7 @@ export function LeadFormInline({email}: {email?: string}) {
           {t('bookCall')}
         </Link>
         <a
-          href="mailto:hello@studiomarketingitalia.it"
+          href="mailto:info@anantacorporation.com"
           className={buttonClassName('ghost', 'sm')}
         >
           {t('emailUs')}

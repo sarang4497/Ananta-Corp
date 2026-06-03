@@ -11,14 +11,6 @@ const nextConfig: NextConfig = {
   },
   images: {
     formats: ['image/avif', 'image/webp']
-  },
-  // Clean URLs for the standalone static demo sites in /public/demos/*.
-  // These bypass i18n (also excluded in the proxy matcher).
-  async rewrites() {
-    return [
-      {source: '/demos/dental', destination: '/demos/dental/index.html'},
-      {source: '/demos/restaurant', destination: '/demos/restaurant/index.html'}
-    ];
   }
 };
 

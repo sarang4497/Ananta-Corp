@@ -9,9 +9,9 @@ import {BellaAvatar} from './BellaAvatar';
 import {ChatMarkdown} from './ChatMarkdown';
 
 /**
- * Bella — the chat assistant panel. Code-split into its own lazy chunk (see
- * ChatWidget / HeroChat). Streams from /api/chat and renders markdown.
- * `initialMessage` (e.g. typed in the hero box) is auto-sent once on open.
+ * The chat assistant panel. Code-split into its own lazy chunk (see
+ * ChatWidget). Streams from /api/chat and renders markdown.
+ * `initialMessage` is auto-sent once on open.
  * Simplest version: no bot protection / email gating.
  */
 
@@ -23,14 +23,14 @@ interface Msg {
 }
 
 const STARTERS = [
-  'What can you build for my business?',
-  'I run a dental clinic — how can you help?',
-  'Show me your AI products',
-  'How do I book a call?'
+  'What products do you supply?',
+  'Which plywood is right for a kitchen?',
+  "What's the difference between MDF and HDHMR?",
+  'How do I get a price quote?'
 ];
 
 const ERROR_MSG =
-  "I'm having trouble right now — please reach us on WhatsApp (https://wa.me/393493262657) or book a call at /contact.";
+  "I'm having trouble right now — please reach us on WhatsApp (https://wa.me/918320052838) or via /contact.";
 
 let counter = 0;
 const nextId = () => `m${++counter}`;
@@ -149,7 +149,7 @@ export default function ChatPanel({
       aria-label={t('title')}
       className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-bg shadow-[0_30px_80px_-24px_rgba(79,70,229,0.55)]"
     >
-      {/* Header (pinned) — Bella persona over a soft brand-gradient wash. */}
+      {/* Header (pinned) — assistant identity over a soft brand-gradient wash. */}
       <div
         className="relative z-10 flex shrink-0 items-center gap-2.5 border-b border-border bg-gradient-to-r from-blue/10 via-bg-soft/70 to-indigo/10 px-3.5 py-2.5"
       >
@@ -262,7 +262,7 @@ export default function ChatPanel({
           className="shrink-0 border-t border-border bg-bg-soft/40 px-4 py-4"
         >
           <p className="mb-3 text-center text-xs leading-relaxed text-muted">
-            Bella keeps chats short and focused 💛 — the best next step is a quick call with our team.
+            We keep chats short and focused — the best next step is a quick call with our team.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
             <a href="/contact" className={buttonClassName('blue', 'md', 'font-bold')}>

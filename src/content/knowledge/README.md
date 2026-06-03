@@ -9,21 +9,18 @@ and given to the assistant as context on each message. The chatbot will then
 answer using whatever is written here.
 
 ## The files
-- **company.md** — who we are, offices, contact, how to book a call.
-- **services.md** — the 7 services, their sub-services, and page URLs.
-- **industries.md** — the 5 industries, what we do for each, and page URLs.
-- **ai-products.md** — the 23 AI products, one-line value, prices, and `/ai-products` links.
-- **case-studies.md** — real proof points (Dental, Lubi, Nisarg, HSTUS, app/platform builds) + overall stats, linking to `/case-studies`.
-- **faqs.md** — common questions and short answers.
+- **company.md** — who we are, contact details, address, brands we supply.
+- (Add product/category files as the Ananta catalog pages are built — e.g.
+  `plywood.md`, `mdf.md`, `smart-locks.md` — and they're picked up automatically.)
 
 ## To make a change
-1. Open the relevant `.md` file (e.g. `services.md`) in any text editor.
-2. Edit the text like a normal document. Keep the page links (e.g. `/contact`,
-   `/ai-products#product-23`) accurate — the chatbot shares those with visitors.
+1. Open the relevant `.md` file in any text editor.
+2. Edit the text like a normal document. Keep the page links (e.g. `/contact`)
+   accurate — the chatbot shares those with visitors.
 3. Save. After the site is rebuilt/redeployed, the chatbot uses the new content.
 
 ## To add a whole new topic
-Create a new file, e.g. `pricing.md`, write your content, and save it.
+Create a new file, e.g. `plywood.md`, write your content, and save it.
 It's picked up automatically — you do **not** need to register it anywhere.
 
 ## Tips

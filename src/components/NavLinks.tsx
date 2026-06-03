@@ -3,10 +3,7 @@
 import type {ComponentProps} from 'react';
 import {useTranslations} from 'next-intl';
 import {Link, usePathname} from '@/i18n/navigation';
-import {ServicesMenu} from './ServicesMenu';
-import {AiProductsMenu} from './AiProductsMenu';
-import {IndustriesMenu} from './IndustriesMenu';
-import {LanguageMenu} from './LanguageMenu';
+import {navItems} from './nav-items';
 import {buttonClassName} from './ui/Button';
 import {whatsappUrl} from '@/lib/whatsapp';
 import {cn} from '@/lib/cn';
@@ -14,24 +11,25 @@ import {cn} from '@/lib/cn';
 type Href = ComponentProps<typeof Link>['href'];
 
 /**
- * Desktop nav row, evenly spaced: Services ▾ · AI Products ▾ · Industries ▾ ·
- * About · Case Studies · Let's Talk · language dropdown. Let's Talk is
- * an inline item (styled as the blue button) at the same gap as the rest; the
- * language dropdown comes last. Client leaf so it can mark the active item.
+ * Desktop nav row. Groundwork: the nav-items links plus the WhatsApp CTA;
+ * dropdown menus return when the Ananta product pages are designed.
+ * Client leaf so it can mark the active item.
  */
 export function NavLinks({className}: {className?: string}) {
   const t = useTranslations('nav');
   const pathname = usePathname();
 
   return (
-    <div className={cn('flex items-center justify-between gap-5', className)}>
-      <ServicesMenu />
-      <AiProductsMenu />
-      <IndustriesMenu />
-      {/* About is a homepage section, not a page — scroll/redirect to /#about. */}
-      <TopLink href={{pathname: '/', hash: 'about'} as Href} label={t('about')} active={false} />
-      <TopLink href="/case-studies" label={t('caseStudies')} active={pathname === '/case-studies'} />
-      {/* Let's Talk — inline at equal spacing, styled as the blue button. */}
+    <div className={cn('flex items-center justify-end gap-5', className)}>
+      {navItems.map((item) => (
+        <TopLink
+          key={item.key}
+          href={item.href}
+          label={t(item.key)}
+          active={pathname === item.href}
+        />
+      ))}
+      {/* WhatsApp CTA — styled as the blue button. */}
       <a
         href={whatsappUrl()}
         target="_blank"
@@ -40,7 +38,6 @@ export function NavLinks({className}: {className?: string}) {
       >
         {t('cta')}
       </a>
-      <LanguageMenu />
     </div>
   );
 }

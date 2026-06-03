@@ -1,23 +1,29 @@
-# Company
+# Ananta Corporation — company basics
 
-**Studio Marketing Italia** builds AI-assisted systems that run and grow businesses — marketing, websites/web apps, and AI automation under one roof. The AI does the heavy lifting; a senior, hands-on team of 30+ people builds it, runs it, and supports it long after launch.
+- **Who we are:** Ananta Corporation is a trusted supplier of plywood, MDF, HMR
+  boards, pre-laminated particle boards, flush doors and smart locks in
+  Ahmedabad, Gujarat, India. We supply materials in bulk to interior designers,
+  architects, builders, contractors and furniture manufacturers.
+- **Tagline:** Your Trusted Partner for Home Material Supply!
+- **Since:** 2020.
+- **Role:** Authorized supplier/distributor of **Duroply**, **Action Tesa** and
+  **Tenon Smart Lock** products. We are a supplier, not a manufacturer.
+- **Infrastructure:** 11,000 sq. ft. of warehouse and workshop space with
+  ready-to-dispatch stock and fast delivery.
 
-## What we do
-We bring in customers, organize internal operations, and build authority and trust — so owners spend time on strategy, people and growth while smart systems handle the rest. We work with clients across the USA, UK, Italy, Germany, France, UAE and Australia.
+## Contact
+- Phone: +91 83200 52838
+- WhatsApp: https://wa.me/918320052838
+- Email: info@anantacorporation.com
+- Contact page: /contact
+- Address: 293/2, Godown No. 17, Nanukaka Estate, Opp. Sub Station, Pirana Road,
+  Piplaj, Ahmedabad, Gujarat 382405
+- GSTIN: 24ACDFA7104Q1ZB
+- Instagram: https://www.instagram.com/anantacorporation1
 
-## Track record
-100+ flagship projects delivered, 3.5× average ROAS (Meta + Google), €10M+ in new revenue generated, €2M+ in operational costs cut with AI, and a 30+ person global team. (For Dental specifically: 15+ implant patient visits in 30 days, 30+ active dental partners, €4M+ revenue generated, $100k+/mo for partners.) Full proof and live site previews are on /case-studies.
+## Pricing
+We don't publish prices online. For real-time pricing and stock, contact us on
+WhatsApp (https://wa.me/918320052838) or via /contact.
 
-## Offices
-- **USA** — Aldie, VA
-- **Italy** — Rome (Via di Selva Candida 20A, 00166 Roma)
-- **India** — Ahmedabad
-
-## Contact & booking a call
-- **Email:** info@studiomarketingitalia.it
-- **WhatsApp (fastest):** https://wa.me/393493262657 — this is also what the navbar **"Let's Talk"** button and the floating WhatsApp button open.
-- **Contact page:** /contact
-- **About the company / founders / vision & mission / team:** /#about
-- We typically reply within one business day.
-
-To **book a call**, tap "Let's Talk" / the WhatsApp button, or use /contact.
+<!-- Product/category knowledge (plywood, MDF, HDHMR, prelam boards, flush
+     doors, smart locks) will be added as the catalog pages are built. -->

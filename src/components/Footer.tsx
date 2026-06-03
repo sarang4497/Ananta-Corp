@@ -1,16 +1,20 @@
-import Image from 'next/image';
 import {getTranslations} from 'next-intl/server';
 import {Mail, Phone, MapPin} from 'lucide-react';
 import {Link} from '@/i18n/navigation';
-import {SERVICES_MENU, INDUSTRIES_MENU} from './nav-menu';
-import {FooterCol} from './FooterCol';
+import {navItems} from './nav-items';
 import {whatsappUrl} from '@/lib/whatsapp';
 
-const LEGAL = [
-  {href: '/privacy-policy', key: 'legalPrivacy'},
-  {href: '/refund-policy', key: 'legalRefund'},
-  {href: '/terms', key: 'legalTerms'},
-  {href: '/disclaimer', key: 'legalDisclaimer'}
+const SOCIALS = [
+  {
+    label: 'Instagram',
+    href: 'https://www.instagram.com/anantacorporation1',
+    icon: InstagramGlyph
+  },
+  {
+    label: 'Facebook',
+    href: 'https://www.facebook.com/share/1CV5X8xETv/?mibextid=wwXIfr',
+    icon: FacebookGlyph
+  }
 ] as const;
 
 // All white text; links use a subtle opacity hover. Tight line-height.
@@ -20,20 +24,13 @@ const headingCls =
   'mb-0.5 text-xs font-bold uppercase tracking-[0.18em] text-white';
 
 /**
- * Compact, gradient footer (matches the Next-Gen banner blue→indigo→mauve).
- * All-white, bold-headed, dense. Server Component; Inter throughout.
+ * Compact, gradient footer (blue→indigo→mauve). All-white, bold-headed, dense.
+ * Server Component; Inter throughout.
  */
 export async function Footer() {
   const tn = await getTranslations('nav');
   const tf = await getTranslations('footer');
   const year = 2026;
-
-  // USA first, then Italy, then India.
-  const offices = [
-    {label: tf('officeUsa'), address: tf('addressUsa')},
-    {label: tf('officeItaly'), address: tf('addressItaly')},
-    {label: tf('officeIndia'), address: tf('addressIndia')}
-  ];
 
   return (
     <footer
@@ -44,56 +41,56 @@ export async function Footer() {
       }}
     >
       <div className="shell py-6 sm:py-7">
-        <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2 sm:gap-y-7 lg:grid-cols-[1.6fr_1fr_1fr_1.4fr] [&>*]:min-w-0">
+        <div className="grid gap-x-8 gap-y-4 sm:grid-cols-2 sm:gap-y-7 lg:grid-cols-[1.6fr_1fr_1.4fr] [&>*]:min-w-0">
           {/* Brand */}
           <div className="flex flex-col gap-2">
             <Link
               href="/"
               className="inline-flex items-center gap-2 no-underline"
-              aria-label="Studio Marketing Italia — home"
+              aria-label="Ananta Corporation — home"
             >
-              <Image src="/logo.png" alt="" width={36} height={36} className="h-9 w-auto" />
               <span className="text-base font-bold tracking-tight text-white">
-                Studio Marketing Italia
+                Ananta Corporation
               </span>
             </Link>
             <p className="max-w-xs text-sm leading-snug text-white">{tf('descriptor')}</p>
+            <p className="text-xs leading-snug text-white/90">{tf('gstin')}</p>
+            <div className="mt-1 flex items-center gap-3">
+              {SOCIALS.map((s) => (
+                <a
+                  key={s.label}
+                  href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.label}
+                  className="text-white transition-opacity hover:opacity-75"
+                >
+                  <s.icon />
+                </a>
+              ))}
+            </div>
           </div>
 
-          {/* Services — accordion on mobile, open on desktop */}
-          <FooterCol heading={tf('services')}>
-            {SERVICES_MENU.map((item) => (
+          {/* Site links */}
+          <div className="flex flex-col gap-1.5">
+            <span className={headingCls}>{tf('links')}</span>
+            {navItems.map((item) => (
               <Link key={item.key} href={item.href} className={linkCls}>
                 {tn(item.key)}
               </Link>
             ))}
-          </FooterCol>
-
-          {/* Industries + company links */}
-          <FooterCol heading={tf('industries')}>
-            {INDUSTRIES_MENU.map((item) => (
-              <Link key={item.key} href={item.href} className={linkCls}>
-                {tn(item.key)}
-              </Link>
-            ))}
-            <Link href="/case-studies" className={linkCls}>{tn('caseStudies')}</Link>
-            <Link href="/pricing" className={linkCls}>{tn('pricing')}</Link>
-          </FooterCol>
+          </div>
 
           {/* Contact */}
           <div className="flex flex-col gap-1.5">
             <span className={headingCls}>{tf('contact')}</span>
-            <a href="mailto:info@studiomarketingitalia.it" className={`flex items-center gap-2 ${linkCls}`}>
+            <a href="mailto:info@anantacorporation.com" className={`flex items-center gap-2 ${linkCls}`}>
               <Mail className="h-4 w-4 shrink-0" aria-hidden />
-              <span className="min-w-0 break-all">info@studiomarketingitalia.it</span>
+              <span className="min-w-0 break-all">info@anantacorporation.com</span>
             </a>
-            <a href="tel:+393493262657" className={`inline-flex items-center gap-2 ${linkCls}`}>
+            <a href="tel:+918320052838" className={`inline-flex items-center gap-2 ${linkCls}`}>
               <Phone className="h-4 w-4 shrink-0" aria-hidden />
-              +39 349 326 2657
-            </a>
-            <a href="tel:+919173474378" className={`inline-flex items-center gap-2 ${linkCls}`}>
-              <Phone className="h-4 w-4 shrink-0" aria-hidden />
-              +91 91734 74378
+              +91 83200 52838
             </a>
             <a
               href={whatsappUrl()}
@@ -104,24 +101,11 @@ export async function Footer() {
               <WhatsAppGlyph />
               {tf('whatsapp')}
             </a>
+            <span className="flex gap-2 text-sm leading-snug text-white">
+              <MapPin className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+              <span className="text-xs leading-snug text-white/90">{tf('address')}</span>
+            </span>
           </div>
-        </div>
-
-        {/* Offices — accordion on mobile, row on desktop */}
-        <div className="mt-4 border-t border-white/20 pt-3 sm:pt-4">
-          <FooterCol heading={tf('offices')}>
-            <div className="grid gap-x-6 gap-y-2.5 sm:grid-cols-3">
-              {offices.map((office) => (
-                <div key={office.label} className="flex gap-2">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-white" aria-hidden />
-                  <div className="flex flex-col">
-                    <span className="text-[13px] font-bold leading-tight text-white">{office.label}</span>
-                    <span className="text-xs leading-snug text-white/90">{office.address}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </FooterCol>
         </div>
       </div>
 
@@ -129,22 +113,29 @@ export async function Footer() {
       <div className="border-t border-white/20">
         <div className="flex flex-col items-center justify-between gap-1.5 shell py-3 text-center sm:flex-row sm:text-left">
           <span className="text-[11px] leading-snug text-white">
-            © {year} Studio Marketing Italia. {tf('rights')} · {tf('companyLine')}
+            © {year} Ananta Corporation. {tf('rights')}
           </span>
-          <nav className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1" aria-label="Legal">
-            {LEGAL.map((item) => (
-              <Link
-                key={item.key}
-                href={item.href}
-                className="text-[11px] text-white no-underline transition-opacity hover:opacity-75"
-              >
-                {tf(item.key)}
-              </Link>
-            ))}
-          </nav>
         </div>
       </div>
     </footer>
+  );
+}
+
+function InstagramGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
+
+function FacebookGlyph() {
+  return (
+    <svg viewBox="0 0 24 24" className="h-[18px] w-[18px]" fill="currentColor" aria-hidden>
+      <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+    </svg>
   );
 }
 

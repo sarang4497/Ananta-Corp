@@ -24,7 +24,7 @@ export const runtime = 'nodejs';
 export const maxDuration = 60;
 
 const FALLBACK =
-  "I'm having trouble right now — please reach us on WhatsApp (https://wa.me/393493262657) or book a call at /contact.";
+  "I'm having trouble right now — please reach us on WhatsApp (https://wa.me/918320052838) or via /contact.";
 
 interface ChatRequest {
   messages?: Array<{role?: string; content?: string}>;

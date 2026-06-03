@@ -24,9 +24,9 @@ export function ChatWidget() {
 
   const close = () => setOpen(false);
 
-  // The single, site-wide entry point: any "Ask Bella" CTA and the hero box
-  // (see AskBellaButton / HeroChat) dispatch `open-bella`; the hero also passes
-  // the typed message in `detail.message` so it's auto-sent as the first turn.
+  // The single, site-wide entry point: any chat CTA (see AskBellaButton)
+  // dispatches `open-bella`; callers can also pass a typed message in
+  // `detail.message` so it's auto-sent as the first turn.
   useEffect(() => {
     const openChat = (e: Event) => {
       const message = (e as CustomEvent<{message?: string}>).detail?.message;

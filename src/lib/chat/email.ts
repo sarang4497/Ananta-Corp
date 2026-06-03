@@ -7,7 +7,7 @@
 const RESEND_URL = 'https://api.resend.com/emails';
 
 function from(): string {
-  return process.env.RESEND_FROM || 'Studio Marketing Italia <onboarding@resend.dev>';
+  return process.env.RESEND_FROM || 'Ananta Corporation <onboarding@resend.dev>';
 }
 
 async function send(payload: {
@@ -42,7 +42,7 @@ async function send(payload: {
 export async function sendVerificationCode(email: string, code: string): Promise<void> {
   await send({
     to: email,
-    subject: `${code} is your Studio Marketing Italia code`,
+    subject: `${code} is your Ananta Corporation code`,
     text: `Your verification code is ${code}. It expires in 10 minutes. If you didn't request this, you can ignore this email.`,
     html: `
       <div style="font-family:system-ui,sans-serif;color:#15183b;max-width:480px">

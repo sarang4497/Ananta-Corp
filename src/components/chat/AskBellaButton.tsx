@@ -3,8 +3,8 @@
 import type {ReactNode} from 'react';
 
 /**
- * Opens the floating Bella chat from anywhere (e.g. a page's secondary CTA) by
- * dispatching a window event the ChatWidget listens for.
+ * Opens the floating assistant chat from anywhere (e.g. a page's secondary CTA)
+ * by dispatching a window event the ChatWidget listens for.
  */
 export function AskBellaButton({
   className,
