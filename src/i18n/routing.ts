@@ -13,21 +13,13 @@ export const routing = defineRouting({
     '/contact': '/contact',
     '/about': '/about',
     '/partners': '/partners',
-    // Product catalog (pages land in later batches; hrefs are wired now).
+    '/decor': '/decor',
+    // Product catalog: listing → category → subcategory → product detail.
     '/products': '/products',
-    '/products/plywood': '/products/plywood',
-    '/products/plywood/moisture-resistant': '/products/plywood/moisture-resistant',
-    '/products/plywood/boiling-water-proof': '/products/plywood/boiling-water-proof',
-    '/products/mdf': '/products/mdf',
-    '/products/mdf/interior-grade': '/products/mdf/interior-grade',
-    '/products/mdf/exterior-grade': '/products/mdf/exterior-grade',
-    '/products/mdf/hdhmr': '/products/mdf/hdhmr',
-    '/products/high-moisture-resistant-board-moist-master':
-      '/products/high-moisture-resistant-board-moist-master',
-    '/products/pre-laminated-particle-board': '/products/pre-laminated-particle-board',
-    '/products/flush-door': '/products/flush-door',
-    '/products/smart-locks': '/products/smart-locks',
-    // Legal (batch 5).
+    '/products/[category]': '/products/[category]',
+    '/products/[category]/[sub]': '/products/[category]/[sub]',
+    '/products/[category]/[sub]/[slug]': '/products/[category]/[sub]/[slug]',
+    // Legal.
     '/privacy': '/privacy',
     '/terms': '/terms'
   }

@@ -1,11 +1,11 @@
-import {CalendarDays, Warehouse, ShieldCheck, BadgeCheck, Truck, type LucideIcon} from 'lucide-react';
+import {CalendarDays, Warehouse, ShieldCheck, BadgeCheck, Cog, Truck, type LucideIcon} from 'lucide-react';
 import {Reveal, RevealItem} from '@/components/ui/Reveal';
 
-const ICONS: LucideIcon[] = [CalendarDays, Warehouse, ShieldCheck, BadgeCheck, Truck];
+const ICONS: LucideIcon[] = [CalendarDays, Warehouse, ShieldCheck, BadgeCheck, Cog, Truck];
 
 /**
- * Slim credibility band directly under the hero — five compact badges
- * (since-2020, warehouse, IS standards, CARB, express delivery).
+ * Slim credibility band directly under the hero — compact badges
+ * (since-2020, warehouse, IS standards, CARB, German technology, delivery).
  */
 export function TrustStrip({items}: {items: string[]}) {
   return (

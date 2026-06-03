@@ -11,13 +11,15 @@
       "sub": "Bulk plywood, MDF, boards, flush doors & smart locks for architects, builders, contractors, interior designers & furniture manufacturers across Gujarat and beyond.",
       "ctaProducts": "Explore Products",
       "ctaWhatsapp": "Get Price on WhatsApp",
-      "imageLabel": "Hero image coming soon"
+      "imageLabel": "Hero image coming soon",
+      "pills": ["Since 2020", "Ready Stock", "Certified Materials"]
     },
     "trust": [
       "Since 2020",
       "11,000 sq. ft. Ready Stock",
-      "IS 303 / IS 710 / IS 2202 certified",
+      "IS 303 / IS 710 / IS 2202",
       "CARB E1 & E2",
+      "German Technology",
       "Express Delivery"
     ],
     "categories": {
@@ -36,11 +38,11 @@
         },
         {
           "title": "Moist Master HMR Board",
-          "body": "High moisture resistant boards engineered for modular kitchens and humid spaces."
+          "body": "Melamine-fortified high moisture resistant boards engineered for modular kitchens and humid spaces."
         },
         {
           "title": "Pre-Laminated Particle Board",
-          "body": "Ready-to-use prelam boards in 150+ colours, woodgrains and textures."
+          "body": "Ready-to-use prelam boards in 156 colours, woodgrains and textures — factory-laminated both sides."
         },
         {
           "title": "Flush Door",
@@ -81,12 +83,32 @@
       "sub": "A snapshot of the range — every product comes with real-time pricing and stock updates on WhatsApp.",
       "view": "View Details",
       "price": "Get Price on WhatsApp",
-      "viewAll": "View all products",
+      "viewAll": "View all 20 products",
       "items": [
         {"name": "Duroply - MR Moisture Resistant Plywood", "brand": "Duroply"},
         {"name": "Duroply - BWP Boiling Water Proof Plywood", "brand": "Duroply"},
         {"name": "Action Tesa - Interior Grade MDF", "brand": "Action TESA"},
         {"name": "Action Tesa - HDHMR Board", "brand": "Action TESA"}
+      ]
+    },
+    "aboutTeaser": {
+      "eyebrow": "Who We Are",
+      "heading": "From raw boards to finished furniture — one accountable partner.",
+      "body": "Ananta Corporation has supplied premium wood and interior materials from Ahmedabad since 2020 — an authorized distributor built on premium sourcing, ready stock and disciplined execution. We don't stop at the material: our workshop turns boards into finished, made-to-drawing furniture.",
+      "cta": "More about us",
+      "highlights": [
+        {
+          "title": "Material Supply + Custom Furniture",
+          "body": "End-to-end — from bulk sheets delivered to site, to finished articles built in our workshop."
+        },
+        {
+          "title": "CNC-made articles to your drawings",
+          "body": "Send drawings; we cut, machine and finish custom MDF and board components with CNC precision."
+        },
+        {
+          "title": "100% quality-checked",
+          "body": "Every order is checked before dispatch — accurate thickness, clean edges, no damaged sheets."
+        }
       ]
     },
     "brands": {
@@ -135,10 +157,10 @@
     },
     "cta": {
       "heading": "Need materials for your project?",
-      "sub": "Get pricing and availability — our team replies fast with real stock and delivery timelines.",
+      "sub": "Get pricing and availability today — our team replies fast with real stock and delivery timelines.",
       "note": "End-to-end: Material Supply + Custom Furniture",
       "whatsapp": "Get Price on WhatsApp",
-      "contact": "Or send an enquiry"
+      "contact": "Send an Enquiry"
     }
   },
   "nav": {
@@ -161,6 +183,10 @@
     "interiorGrade": "Interior Grade",
     "exteriorGrade": "Exterior Grade",
     "hdhmr": "HDHMR",
+    "moistMasterSub": "Moist Master",
+    "boards": "Boards",
+    "door": "Door",
+    "locks": "Locks",
     "actionTesa": "Action TESA",
     "duroply": "Duroply",
     "tenonSmartLock": "Tenon Smart Lock",
@@ -179,30 +205,696 @@
     "legalPrivacy": "Privacy Policy",
     "legalTerms": "Terms of Service"
   },
+  "catalog": {
+    "listing": {
+      "meta": {
+        "title": "All Products | Plywood, MDF, Boards, Doors & Smart Locks | Ananta Corporation",
+        "description": "Browse the complete Ananta Corporation range — Duroply plywood, Action Tesa MDF and boards, Durodoor flush doors and Tenon smart locks. Bulk supply in Ahmedabad, Gujarat."
+      },
+      "eyebrow": "Product Catalog",
+      "heading": "Twenty products. Every project covered.",
+      "intro": "Everything we stock, in one place — certified plywood, MDF and boards, flush doors and smart locks from Duroply, Action Tesa and Tenon. Filter by category, open a product for full specs, and ask for today's price on WhatsApp.",
+      "all": "All Products",
+      "count": "{count} products"
+    },
+    "card": {
+      "view": "View Details",
+      "price": "Get Price on WhatsApp"
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "products": "Products"
+    },
+    "rangeEyebrow": "The Range",
+    "glanceHeading": "Specs at a glance",
+    "faqEyebrow": "Good to know",
+    "faqHeading": "Frequently asked questions",
+    "decorPromo": {
+      "title": "Explore all 156 décor finishes",
+      "sub": "Solid colours, woodgrains, fabric, stone and texture finishes — the full Action Tesa prelam catalog, searchable.",
+      "cta": "Browse the décor catalog"
+    },
+    "subcategory": {
+      "metaTitle": "{sub} {category} | Ananta Corporation",
+      "metaDescription": "Buy {sub} {category} from Ananta Corporation, trusted supplier in Ahmedabad, Gujarat. Bulk pricing and fast delivery.",
+      "heading": "{sub} Range",
+      "intro": "Our {sub} selection within {category} — certified, stocked, and priced for bulk. Open a product for full specifications, or ask us on WhatsApp for today's price and availability."
+    },
+    "detail": {
+      "galleryLabel": "Product photography coming soon",
+      "sizesLabel": "Available thicknesses / sizes",
+      "enquiry": "Send Enquiry",
+      "whatsappNote": "Real-time pricing and stock updates from our team on WhatsApp. Delivery arranged as per location and availability.",
+      "specsOnRequest": "Detailed specifications for this model are available on request — message us on WhatsApp and we'll share the full datasheet and current options.",
+      "aboutHeading": "About {name}",
+      "featuresHeading": "Key features",
+      "useCasesHeading": "Typical applications",
+      "specsHeading": "Specifications",
+      "relatedHeading": "Related products"
+    },
+    "cta": {
+      "heading": "Need materials for your project?",
+      "sub": "Get pricing and availability today — our team replies fast with real stock and delivery timelines.",
+      "note": "End-to-end: Material Supply + Custom Furniture",
+      "contact": "Send an Enquiry"
+    },
+    "categories": {
+      "plywood": {
+        "meta": {
+          "title": "Plywood Supplier in Ahmedabad | Duroply MR & BWP | Ananta Corporation",
+          "description": "Buy Duroply MR and BWP plywood from Ananta Corporation, trusted plywood supplier in Ahmedabad. IS 303 / IS 710 certified sheets for furniture, kitchens and wet areas."
+        },
+        "heading": "Plywood that matches the job — MR for interiors, BWP for water.",
+        "intro": "Plywood is still the backbone of Indian interiors — layered hardwood veneers bonded under pressure for strength that particle boards can't match. We stock Duroply's two workhorses: MR (Moisture Resistant) plywood for furniture, wardrobes and partitions in normal indoor conditions, and BWP (Boiling Water Proof) plywood for kitchens, bathrooms and anywhere water is a daily reality. Both are IS-certified and available in bulk from our Ahmedabad warehouse.",
+        "rangeHeading": "Our Plywood Range",
+        "benefits": [
+          {
+            "title": "IS-certified, every sheet",
+            "body": "MR conforms to IS 303; BWP meets IS 710 — certified quality you can specify with confidence."
+          },
+          {
+            "title": "The right resin for the job",
+            "body": "Urea formaldehyde for dry interiors, phenol formaldehyde where water won't quit."
+          },
+          {
+            "title": "Accurate, calibrated thickness",
+            "body": "Consistent sheets that sit flush, joint cleanly and finish without surprises."
+          },
+          {
+            "title": "Stocked for bulk",
+            "body": "Popular thicknesses ready to dispatch the same day from 11,000 sq. ft. of warehouse."
+          }
+        ],
+        "glance": [
+          {"label": "Brand", "value": "Duroply"},
+          {"label": "Grades", "value": "MR (IS 303) · BWP (IS 710)"},
+          {"label": "Sheet size", "value": "8 × 4 ft standard; custom on bulk orders"},
+          {"label": "Thickness range", "value": "4 mm – 25 mm"},
+          {"label": "Stocked thicknesses", "value": "MR: 6–18 mm · BWP: 9–19 mm"},
+          {"label": "Pricing", "value": "Real-time quote on WhatsApp"}
+        ],
+        "faq": [
+          {
+            "q": "What is MR grade plywood used for?",
+            "a": "MR (Moisture Resistant) grade plywood is used for interior applications such as furniture, wardrobes, bed frames, shelving, and wall partitions. It offers good resistance to moisture in normal indoor conditions."
+          },
+          {
+            "q": "What is BWP plywood and where is it used?",
+            "a": "BWP (Boiling Water Proof) plywood is a high-grade plywood bonded with phenol formaldehyde resin, making it highly resistant to water and moisture. It is commonly used in kitchens, bathrooms, exterior furniture, and marine applications where exposure to water is frequent."
+          },
+          {
+            "q": "What is the difference between BWP and MR plywood?",
+            "a": "BWP plywood uses phenol formaldehyde resin and can withstand boiling water for extended periods, making it suitable for wet areas. MR (Moisture Resistant) plywood uses urea formaldehyde resin and is resistant to moisture but not suitable for direct water exposure."
+          },
+          {
+            "q": "Is MR plywood suitable for kitchen cabinets?",
+            "a": "MR plywood can be used for kitchen cabinets in areas with moderate moisture. However, for areas directly exposed to water such as sink cabinets, BWP plywood is recommended for better water resistance."
+          },
+          {
+            "q": "What sizes and thicknesses are available?",
+            "a": "Duroply plywood comes in standard 8 × 4 ft sheets, in thicknesses from 4 mm to 25 mm. Custom size requirements can be arranged on bulk orders — message us on WhatsApp with your cutting list."
+          },
+          {
+            "q": "Can I buy plywood in bulk in Ahmedabad?",
+            "a": "Yes — Ananta Corporation supplies Duroply MR and BWP plywood in bulk across Ahmedabad and Gujarat, with ready stock, competitive bulk pricing and fast delivery for interior designers, builders and contractors."
+          }
+        ]
+      },
+      "mdf": {
+        "meta": {
+          "title": "MDF Board Supplier in Ahmedabad | Interior, Exterior & HDHMR | Ananta Corporation",
+          "description": "Buy Action Tesa MDF from Ananta Corporation — interior grade, exterior grade and HDHMR boards. German technology, CARB certified, bulk supply in Ahmedabad, Gujarat."
+        },
+        "heading": "MDF for precision work — interior, exterior and HDHMR.",
+        "intro": "MDF gives you what natural timber can't: a perfectly smooth, homogeneous panel that routs, paints and laminates beautifully. We stock the full Action Tesa range — Interior Grade for furniture and decorative work (CARB E1 & E2 certified, German technology), Exterior Grade with moisture-resistant resins for humid and semi-outdoor use, and HDHMR for the heavy-duty end: 850+ kg/m³ density, high moisture resistance and a 10-year warranty. From 1.9 mm skins to 25 mm structural panels, it's all here in bulk.",
+        "rangeHeading": "Our MDF Range",
+        "benefits": [
+          {
+            "title": "German technology",
+            "body": "Homogeneous, layer-free construction — no voids, no surprises under the router."
+          },
+          {
+            "title": "CARB certified",
+            "body": "E1 & E2 emission grades — health-safe boards for interior environments."
+          },
+          {
+            "title": "Three grades, one supplier",
+            "body": "Interior, exterior and HDHMR — match the board to the room, not the other way around."
+          },
+          {
+            "title": "Every thickness stocked",
+            "body": "From 1.9 mm to 25 mm in 8 × 4 ft sheets, ready for immediate bulk dispatch."
+          }
+        ],
+        "glance": [
+          {"label": "Brand", "value": "Action TESA"},
+          {"label": "Grades", "value": "Interior · Exterior · HDHMR"},
+          {"label": "Certifications", "value": "CARB E1 & E2 (interior) · CARB E2 (exterior)"},
+          {"label": "HDHMR density", "value": "850+ kg/m³, 10-year warranty"},
+          {"label": "Sheet size", "value": "8 × 4 ft standard"},
+          {"label": "Thickness range", "value": "1.9 mm – 25 mm"}
+        ],
+        "faq": [
+          {
+            "q": "What is interior grade MDF used for?",
+            "a": "Interior grade MDF is used for furniture, kitchen cabinets, wardrobes, decorative wall panels, shelving, and display units. Its smooth surface makes it ideal for painting, laminating, and veneering."
+          },
+          {
+            "q": "What is the difference between MDF and plywood?",
+            "a": "MDF is made from compressed wood fibres and has a smooth, uniform surface ideal for painted finishes. Plywood is made from layered wood veneers and offers greater structural strength. MDF is preferred for decorative work, while plywood is better for load-bearing applications."
+          },
+          {
+            "q": "Can exterior MDF be used outdoors?",
+            "a": "Exterior grade MDF is designed for semi-outdoor and high-humidity areas such as covered balconies, bathrooms, and exterior wall panelling. For fully exposed outdoor applications, additional protective coating is recommended."
+          },
+          {
+            "q": "What is HDHMR board?",
+            "a": "HDHMR (High Density High Moisture Resistant) board is an engineered wood panel that combines high density for structural strength with moisture-resistant resins. It is widely used for modular kitchens, wardrobes, and commercial furniture."
+          },
+          {
+            "q": "Is HDHMR better than plywood for kitchens?",
+            "a": "HDHMR boards offer a smoother surface, better screw-holding capacity, and consistent quality compared to commercial plywood. For modular kitchen carcasses, HDHMR is often preferred due to its moisture resistance and uniform density."
+          },
+          {
+            "q": "What thicknesses of MDF are available?",
+            "a": "We stock Action Tesa interior MDF from 1.9 mm to 25 mm, exterior MDF from 3.3 mm to 25 mm, and HDHMR from 3 mm to 25 mm — all in standard 8 × 4 ft sheets. Contact us for bulk availability."
+          }
+        ]
+      },
+      "moistMaster": {
+        "meta": {
+          "title": "HMR Board Supplier in Ahmedabad | Action Tesa Moist Master | Ananta Corporation",
+          "description": "Buy Action Tesa Moist Master HMR boards from Ananta Corporation, Ahmedabad. Melamine-fortified high moisture resistant boards for kitchens and humid interiors."
+        },
+        "heading": "Moist Master — the board built for India's humid kitchens.",
+        "intro": "Some rooms never really dry out: kitchens, bathrooms, utility areas, coastal-climate interiors. Action Tesa's Moist Master HMR (High Moisture Resistant) board is engineered for exactly those spaces — particle board fortified with melamine resin so it shrugs off humidity that would swell an ordinary board. Termite and borer treated, with a smooth face that takes laminate directly, it's the smart, economical carcass material for modular kitchens and wardrobe interiors.",
+        "rangeHeading": "Our Moist Master Range",
+        "benefits": [
+          {
+            "title": "Melamine-fortified resin",
+            "body": "Engineered moisture and humidity resistance — built for above-normal humidity."
+          },
+          {
+            "title": "Termite & borer treated",
+            "body": "Chemical treatment during manufacturing protects furniture for the long run."
+          },
+          {
+            "title": "Laminate-ready face",
+            "body": "Smooth surface takes laminate directly — no extra prep step."
+          },
+          {
+            "title": "Three working thicknesses",
+            "body": "9, 12 and 18 mm stocked — carcass, shelf and partition covered."
+          }
+        ],
+        "glance": [
+          {"label": "Brand", "value": "Action TESA"},
+          {"label": "Type", "value": "HMR (High Moisture Resistant) particle board"},
+          {"label": "Resin", "value": "Melamine-fortified"},
+          {"label": "Protection", "value": "Termite & borer treated"},
+          {"label": "Thicknesses", "value": "9 / 12 / 18 mm"},
+          {"label": "Sheet size", "value": "8 × 4 ft standard"}
+        ],
+        "faq": [
+          {
+            "q": "What is HMR board and where is it used?",
+            "a": "HMR (High Moisture Resistant) board is a particle board treated with moisture-resistant resin, making it suitable for kitchens, bathrooms, and humid environments. It is commonly used for modular kitchen carcasses, wardrobe interiors, and commercial furniture."
+          },
+          {
+            "q": "What is the difference between HMR and HDHMR board?",
+            "a": "HMR board is a standard-density particle board with moisture resistance. HDHMR board has higher density, offering better screw-holding strength and structural rigidity in addition to moisture resistance. HDHMR is preferred for heavy-duty applications."
+          },
+          {
+            "q": "Is HMR board termite resistant?",
+            "a": "Yes, Action Tesa Moist Master HMR boards are treated with chemicals that provide resistance against termites and borers, making them suitable for long-lasting furniture and interior applications."
+          },
+          {
+            "q": "Which thicknesses do you stock?",
+            "a": "We stock Moist Master HMR boards in 9 mm, 12 mm and 18 mm — the three thicknesses that cover kitchen carcasses, shelves and partitions. Message us on WhatsApp for current availability."
+          }
+        ]
+      },
+      "prelam": {
+        "meta": {
+          "title": "Pre-Laminated Particle Board Supplier Ahmedabad | 156 Finishes | Ananta Corporation",
+          "description": "Buy Action Tesa pre-laminated particle boards from Ananta Corporation, Ahmedabad. Factory melamine laminate both sides, 156 colours and textures, bulk supply."
+        },
+        "heading": "Pre-laminated boards — skip the lamination, keep the finish.",
+        "intro": "Every hour spent pressing laminate is an hour your furniture isn't getting built. Action Tesa's pre-laminated particle boards arrive with the decorative melamine surface factory-applied on both sides — scratch-resistant, easy to clean, consistent across every sheet. Cut, edge-band, assemble: done. And the choice is enormous: 156 finishes spanning crisp solid colours, convincing woodgrains, fabric weaves, stone and marble looks, and tactile textures. The five most-asked-for finishes are below; the full catalog is one click away.",
+        "rangeHeading": "Featured Prelam Finishes",
+        "benefits": [
+          {
+            "title": "Factory laminate, both sides",
+            "body": "No separate lamination step — production time and cost drop immediately."
+          },
+          {
+            "title": "156 designs",
+            "body": "Solids, woodgrains, fabric, stone and texture finishes — a catalog deep enough for any brief."
+          },
+          {
+            "title": "Scratch-resistant surface",
+            "body": "Melamine wears the daily knocks; the furniture keeps looking new."
+          },
+          {
+            "title": "Four thicknesses",
+            "body": "9, 11, 17 and 25 mm stocked in 8 × 4 ft sheets for bulk dispatch."
+          }
+        ],
+        "glance": [
+          {"label": "Brand", "value": "Action TESA"},
+          {"label": "Surface", "value": "Melamine laminate, both sides"},
+          {"label": "Designs", "value": "156 finishes — solids, woodgrains, fabric, stone, textures"},
+          {"label": "Thicknesses", "value": "9 / 11 / 17 / 25 mm"},
+          {"label": "Sheet size", "value": "8 × 4 ft standard"},
+          {"label": "Pricing", "value": "Real-time quote on WhatsApp"}
+        ],
+        "faq": [
+          {
+            "q": "What is a pre-laminated particle board?",
+            "a": "A pre-laminated particle board is a particle board that comes with a factory-applied decorative melamine laminate on both sides. It is ready to use for furniture manufacturing without requiring additional lamination or finishing."
+          },
+          {
+            "q": "What are the advantages of pre-laminated boards?",
+            "a": "Pre-laminated boards save time and labour by eliminating separate lamination. They provide a consistent, factory-quality finish, are scratch-resistant and easy to clean, and are available in a wide range of colours and textures."
+          },
+          {
+            "q": "What colour options are available?",
+            "a": "The Action Tesa catalog we supply spans 156 designs — solid colours like Frosty White and Silver Grey, woodgrains like Classic Planked Walnut and Mangfall Beech, plus fabric, stone and texture finishes. Browse the full décor catalog on this site."
+          },
+          {
+            "q": "Is prelam board suitable for modular kitchens?",
+            "a": "Yes — pre-laminated boards are widely used for kitchen cabinets and pantry units. For areas with high moisture exposure, consider HMR or HDHMR boards with lamination instead."
+          },
+          {
+            "q": "Can I see a finish before ordering in bulk?",
+            "a": "Browse all 156 finishes in our décor catalog with real swatch images, then message us the design code on WhatsApp — we'll confirm availability and arrange physical samples where needed."
+          }
+        ]
+      },
+      "flushDoor": {
+        "meta": {
+          "title": "Flush Door Supplier in Ahmedabad | Durodoor 100% BWP | Ananta Corporation",
+          "description": "Buy Durodoor flush doors from Ananta Corporation, Ahmedabad. Solid block-board core, 100% boiling water proof, termite-resistant, IS 2202 — standard and custom sizes."
+        },
+        "heading": "Durodoor flush doors — solid core, zero drama.",
+        "intro": "A door gets slammed, soaked, and leaned on for decades — it's no place to economise on construction. DURODOOR flush doors are built around a solid block-board core with seasoned hardwood battens and high-pressure bonded veneers: 100% boiling water proof, anti-termite treated, and dimensionally stable so they don't warp with the seasons. The smooth face is ready for paint, veneer or laminate. IS 2202 certified, in standard and fully custom sizes.",
+        "rangeHeading": "Our Flush Door Range",
+        "benefits": [
+          {
+            "title": "Solid block-board core",
+            "body": "Seasoned hardwood battens and calibrated timber — a door with real substance."
+          },
+          {
+            "title": "100% boiling water proof",
+            "body": "Fit for bathrooms and main doors exposed to weather — not just bedrooms."
+          },
+          {
+            "title": "Termite-resistant",
+            "body": "Anti-termite chemical treatment during manufacturing, for the life of the door."
+          },
+          {
+            "title": "Standard + custom sizes",
+            "body": "7×3 and 8×4 ft standards in 30/35 mm, with custom sizes on bulk orders."
+          }
+        ],
+        "glance": [
+          {"label": "Brand", "value": "Duroply (DURODOOR)"},
+          {"label": "Core", "value": "Solid block board, seasoned hardwood battens"},
+          {"label": "Water resistance", "value": "100% boiling water proof"},
+          {"label": "Standard", "value": "IS 2202"},
+          {"label": "Thicknesses", "value": "30 mm / 35 mm"},
+          {"label": "Sizes", "value": "Standard 7×3 & 8×4 ft; custom on bulk orders"}
+        ],
+        "faq": [
+          {
+            "q": "What is a flush door?",
+            "a": "A flush door is a flat door with a solid or hollow core, covered with plywood or MDF face panels. It has a smooth, even surface on both sides, making it ideal for interior applications in homes, offices, and commercial buildings."
+          },
+          {
+            "q": "Are Durodoor flush doors termite resistant?",
+            "a": "Yes, Durodoor flush doors are treated with anti-termite chemicals during manufacturing, providing long-lasting protection against termites and borers."
+          },
+          {
+            "q": "What sizes of flush doors are available?",
+            "a": "Durodoor flush doors are available in standard sizes of 7×3 feet and 8×4 feet, with thickness options of 30 mm and 35 mm. Custom sizes can be arranged on bulk orders."
+          },
+          {
+            "q": "Can flush doors be used for bathrooms?",
+            "a": "Yes — because DURODOOR flush doors are 100% boiling water proof with a solid block-board core, they hold up in bathrooms and other wet-adjacent locations where ordinary doors swell and stick."
+          },
+          {
+            "q": "Where can I buy flush doors in bulk in Ahmedabad?",
+            "a": "Ananta Corporation is a trusted supplier of Durodoor flush doors in Ahmedabad, Gujarat. We offer bulk supply at competitive prices for builders, contractors, and interior designers."
+          }
+        ]
+      },
+      "smartLocks": {
+        "meta": {
+          "title": "Smart Lock Supplier in Ahmedabad | Tenon Smart Locks | Ananta Corporation",
+          "description": "Buy Tenon smart locks from Ananta Corporation, Ahmedabad — fingerprint, WiFi, palm-vein and face recognition locks for homes and projects. Bulk supply available."
+        },
+        "heading": "Smart locks — keyless security for every door in the house.",
+        "intro": "Keys get lost, copied and forgotten; biometrics don't. We supply the Tenon Smart Lock range — eight models covering every door and budget: fingerprint locks with app control, WiFi-connected locks you can manage remotely, palm-vein and face recognition for premium main doors, automatic locks for sliding doors, and compact smart levers for the rooms inside. Honest guidance on which model fits which door, with bulk coordination for builders and projects.",
+        "rangeHeading": "The Tenon Smart Lock Range",
+        "benefits": [
+          {
+            "title": "Eight models",
+            "body": "Main doors, interior doors, sliding doors — there's a right-sized lock for each."
+          },
+          {
+            "title": "Every unlock method",
+            "body": "Fingerprint, face, palm vein, app, WiFi remote — pick the convenience you'll actually use."
+          },
+          {
+            "title": "Project-ready supply",
+            "body": "Bulk coordination for builders, with practical product guidance per door schedule."
+          },
+          {
+            "title": "Honest specifications",
+            "body": "Full datasheets shared on request — we'll never oversell a model."
+          }
+        ],
+        "glance": [
+          {"label": "Brand", "value": "Tenon Smart Lock"},
+          {"label": "Models", "value": "8 — main door, interior, sliding"},
+          {"label": "Unlock methods", "value": "Fingerprint · Face · Palm vein · App · WiFi"},
+          {"label": "Applications", "value": "Residential, commercial, rental projects"},
+          {"label": "Specifications", "value": "Detailed datasheets on request"},
+          {"label": "Pricing", "value": "Real-time quote on WhatsApp"}
+        ],
+        "faq": [
+          {
+            "q": "Which types of smart locks do you supply?",
+            "a": "We supply the Tenon Smart Lock range: fingerprint locks (including app-connected models), WiFi smart locks, palm-vein and face recognition locks, automatic and fingerprint locks for sliding doors, smart lever-handle locks, and a flagship main-door model."
+          },
+          {
+            "q": "Which smart lock is best for a main door?",
+            "a": "For main doors we usually point customers to the High-End Smart Main Door Lock or, for hands-free biometric entry, the Palm Vein & Face Recognition Smart Lock. Tell us about your door on WhatsApp and we'll recommend honestly."
+          },
+          {
+            "q": "Are detailed specifications available?",
+            "a": "Yes — detailed specifications and datasheets for every Tenon model are available on request. Message us on WhatsApp with the model name and we'll share the full details and current options."
+          },
+          {
+            "q": "Do you supply smart locks for bulk and project orders?",
+            "a": "Yes, we supply Tenon smart locks for bulk and project orders across Ahmedabad and Gujarat, with delivery coordination and per-door-schedule guidance for builders, contractors and architects."
+          }
+        ]
+      }
+    }
+  },
+  "decor": {
+    "meta": {
+      "title": "Décor Catalog — 156 Pre-Laminated Board Finishes | Ananta Corporation",
+      "description": "Browse all 156 Action Tesa pre-laminated board finishes — solid colours, woodgrains, fabric, stone and texture designs. Real swatches, searchable by name or code."
+    },
+    "breadcrumb": "Décor Catalog",
+    "eyebrow": "Décor Catalog",
+    "heading": "156 finishes. Find yours.",
+    "intro": "The complete Action Tesa pre-laminated board catalog with real swatches — crisp solids, deep woodgrains, fabric weaves, stone and marble looks, and tactile textures. Search by name or design code, filter by type, and ask for any finish on WhatsApp.",
+    "backToCategory": "About pre-laminated boards",
+    "searchPlaceholder": "Search by name or code — e.g. walnut, 1103…",
+    "filters": {
+      "all": "All Finishes",
+      "solid": "Solid Colours",
+      "woodgrain": "Woodgrains",
+      "fabric": "Fabric",
+      "stone": "Stone & Marble",
+      "texture": "Textures"
+    },
+    "count": "{count} finishes",
+    "price": "Get Price on WhatsApp",
+    "empty": "No finishes match — try a different name or code."
+  },
+  "about": {
+    "meta": {
+      "title": "About Us | Trusted Plywood & MDF Supplier in Ahmedabad | Ananta Corporation",
+      "description": "Ananta Corporation is an authorized supplier of Duroply, Action Tesa and Tenon Smart Lock products in Ahmedabad — 11,000 sq. ft. of ready stock, CNC custom furniture, supplying Gujarat since 2020."
+    },
+    "hero": {
+      "eyebrow": "About Us",
+      "title": "The material partner projects plan around.",
+      "sub": "Ananta Corporation is a premium plywood and wood-based material supplier in Ahmedabad — delivering engineering-driven interior solutions with reliable quality, ready stock, and fast logistics for residential and industrial projects."
+    },
+    "story": {
+      "heading": "We Are Ananta Corporation",
+      "p1": "Since 2020, we've built Ananta Corporation on a simple promise: the material you specified, in stock, delivered when the site needs it. As an authorized supplier and distributor of Duroply, Action Tesa and Tenon Smart Lock products, we bring deep material understanding, technical knowledge and market insight — backed by over 15 years of combined industry experience across our team — so our partners can rely on consistent, performance-driven supply for residential and industrial applications.",
+      "p2": "We specialise in engineering design for homes and industries with a strong focus on wood-based products and interior solutions. Our approach integrates design, engineering and execution — every project developed with precision, functionality and long-term performance in mind. And because supply alone isn't always enough, our workshop also turns boards into finished, made-to-drawing furniture.",
+      "imageLabel": "Team & warehouse photo coming soon"
+    },
+    "mission": {
+      "heading": "Our Mission",
+      "body": "To deliver reliable wood and interior solutions through engineering-driven design, premium material sourcing, and disciplined execution—helping homeowners, industries, architects, and interior designers build with confidence, clarity, and long-term performance."
+    },
+    "vision": {
+      "heading": "Our Vision",
+      "body": "To be a trusted long-term partner for premium wood and wood-related products—recognized for technical excellence, dependable logistics, and consistent quality, supported by a strong supply chain and ready stock infrastructure."
+    },
+    "usps": {
+      "eyebrow": "Why Choose Us",
+      "heading": "Four reasons projects stay with us.",
+      "sub": "The same four strengths, project after project — this is what we're built on.",
+      "items": [
+        {
+          "title": "Technical Expertise",
+          "body": "Engineering-first thinking that improves detailing, material selection, and long-term performance across residential and industrial projects. Ask us which board belongs in which room — you'll get a straight, technical answer."
+        },
+        {
+          "title": "Design + Execution Support",
+          "body": "Close collaboration with interior designers and architects to align design intent with practical engineering and reliable execution — from the first material board to the final dispatch."
+        },
+        {
+          "title": "Ready Stock Infrastructure",
+          "body": "Ready-to-dispatch inventory supported by 11,000 sq. ft. of warehouse and workshop space — so a missing thickness never stalls your site."
+        },
+        {
+          "title": "Fast Logistics Network",
+          "body": "A well-established territorial network and supply chain relationships for premium sourcing, efficient delivery, and consistent turnaround across Gujarat and beyond."
+        }
+      ]
+    },
+    "facilities": {
+      "heading": "Warehouse, workshop, and a CNC line.",
+      "body": "Our 11,000 sq. ft. facility in Piplaj, Ahmedabad does two jobs: it keeps the full material range in ready stock for same-day dispatch, and it houses the workshop where we build custom furniture and components to your drawings.",
+      "items": [
+        "11,000 sq. ft. of warehouse and workshop space",
+        "Ready-to-dispatch stock across all six product categories",
+        "CNC-machined custom MDF articles, cut to your drawings",
+        "100% quality check before every dispatch — accurate thickness, clean edges, zero damaged sheets",
+        "End-to-end: material supply + custom furniture under one roof"
+      ],
+      "imageLabel": "Facility photo coming soon"
+    },
+    "apart": {
+      "eyebrow": "What Sets Us Apart",
+      "heading": "A holistic approach to complex requirements.",
+      "sub": "Our strength lies in combining technical capability with dependable supply — consolidated experience across electronics, mechanical engineering, and construction.",
+      "items": [
+        {
+          "title": "Engineering-first",
+          "body": "Material advice grounded in how the build actually performs — not just what's on the shelf."
+        },
+        {
+          "title": "Right materials, right guidance",
+          "body": "We support architects and interior designers with execution-ready planning."
+        },
+        {
+          "title": "Authorized, not improvised",
+          "body": "Genuine Duroply, Action Tesa and Tenon products, sourced through authorized channels."
+        },
+        {
+          "title": "One accountable partner",
+          "body": "From raw sheets to CNC-finished furniture — a single point of responsibility."
+        }
+      ]
+    }
+  },
+  "partners": {
+    "meta": {
+      "title": "Our Brands & Partners | Duroply, Action Tesa, Tenon | Ananta Corporation",
+      "description": "Ananta Corporation is an authorized supplier of Duroply plywood and flush doors, Action Tesa MDF and boards, and Tenon smart locks in Ahmedabad, Gujarat."
+    },
+    "hero": {
+      "eyebrow": "Our Partners",
+      "title": "Trusted brands, supplied with authority.",
+      "sub": "We collaborate with trusted brands and manufacturers to deliver consistent quality, reliable supply, and performance-driven wood and interior solutions."
+    },
+    "partnerBadge": "Authorized Partner",
+    "actionTesa": {
+      "logoLabel": "Action TESA logo coming soon",
+      "who": "Action TESA is one of India's leading engineered-panel brands — MDF, HDHMR and pre-laminated particle boards manufactured with German technology, with CARB E1 & E2 certified grades and a décor catalog that runs to 156 finishes.",
+      "supply": "From Action TESA we supply the complete board range: Interior and Exterior Grade MDF, the 850+ kg/m³ HDHMR board with its 10-year warranty, Moist Master HMR boards, and pre-laminated particle boards in every catalog finish — all in bulk, from ready stock.",
+      "ctas": ["Explore MDF Range", "Explore Prelam Boards"]
+    },
+    "duroply": {
+      "logoLabel": "Duroply logo coming soon",
+      "who": "Duroply is a long-established Indian plywood brand known for certified, consistent sheets — IS 303 moisture-resistant and IS 710 boiling-water-proof grades — and for DURODOOR, its solid block-board-core flush door line.",
+      "supply": "From Duroply we supply MR plywood for interiors, BWP plywood for wet areas, and Durodoor flush doors (100% BWP, termite-resistant, IS 2202) in standard and custom sizes — stocked for bulk dispatch across Gujarat.",
+      "ctas": ["Explore Plywood Range", "Explore Flush Doors"]
+    },
+    "tenonSmartLock": {
+      "logoLabel": "Tenon Smart Lock logo coming soon",
+      "who": "Tenon Smart Lock builds keyless security hardware — biometric fingerprint, palm-vein and face recognition locks, WiFi and app-connected models, and specialised locks for sliding and interior doors.",
+      "supply": "From Tenon we supply all eight smart lock models — from compact interior levers to flagship main-door units — with honest guidance on which model fits which door, full datasheets on request, and bulk coordination for projects.",
+      "ctas": ["Explore Smart Locks"]
+    }
+  },
   "contact": {
     "meta": {
-      "title": "Contact — Ananta Corporation",
-      "description": "Get in touch with Ananta Corporation for bulk orders, product inquiries and material supply in Ahmedabad, Gujarat."
+      "title": "Contact Ananta Corporation | Plywood & MDF Supplier in Ahmedabad",
+      "description": "Get in touch with Ananta Corporation for bulk orders, product inquiries and material supply in Ahmedabad, Gujarat. We respond the same day."
     },
     "hero": {
       "eyebrow": "Contact",
       "title": "Let's talk materials.",
-      "sub": "Tell us what your project needs — plywood, MDF, boards, doors or smart locks. We'll respond with pricing and availability as soon as possible."
+      "sub": "Tell us what your project needs — plywood, MDF, boards, doors or smart locks. We respond the same day with pricing and availability."
     },
+    "formHeading": "Send an enquiry",
+    "formSub": "A few details and we'll come back with a quote — same day, during working hours.",
+    "directHeading": "Prefer to talk?",
+    "directSub": "WhatsApp is the fastest way to get real-time pricing and stock updates from our team.",
+    "whatsappCta": "Get Price on WhatsApp",
+    "addressLabel": "Warehouse & office",
+    "address": "293/2, Godown No. 17, Nanukaka Estate, Opp. Sub Station, Pirana Road, Piplaj, Ahmedabad, Gujarat 382405",
+    "phoneLabel": "Phone",
+    "emailLabel": "Email",
+    "hoursLabel": "Working hours",
+    "hours": "Mon–Sat, 9:30 AM – 7:00 PM (IST) — to be confirmed",
+    "mapLabel": "Map coming soon",
     "form": {
       "name": "Name",
       "namePlaceholder": "Your name",
+      "phone": "Phone",
+      "phonePlaceholder": "+91 …",
       "email": "Email",
       "emailPlaceholder": "you@business.com",
+      "quantity": "Approx. quantity",
+      "quantityPlaceholder": "e.g. 50 sheets, 12 doors",
+      "product": "Product interest",
+      "productPlaceholder": "Select a category…",
+      "productOptions": {
+        "plywood": "Plywood",
+        "mdf": "MDF",
+        "moistMaster": "Moist Master HMR Board",
+        "prelam": "Pre-Laminated Particle Board",
+        "flushDoor": "Flush Door",
+        "smartLocks": "Smart Locks",
+        "multiple": "Multiple categories",
+        "other": "Other / not sure yet"
+      },
       "message": "Message",
-      "messagePlaceholder": "What materials do you need, and for which project?",
-      "submit": "Send message",
+      "messagePlaceholder": "Tell us about the project — sizes, finishes, delivery location…",
+      "submit": "Send enquiry",
       "sending": "Sending…",
-      "success": "Thanks! We'll be in touch as soon as possible.",
-      "note": "This is a demo form — no message is actually sent."
+      "success": "Thanks! Your enquiry is with our team — we'll respond the same day.",
+      "note": "We respond the same day during working hours.",
+      "error": "We couldn't submit the form, so we've opened your email app instead — or message us on WhatsApp."
+    }
+  },
+  "privacy": {
+    "meta": {
+      "title": "Privacy Policy | Ananta Corporation",
+      "description": "How Ananta Corporation collects, uses and protects the information you share through our website enquiry form, chat and WhatsApp."
     },
-    "emailLabel": "Or email us directly",
-    "email": "info@anantacorporation.com"
+    "eyebrow": "Legal",
+    "title": "Privacy Policy",
+    "updated": "Last updated: June 2026",
+    "sections": [
+      {
+        "heading": "Who we are",
+        "body": [
+          "Ananta Corporation (GSTIN 24ACDFA7104Q1ZB) is a supplier of plywood, MDF, boards, flush doors and smart locks, located at 293/2, Godown No. 17, Nanukaka Estate, Opp. Sub Station, Pirana Road, Piplaj, Ahmedabad, Gujarat 382405, India. This policy explains what information we collect through this website and how we use it."
+        ]
+      },
+      {
+        "heading": "What we collect",
+        "body": [
+          "Enquiry form: when you send an enquiry we collect your name, phone number, email address, and any details you include about your product interest, quantity and project.",
+          "Chat assistant: if you use the on-site chat, we process the messages you type, and — if you choose to continue a conversation — the email address you verify.",
+          "WhatsApp: tapping a \"Get Price on WhatsApp\" button opens WhatsApp with a pre-filled message; any conversation there is governed by WhatsApp's own terms and privacy policy.",
+          "We do not collect payment information through this website, and we do not use invasive tracking or sell advertising."
+        ]
+      },
+      {
+        "heading": "How we use your information",
+        "body": [
+          "We use the details you share solely to respond to your enquiry — to send pricing, check stock, arrange samples or delivery, and follow up on your request. If you have asked us to, we may contact you about related products or availability.",
+          "We do not sell, rent or trade your personal information."
+        ]
+      },
+      {
+        "heading": "Sharing and service providers",
+        "body": [
+          "Your information is shared only with the service providers that make this website work — for example, our hosting platform and the email service that delivers enquiry notifications and verification codes. These providers process data on our behalf and are not permitted to use it for their own purposes."
+        ]
+      },
+      {
+        "heading": "Retention and your rights",
+        "body": [
+          "We keep enquiry details only as long as needed to handle your request and any resulting business relationship. You can ask us at any time to access, correct or delete the information we hold about you — email info@anantacorporation.com and we will action it promptly."
+        ]
+      },
+      {
+        "heading": "Contact",
+        "body": [
+          "Questions about this policy or your data: email info@anantacorporation.com, call +91 83200 52838, or write to Ananta Corporation, 293/2, Godown No. 17, Nanukaka Estate, Opp. Sub Station, Pirana Road, Piplaj, Ahmedabad, Gujarat 382405."
+        ]
+      }
+    ]
+  },
+  "terms": {
+    "meta": {
+      "title": "Terms of Service | Ananta Corporation",
+      "description": "Terms of use for the Ananta Corporation website — product information, quotations, orders and intellectual property."
+    },
+    "eyebrow": "Legal",
+    "title": "Terms of Service",
+    "updated": "Last updated: June 2026",
+    "sections": [
+      {
+        "heading": "About these terms",
+        "body": [
+          "This website is operated by Ananta Corporation (GSTIN 24ACDFA7104Q1ZB), Ahmedabad, Gujarat, India. By using the site you accept these terms. If you do not agree with them, please do not use the site."
+        ]
+      },
+      {
+        "heading": "Product information",
+        "body": [
+          "We work hard to keep product descriptions, specifications, sizes and certifications accurate, and they reflect manufacturer-published information for the brands we supply. Specifications can change at the manufacturer's end — always confirm the exact specification, grade and size with our team before placing an order.",
+          "Product and brand names (Duroply, DURODOOR, Action TESA, Tenon Smart Lock and others) belong to their respective owners; we use them as an authorized supplier/distributor of those products."
+        ]
+      },
+      {
+        "heading": "Pricing and quotations",
+        "body": [
+          "We do not publish prices on this website. Pricing is provided on request — via WhatsApp or the enquiry form — and reflects current market rates, quantities and delivery location. A quotation is valid only for the period stated in it and is subject to stock availability."
+        ]
+      },
+      {
+        "heading": "Orders and delivery",
+        "body": [
+          "Orders, payment terms and delivery timelines are agreed per transaction at the time of confirmation. Delivery is arranged as per location and availability. Please inspect goods on delivery and raise any discrepancy with our team immediately."
+        ]
+      },
+      {
+        "heading": "Intellectual property and acceptable use",
+        "body": [
+          "The content of this website — text, layout and design — belongs to Ananta Corporation unless otherwise noted (product imagery and décor swatches belong to their respective brands). You may not scrape, republish or use the content for competing commercial purposes without permission, and you agree not to misuse the site's forms or chat."
+        ]
+      },
+      {
+        "heading": "Liability",
+        "body": [
+          "This website is provided on an as-is basis. While we keep information current, we accept no liability for decisions made solely on the basis of website content without confirmation from our team. Nothing in these terms limits liability that cannot be limited under applicable law."
+        ]
+      },
+      {
+        "heading": "Governing law and contact",
+        "body": [
+          "These terms are governed by the laws of India, with courts at Ahmedabad, Gujarat having jurisdiction. Questions: info@anantacorporation.com · +91 83200 52838."
+        ]
+      }
+    ]
   },
   "chat": {
     "launch": "Chat with us",
@@ -213,7 +905,7 @@
     "close": "Close chat",
     "open": "Open chat",
     "thinking": "Thinking…",
-    "greeting": "Hi 👋 — I'm the Ananta Corporation AI assistant. Ask me about plywood, MDF, boards, flush doors or smart locks. What does your project need?",
+    "greeting": "Hi 👋 — I'm the Ananta Corporation AI assistant. Ask me about plywood, MDF, boards, flush doors, smart locks or our 156 décor finishes. What does your project need?",
     "mic": "Speak",
     "micStop": "Stop recording",
     "recording": "Listening…",
@@ -244,14 +936,14 @@
     },
     "contactGate": {
       "title": "Let's take this further",
-      "sub": "The best next step is a quick chat with our team. Leave your details and we'll reach out as soon as possible.",
+      "sub": "The best next step is a quick chat with our team. Leave your details and we'll reach out the same day.",
       "name": "Name",
       "namePlaceholder": "Your name",
       "phone": "Phone or message",
       "phonePlaceholder": "Best number, or a short note",
       "submit": "Send to the team",
       "sending": "Sending…",
-      "sent": "Thanks! We'll be in touch as soon as possible.",
+      "sent": "Thanks! We'll be in touch the same day.",
       "bookCall": "Contact us",
       "emailUs": "Email us"
     }

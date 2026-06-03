@@ -9,10 +9,11 @@ import {
   type LucideIcon
 } from 'lucide-react';
 import type {Link} from '@/i18n/navigation';
+import {CATEGORIES, categoryHref, subcategoryHref} from '@/data/products';
 
 type Href = ComponentProps<typeof Link>['href'];
 
-/** Category icon per key — shared by the mega-menu and the homepage grid. */
+/** Category icon per key — shared by the mega-menu, homepage grid and pages. */
 export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   plywood: Layers,
   mdf: Boxes,
@@ -31,49 +32,19 @@ export type NavLeaf = {
 export type ProductCategory = NavLeaf & {subs: NavLeaf[]};
 
 /**
- * The six product categories + their subcategories — one source of truth for
- * the Products mega-menu, the mobile drawer tree, and the footer links.
- * Routes match the catalog pages built in later batches.
+ * The six product categories + their subcategories for navigation — derived
+ * from the catalog data so menus, footer and pages always agree.
+ * Single-subcategory groups (Moist Master, Prelam, Flush Door, Smart Locks)
+ * link straight to the category page without a redundant sub level.
  */
-export const PRODUCT_CATEGORIES: ProductCategory[] = [
-  {
-    key: 'plywood',
-    href: '/products/plywood',
-    subs: [
-      {key: 'moistureResistant', href: '/products/plywood/moisture-resistant'},
-      {key: 'boilingWaterProof', href: '/products/plywood/boiling-water-proof'}
-    ]
-  },
-  {
-    key: 'mdf',
-    href: '/products/mdf',
-    subs: [
-      {key: 'interiorGrade', href: '/products/mdf/interior-grade'},
-      {key: 'exteriorGrade', href: '/products/mdf/exterior-grade'},
-      {key: 'hdhmr', href: '/products/mdf/hdhmr'}
-    ]
-  },
-  {
-    key: 'moistMaster',
-    href: '/products/high-moisture-resistant-board-moist-master',
-    subs: []
-  },
-  {
-    key: 'prelam',
-    href: '/products/pre-laminated-particle-board',
-    subs: []
-  },
-  {
-    key: 'flushDoor',
-    href: '/products/flush-door',
-    subs: []
-  },
-  {
-    key: 'smartLocks',
-    href: '/products/smart-locks',
-    subs: []
-  }
-];
+export const PRODUCT_CATEGORIES: ProductCategory[] = CATEGORIES.map((cat) => ({
+  key: cat.key,
+  href: categoryHref(cat.slug),
+  subs:
+    cat.subs.length > 1
+      ? cat.subs.map((sub) => ({key: sub.key, href: subcategoryHref(cat.slug, sub.slug)}))
+      : []
+}));
 
 /** Partner brands — shown in the Partners dropdown and on /partners. */
 export const PARTNERS: NavLeaf[] = [

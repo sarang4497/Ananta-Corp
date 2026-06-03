@@ -1,5 +1,4 @@
 import type {Metadata} from 'next';
-import type {ComponentProps} from 'react';
 import {getTranslations, setRequestLocale} from 'next-intl/server';
 import {ArrowRight, Wrench, Users, Warehouse, Truck, BadgeCheck} from 'lucide-react';
 import {Link} from '@/i18n/navigation';
@@ -9,15 +8,15 @@ import {Card} from '@/components/ui/Card';
 import {buttonClassName} from '@/components/ui/Button';
 import {ImagePlaceholder} from '@/components/home/ImagePlaceholder';
 import {TrustStrip} from '@/components/home/TrustStrip';
-import {ProductCard} from '@/components/home/ProductCard';
+import {CatalogCard} from '@/components/catalog/CatalogCard';
 import {Testimonials, type Testimonial} from '@/components/home/Testimonials';
 import {CtaBand} from '@/components/home/CtaBand';
 import {PRODUCT_CATEGORIES, CATEGORY_ICONS} from '@/components/nav-menu';
+import {CATEGORIES, PRODUCTS} from '@/data/products';
 import {buildAlternates} from '@/lib/metadata';
 import {whatsappUrl} from '@/lib/whatsapp';
 
 type Params = {params: Promise<{locale: string}>};
-type Href = ComponentProps<typeof Link>['href'];
 
 export async function generateMetadata({params}: Params): Promise<Metadata> {
   const {locale} = await params;
@@ -33,12 +32,12 @@ export async function generateMetadata({params}: Params): Promise<Metadata> {
 /** USP icons, in copy order (Technical · Design+Execution · Stock · Logistics). */
 const USP_ICONS = [Wrench, Users, Warehouse, Truck];
 
-/** Featured SKUs — detail hrefs land on their subcategory pages (next batch). */
-const FEATURED_HREFS: Href[] = [
-  '/products/plywood/moisture-resistant',
-  '/products/plywood/boiling-water-proof',
-  '/products/mdf/interior-grade',
-  '/products/mdf/hdhmr'
+/** Featured SKUs shown on the homepage, by slug. */
+const FEATURED_SLUGS = [
+  'duroply-mr-moisture-resistant-plywood',
+  'duroply-bwp-boiling-water-proof-plywood',
+  'action-tesa-interior-grade-mdf',
+  'action-tesa-hdhmr-board'
 ];
 
 export default async function HomePage({params}: Params) {
@@ -46,12 +45,13 @@ export default async function HomePage({params}: Params) {
   setRequestLocale(locale);
   const t = await getTranslations('home');
 
+  const tn = await getTranslations('nav');
   const trust = t.raw('trust') as string[];
   const categories = t.raw('categories.items') as {title: string; body: string}[];
   const usps = t.raw('usps.items') as {title: string; body: string}[];
-  const featured = t.raw('featured.items') as {name: string; brand: string}[];
   const brands = t.raw('brands.items') as string[];
   const testimonials = t.raw('testimonials.items') as Testimonial[];
+  const featured = FEATURED_SLUGS.map((slug) => PRODUCTS.find((p) => p.slug === slug)!);
 
   return (
     <>
@@ -97,6 +97,14 @@ export default async function HomePage({params}: Params) {
               >
                 {t('hero.ctaWhatsapp')}
               </a>
+            </RevealItem>
+            <RevealItem className="flex flex-wrap items-center gap-x-4 gap-y-2 pt-1">
+              {(t.raw('hero.pills') as string[]).map((pill) => (
+                <span key={pill} className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-muted">
+                  <span className="h-1.5 w-1.5 rounded-full bg-orange" aria-hidden />
+                  {pill}
+                </span>
+              ))}
             </RevealItem>
           </Reveal>
 
@@ -195,17 +203,19 @@ export default async function HomePage({params}: Params) {
           stagger={0.07}
           className="mt-10 grid grid-cols-1 gap-6 sm:mt-12 sm:grid-cols-2 lg:grid-cols-4"
         >
-          {featured.map((p, i) => (
-            <RevealItem key={p.name} className="h-full">
-              <ProductCard
-                name={p.name}
-                brand={p.brand}
-                href={FEATURED_HREFS[i]}
-                viewLabel={t('featured.view')}
-                priceLabel={t('featured.price')}
-              />
-            </RevealItem>
-          ))}
+          {featured.map((p) => {
+            const cat = CATEGORIES.find((c) => c.slug === p.category)!;
+            return (
+              <RevealItem key={p.slug} className="h-full">
+                <CatalogCard
+                  product={p}
+                  categoryLabel={tn(cat.key)}
+                  viewLabel={t('featured.view')}
+                  priceLabel={t('featured.price')}
+                />
+              </RevealItem>
+            );
+          })}
         </Reveal>
         <Reveal className="mt-8 text-center">
           <Link
@@ -218,7 +228,45 @@ export default async function HomePage({params}: Params) {
         </Reveal>
       </section>
 
-      {/* 6 · BRANDS */}
+      {/* 6 · ABOUT TEASER — end-to-end supply + custom furniture. */}
+      <section id="about-teaser" className="mt-16 border-y border-border bg-bg-soft sm:mt-24">
+        <div className="shell grid items-center gap-10 py-14 sm:py-16 lg:grid-cols-2 lg:gap-14">
+          <Reveal className="flex flex-col items-start gap-4">
+            <span className="text-xs font-mono font-medium uppercase tracking-[0.18em] text-indigo">
+              {t('aboutTeaser.eyebrow')}
+            </span>
+            <h2 className="text-balance text-3xl font-bold leading-tight tracking-tight text-ink sm:text-4xl">
+              {t('aboutTeaser.heading')}
+            </h2>
+            <p className="text-pretty text-[15px] leading-relaxed text-muted">
+              {t('aboutTeaser.body')}
+            </p>
+            <Link
+              href="/about"
+              className="inline-flex items-center gap-1.5 text-base font-bold text-indigo no-underline transition-colors hover:text-orange-deep"
+            >
+              {t('aboutTeaser.cta')}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </Reveal>
+          <Reveal delay={0.08} stagger={0.07} className="flex flex-col gap-4">
+            {(t.raw('aboutTeaser.highlights') as {title: string; body: string}[]).map((h) => (
+              <RevealItem
+                key={h.title}
+                className="flex items-start gap-3.5 rounded-2xl border border-border bg-bg p-5 shadow-card"
+              >
+                <BadgeCheck className="mt-0.5 h-5.5 w-5.5 shrink-0 text-orange" aria-hidden />
+                <span>
+                  <span className="block text-base font-bold text-ink">{h.title}</span>
+                  <span className="mt-1 block text-sm leading-relaxed text-muted">{h.body}</span>
+                </span>
+              </RevealItem>
+            ))}
+          </Reveal>
+        </div>
+      </section>
+
+      {/* 7 · BRANDS */}
       <section id="brands" className="shell pt-16 sm:pt-24">
         <Reveal>
           <SectionHeading eyebrow={t('brands.eyebrow')} title={t('brands.heading')} sub={t('brands.sub')} />
