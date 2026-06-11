@@ -13,13 +13,15 @@ export function CtaBand({
   sub,
   note,
   ctaWhatsapp,
-  ctaContact
+  ctaContact,
+  chips
 }: {
   heading: string;
   sub: string;
   note: string;
   ctaWhatsapp: string;
   ctaContact: string;
+  chips?: string[];
 }) {
   return (
     <section className="shell pb-20 sm:pb-24">
@@ -65,7 +67,20 @@ export function CtaBand({
                 <ArrowRight className="h-4 w-4" aria-hidden />
               </Link>
             </div>
-            <p className="mt-2 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm text-white/90">
+            {chips && chips.length > 0 && (
+              <div className="mt-2 flex flex-wrap items-center justify-center gap-2.5">
+                {chips.map((chip) => (
+                  <span
+                    key={chip}
+                    className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-[13px] font-semibold text-white"
+                  >
+                    <span className="h-1.5 w-1.5 rounded-full bg-orange-light" aria-hidden />
+                    {chip}
+                  </span>
+                ))}
+              </div>
+            )}
+            <p className="mt-1 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-1.5 text-sm text-white/90">
               <Sparkles className="h-4 w-4 text-orange-light" aria-hidden />
               {note}
             </p>
