@@ -179,7 +179,7 @@ const prelam = (
   uses,
   notFor: 'High-moisture zones — use HMR or HDHMR boards there.',
   faqs: [...PRELAM_FAQ, ...extraFaq],
-  cardImage: `/images/decor/${code}-${decor.toLowerCase().replace(/\s+/g, '-')}.avif`,
+  cardImage: `/images/decor-thumbs/${code}-${decor.toLowerCase().replace(/\s+/g, '-')}.webp`,
   images: [`${P}action-tesa-prelam-particle-board-${slugTail}.jpg`],
   decorCode: code
 });

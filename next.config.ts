@@ -4,13 +4,9 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 
 const nextConfig: NextConfig = {
-  // Ship the editable knowledge Markdown with the /api/chat serverless function
-  // so its runtime fs reads work in production.
-  outputFileTracingIncludes: {
-    '/api/chat': ['./src/content/knowledge/**/*']
-  },
   images: {
-    formats: ['image/avif', 'image/webp'],
+    // WebP only: on-demand AVIF encoding stalled cold-cache pages (≈150 swatches).
+    formats: ['image/webp'],
     // Small widths for swatches / thumbnails / logos.
     imageSizes: [32, 48, 64, 96, 128, 160, 256, 384]
   },

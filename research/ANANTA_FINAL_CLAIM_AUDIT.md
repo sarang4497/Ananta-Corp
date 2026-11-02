@@ -80,10 +80,12 @@ contradicts it.
 
 ## D. Assistant
 
-- `src/content/knowledge/*.md` and the system prompt were rewritten to match this audit, with explicit "Do NOT
-  claim CARB / warranty / 100% BWP / weather resistant" lines.
-- Common questions (price, address, brands, range, décors, kitchen/wardrobe/bathroom board choice, custom work,
-  delivery) are answered deterministically from the data in `src/lib/assistant/guide.ts`, with no model call.
+- The assistant is **fully deterministic**. `src/lib/assistant/guide.ts` builds every reply from verified data (the
+  catalogue, brand data, company facts and the selector mappings), using a typo-tolerant intent router.
+- The AI route (`/api/chat`), the knowledge base and the Anthropic SDK were removed, so the assistant makes no
+  model or API calls (checked by `tests/unit/assistant.test.ts` and `tests/e2e/assistant.spec.ts`).
+- It never states prices, stock quantities, warranty periods, delivery times, CNC capability or opening hours.
+- Unknown input gets a fixed fallback with topic buttons, WhatsApp and contact.
 
 **Result:** zero unsupported public claims. Items needing the owner are listed as OMITTED_PENDING_CONFIRMATION
 or OWNER_CLAIM.

@@ -87,19 +87,3 @@ test('assistant opens from the dock and the dock hides', async ({page}) => {
   await page.waitForTimeout(400);
   expect(await isHidden(page)).toBe(true);
 });
-
-test('assistant answers guided questions deterministically (no model call)', async ({page}) => {
-  let modelCalls = 0;
-  await page.route('**/api/chat', (r) => {
-    modelCalls++;
-    return r.fulfill({body: 'x'});
-  });
-  await page.goto('/');
-  await hydrated(page);
-  await page.getByTestId(page.viewportSize()!.width < 768 ? 'assistant-launcher' : 'assistant-launcher-desktop').click();
-  await page.getByTestId('guide-kitchen').click();
-  const dialog = page.getByRole('dialog').first();
-  await expect(dialog.getByRole('link', {name: 'Duroply BWP Plywood'}).first()).toBeVisible();
-  await expect(dialog).not.toContainText(/warranty|CARB|same day/i);
-  expect(modelCalls).toBe(0);
-});

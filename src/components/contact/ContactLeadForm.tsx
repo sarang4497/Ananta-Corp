@@ -19,10 +19,17 @@ export function ContactLeadForm() {
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
   const [summary, setSummary] = useState('');
   const [product, setProduct] = useState('');
+  const [size, setSize] = useState('');
+  const [ref, setRef] = useState<{id: string; email: string} | null>(null);
 
   useEffect(() => {
-    const p = new URLSearchParams(window.location.search).get('product');
-    const id = requestAnimationFrame(() => p && setProduct(p));
+    const sp = new URLSearchParams(window.location.search);
+    const p = sp.get('product');
+    const sz = sp.get('size');
+    const id = requestAnimationFrame(() => {
+      if (p) setProduct(p);
+      if (sz) setSize(sz);
+    });
     return () => cancelAnimationFrame(id);
   }, []);
 
@@ -38,7 +45,7 @@ export function ContactLeadForm() {
     const d = new FormData(form);
     const v = (k: string) => String(d.get(k) ?? '').trim();
     const composed = [
-      v('product') && `Product interest: ${v('product')}`,
+      v('product') && `Product interest: ${v('product')}${v('size') ? ` — ${v('size')}` : ''}`,
       v('quantity') && `Quantity: ${v('quantity')}`,
       v('city') && `City / site: ${v('city')}`,
       v('message')
@@ -50,10 +57,24 @@ export function ContactLeadForm() {
       const res = await fetch('/api/lead', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name: v('name'), phone: v('phone'), email: v('email'), company: v('company'), message: composed, source: 'contact-form'})
+        body: JSON.stringify({
+          name: v('name'),
+          phone: v('phone'),
+          email: v('email'),
+          company: v('company'),
+          product: v('product'),
+          size: v('size'),
+          quantity: v('quantity'),
+          city: v('city'),
+          message: v('message'),
+          website: v('website'),
+          source: 'contact-form',
+          page: window.location.pathname + window.location.search
+        })
       });
-      const json = (await res.json()) as {ok?: boolean};
+      const json = (await res.json()) as {ok?: boolean; id?: string; email?: string};
       if (!res.ok || !json.ok) throw new Error('lead-failed');
+      setRef({id: json.id ?? '', email: json.email ?? ''});
       setStatus('sent');
     } catch {
       const subject = encodeURIComponent(`Enquiry from ${v('name') || 'website'}`);
@@ -71,9 +92,10 @@ export function ContactLeadForm() {
     return (
       <div className="rounded-[10px] border border-green/30 bg-green/5 p-6" role="status" data-testid="lead-success">
         <CheckCircle2 className="h-7 w-7 text-green" aria-hidden />
-        <p className="mt-3 text-[17px] font-semibold text-ink">Enquiry submitted.</p>
+        <p className="mt-3 text-[17px] font-semibold text-ink">{ref?.email === 'sent' ? 'Enquiry sent to the team.' : 'Enquiry received.'}</p>
         <p className="mt-1 text-[14px] leading-relaxed text-muted">
-          Your details were received. For pricing today, you can also send the same request on WhatsApp.
+          {ref?.id ? <>Reference <span className="font-mono text-ink">{ref.id}</span>. </> : null}
+          For pricing today, you can also send the same request on WhatsApp.
         </p>
         <a
           href={whatsappUrl(summary)}
@@ -88,7 +110,7 @@ export function ContactLeadForm() {
   }
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-4" noValidate data-testid="lead-form">
+    <form onSubmit={onSubmit} className="relative flex flex-col gap-4" noValidate data-testid="lead-form">
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <label className={label}>
           Name *
@@ -123,6 +145,18 @@ export function ContactLeadForm() {
         <label className={label}>
           Approx. quantity
           <input type="text" name="quantity" placeholder="e.g. 40 sheets 18 mm, 12 doors" className={input} />
+        </label>
+      </div>
+      {size && (
+        <label className={label}>
+          Selected size
+          <input type="text" name="size" value={size} onChange={(e) => setSize(e.target.value)} className={input} />
+        </label>
+      )}
+      {/* Honeypot: hidden from people and assistive tech, catches bots. */}
+      <div aria-hidden className="absolute -left-[9999px] h-px w-px overflow-hidden">
+        <label>
+          Website <input type="text" name="website" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
       <label className={label}>

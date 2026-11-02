@@ -58,7 +58,7 @@ export function EnquiryBox({name, sizes, sizesLabel, sizesNote}: {name: string; 
       </div>
       <p className="mt-3 text-[12.5px] text-muted">
         Real-time pricing and stock from our team. Delivery arranged as per location &amp; availability.{' '}
-        <Link href={{pathname: '/contact', query: {product: name}}} className="font-semibold text-indigo hover:underline">
+        <Link href={{pathname: '/contact', query: size ? {product: name, size} : {product: name}}} className="font-semibold text-indigo hover:underline">
           Send a written enquiry
         </Link>
       </p>

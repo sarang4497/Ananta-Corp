@@ -1,57 +1,37 @@
 /**
- * POST /api/lead — capture a lead.
+ * POST /api/lead — website enquiry.
  *
- * Used by the chat flow (source: "chat") when an email is verified and by the
- * inline lead form at the conversion gate. Also reusable by the contact form.
- *
- * For now leads are logged and (optionally) emailed to the team. There is no
- * CRM/database yet.
- * TODO(leads): persist to a database or forward to a CRM (HubSpot, Pipedrive…).
+ * validate → RECORD (structured log line with the full lead; Vercel runtime
+ * logs) → attempt the email notification → respond truthfully.
+ * 200 {ok:true, id, email} only after the lead is validated and recorded.
+ * `email` is the real delivery state: "sent" | "not-configured" | "failed".
+ * Email failure never drops the lead: it is already recorded and the failure
+ * is logged as [lead:email-failed] with the same id for recovery.
  */
-
-import {notifyNewLead} from '@/lib/chat/email';
+import {sendLeadEmail, validateLead, type LeadInput} from '@/lib/leads/lead';
 
 export const runtime = 'nodejs';
 
-const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-
-export interface LeadPayload {
-  email: string;
-  name?: string;
-  phone?: string;
-  company?: string;
-  message?: string;
-  source?: string;
-}
-
 export async function POST(request: Request) {
-  let body: LeadPayload;
+  let body: LeadInput;
   try {
-    body = (await request.json()) as LeadPayload;
+    body = (await request.json()) as LeadInput;
   } catch {
     return Response.json({ok: false, error: 'invalid-json'}, {status: 400});
   }
-
-  const email = (body.email ?? '').trim().toLowerCase();
-  if (!EMAIL_RE.test(email)) {
-    return Response.json({ok: false, error: 'invalid-email'}, {status: 400});
+  const v = validateLead(body);
+  if (!v.ok) {
+    // Honeypot hits get a quiet 200 without being recorded or emailed.
+    if (v.error === 'spam') return Response.json({ok: true, id: 'ignored', email: 'skipped'});
+    return Response.json({ok: false, error: v.error}, {status: 400});
   }
+  const lead = v.lead;
+  console.log('[lead:received]', JSON.stringify(lead));
 
-  const lead = {
-    email,
-    name: body.name?.trim() || undefined,
-    phone: body.phone?.trim() || undefined,
-    company: body.company?.trim() || undefined,
-    message: body.message?.trim() || undefined,
-    source: body.source?.trim() || 'unknown',
-    at: new Date().toISOString()
-  };
+  const result = await sendLeadEmail(lead);
+  if (result.status === 'sent') console.log('[lead:email-sent]', JSON.stringify({id: lead.id, providerId: result.providerId}));
+  else if (result.status === 'not-configured') console.warn('[lead:email-not-configured]', JSON.stringify({id: lead.id, hint: 'set RESEND_API_KEY (+ LEAD_EMAIL_FROM on a verified domain)'}));
+  else console.error('[lead:email-failed]', JSON.stringify({id: lead.id, error: result.error, lead}));
 
-  // TODO(leads): replace this with real persistence / CRM forwarding.
-  console.log('[lead]', lead);
-
-  // Fire-and-forget team notification (no-op if LEAD_NOTIFY_TO unset).
-  void notifyNewLead(email);
-
-  return Response.json({ok: true});
+  return Response.json({ok: true, id: lead.id, email: result.status});
 }
