@@ -3,6 +3,7 @@
 import {useCallback, useEffect, useRef, useState} from 'react';
 import {useTranslations} from 'next-intl';
 import {buttonClassName} from '@/components/ui/Button';
+import {Link} from '@/i18n/navigation';
 import {whatsappUrl} from '@/lib/whatsapp';
 import {cn} from '@/lib/cn';
 import {BellaAvatar} from './BellaAvatar';
@@ -262,12 +263,12 @@ export default function ChatPanel({
           className="shrink-0 border-t border-border bg-bg-soft/40 px-4 py-4"
         >
           <p className="mb-3 text-center text-xs leading-relaxed text-muted">
-            We keep chats short and focused — the best next step is a quick call with our team.
+            We keep chats short and focused — the best next step is to talk to our team.
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <a href="/contact" className={buttonClassName('blue', 'md', 'font-bold')}>
-              Book a call
-            </a>
+            <Link href="/contact" className={buttonClassName('blue', 'md', 'font-bold')}>
+              Contact the team
+            </Link>
             <a
               href={whatsappUrl()}
               target="_blank"

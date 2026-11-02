@@ -1,22 +1,21 @@
 import type {Metadata} from 'next';
-import {getTranslations, setRequestLocale} from 'next-intl/server';
-import {PageHero} from '@/components/PageHero';
-import {Reveal} from '@/components/ui/Reveal';
-import {CatalogCard} from '@/components/catalog/CatalogCard';
-import {ProductFilter} from '@/components/catalog/ProductFilter';
-import {CtaBand} from '@/components/home/CtaBand';
-import {CATEGORIES, PRODUCTS} from '@/data/products';
+import Image from 'next/image';
+import {setRequestLocale} from 'next-intl/server';
+import {Link} from '@/i18n/navigation';
+import {CATEGORIES, categoryHref} from '@/data/products';
+import {CATEGORY_COPY} from '@/content/categories';
+import {STATS, countByCategory} from '@/data/stats';
+import {PageIntro} from '@/components/catalog2/PageIntro';
+import {CatalogBrowser} from '@/components/catalog2/CatalogBrowser';
 import {buildAlternates} from '@/lib/metadata';
 
 type Params = {params: Promise<{locale: string}>};
 
 export async function generateMetadata({params}: Params): Promise<Metadata> {
   const {locale} = await params;
-  setRequestLocale(locale);
-  const t = await getTranslations('catalog.listing.meta');
   return {
-    title: t('title'),
-    description: t('description'),
+    title: 'All Products — Plywood, MDF, HDHMR, Prelam, Flush Doors & Smart Locks',
+    description: `Browse all ${STATS.products} products at Ananta Corporation, Ahmedabad: Duroply plywood and flush doors, Action TESA MDF, HDHMR, Moist Master and pre-laminated boards, Tenon smart locks. Filter by brand, application and exposure.`,
     alternates: buildAlternates('/products', locale)
   };
 }
@@ -24,53 +23,36 @@ export async function generateMetadata({params}: Params): Promise<Metadata> {
 export default async function ProductsPage({params}: Params) {
   const {locale} = await params;
   setRequestLocale(locale);
-  const t = await getTranslations('catalog');
-  const tn = await getTranslations('nav');
-
-  const chips = CATEGORIES.map((c) => ({key: c.slug, label: tn(c.key)}));
-
-  // Server-render every card once; the client filter only toggles visibility.
-  const cards = PRODUCTS.map((p) => {
-    const cat = CATEGORIES.find((c) => c.slug === p.category)!;
-    return {
-      category: p.category,
-      node: (
-        <CatalogCard
-          product={p}
-          categoryLabel={tn(cat.key)}
-          viewLabel={t('card.view')}
-          priceLabel={t('card.price')}
-        />
-      )
-    };
-  });
-
   return (
     <>
-      <PageHero
-        eyebrow={t('listing.eyebrow')}
-        title={t('listing.heading')}
-        sub={t('listing.intro')}
+      <PageIntro
+        crumbs={[{label: 'Home', href: '/'}, {label: 'Products'}]}
+        eyebrow="Material library"
+        title="The full catalogue"
+        lead={`${STATS.products} products across ${STATS.categories} categories from ${STATS.brands} brands — filter by brand, application or exposure, or search by grade, thickness or décor code.`}
       />
-
-      <section className="shell pb-16 sm:pb-20">
-        <Reveal>
-          <ProductFilter
-            chips={chips}
-            allLabel={t('listing.all')}
-            countTemplate={t.raw('listing.count') as string}
-            cards={cards}
-          />
-        </Reveal>
+      <nav aria-label="Categories" className="border-b border-line bg-white">
+        <ul className="shell rail gap-3 py-4 lg:grid lg:grid-cols-6">
+          {CATEGORIES.map((c) => (
+            <li key={c.slug} className="w-[150px] lg:w-auto">
+              <Link href={categoryHref(c.slug)} className="tile-lift group flex items-center gap-3 rounded-[6px] border border-line p-2">
+                <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-[4px] bg-bg-soft">
+                  <Image src={c.image} alt="" fill sizes="44px" className="object-cover" />
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate text-[13px] font-semibold text-ink group-hover:text-indigo">{CATEGORY_COPY[c.slug].short}</span>
+                  <span className="t-label text-steel">{countByCategory(c.slug)}</span>
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <section className="bg-bg-soft py-8 sm:py-12">
+        <div className="shell">
+          <CatalogBrowser />
+        </div>
       </section>
-
-      <CtaBand
-        heading={t('cta.heading')}
-        sub={t('cta.sub')}
-        note={t('cta.note')}
-        ctaWhatsapp={t('card.price')}
-        ctaContact={t('cta.contact')}
-      />
     </>
   );
 }

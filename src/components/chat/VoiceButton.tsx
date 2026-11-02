@@ -35,6 +35,7 @@ export function VoiceButton({
   const sessionRef = useRef<VoiceSession | null>(null);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- browser capability probe after mount
     setSupported(isVoiceAvailable());
   }, []);
 

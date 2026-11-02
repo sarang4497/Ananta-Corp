@@ -1,8 +1,14 @@
 /**
- * The product catalog — single source of truth for listings, category pages,
- * subcategory pages and the 20 product detail pages. Facts (specs, sizes,
- * standards) come from docs/ananta-full-site.md; page copy lives in
- * messages/en.json.
+ * The product catalogue — single source of truth for listings, category pages,
+ * the material library, the selector/compare tools and the 20 product pages.
+ *
+ * CONTENT TRUTH RULES (research/ANANTA_CONTENT_TRUTH.md):
+ * - Every value here is sourced. `A1` = Ananta's own site (anantacorporation.com,
+ *   crawl in docs/ananta-full-site.md); `M-DP` = duroply.in; `M-AT` = actiontesa.com.
+ * - Manufacturer standards/properties live in `standards` with the manufacturer
+ *   named — they are product-level, never company-level badges.
+ * - Unknown attributes are OMITTED, never filled in.
+ * - Counts shown on the site are computed from these arrays (see stats.ts).
  */
 import type {ComponentProps} from 'react';
 import type {Link} from '@/i18n/navigation';
@@ -19,20 +25,75 @@ export type CategorySlug =
   | 'flush-door'
   | 'smart-locks';
 
+/** Where a board may sit, from Ananta's own product copy / FAQ (A1). */
+export type Exposure = 'dry' | 'humid' | 'wet';
+
+/** Application groups — each mapping below is taken from A1 product copy. */
+export type Application =
+  | 'kitchens'
+  | 'wardrobes'
+  | 'furniture'
+  | 'wet-zones'
+  | 'panelling'
+  | 'commercial'
+  | 'doors';
+
 export type Category = {
   slug: CategorySlug;
-  /** Translation key in the `nav` namespace + `catalog.categories.*`. */
+  /** Translation key in `nav` + `catalog.categories.*`. */
   key: string;
-  /** Self-hosted category visual (downloaded from the original site). */
+  /** Watermark-free studio render (cropped from Ananta's own category image). */
   image: string;
   subs: {slug: string; key: string}[];
+};
+
+export type Standard = {
+  /** Short label, e.g. "IS 303". */
+  label: string;
+  /** Who states it. Shown as "as stated by …". */
+  by: 'Duroply' | 'Action TESA';
+  detail?: string;
+};
+
+export type Product = {
+  slug: string;
+  name: string;
+  /** Compact display name for tiles. */
+  short: string;
+  brand: Brand;
+  category: CategorySlug;
+  subcategory: string;
+  /** One-line summary, A1 wording (tightened, meaning unchanged). */
+  summary: string;
+  /** About paragraph, A1 (claims that failed verification removed). */
+  about: string;
+  /** Spec rows. Only sourced values. */
+  specs: [string, string][];
+  /** Size / thickness options exactly as A1's size selector lists them. */
+  sizes: string[];
+  sizesLabel?: string;
+  sizesNote?: string;
+  standards: Standard[];
+  exposure?: Exposure;
+  applications: Application[];
+  /** Human list of uses (A1). */
+  uses: string[];
+  /** Explicit limit from A1/M copy, shown as "Not for". */
+  notFor?: string;
+  faqs: {q: string; a: string}[];
+  /** Clean visual for tiles (no people, no printed warranty badges). */
+  cardImage: string;
+  /** Detail-page gallery (manufacturer imagery included, captioned). */
+  images: string[];
+  decorCode?: string;
+  specsOnRequest?: boolean;
 };
 
 export const CATEGORIES: Category[] = [
   {
     slug: 'plywood',
     key: 'plywood',
-    image: '/images/categories/plywood.jpg',
+    image: '/images/materials/plywood.webp',
     subs: [
       {slug: 'moisture-resistant', key: 'moistureResistant'},
       {slug: 'boiling-water-proof', key: 'boilingWaterProof'}
@@ -41,7 +102,7 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'mdf',
     key: 'mdf',
-    image: '/images/categories/mdf.jpg',
+    image: '/images/materials/mdf.webp',
     subs: [
       {slug: 'interior-grade', key: 'interiorGrade'},
       {slug: 'exterior-grade', key: 'exteriorGrade'},
@@ -51,659 +112,496 @@ export const CATEGORIES: Category[] = [
   {
     slug: 'high-moisture-resistant-board-moist-master',
     key: 'moistMaster',
-    image: '/images/categories/high-moisture-resistant-board-moist-master.jpg',
+    image: '/images/materials/hmr.webp',
     subs: [{slug: 'moist-master', key: 'moistMasterSub'}]
   },
   {
     slug: 'pre-laminated-particle-board',
     key: 'prelam',
-    image: '/images/categories/pre-laminated-particle-board.jpg',
+    image: '/images/materials/prelam.webp',
     subs: [{slug: 'boards', key: 'boards'}]
   },
   {
     slug: 'flush-door',
     key: 'flushDoor',
-    image: '/images/categories/flush-door.jpg',
+    image: '/images/materials/flush-door.webp',
     subs: [{slug: 'door', key: 'door'}]
   },
   {
     slug: 'smart-locks',
     key: 'smartLocks',
-    image: '/images/categories/smart-locks.png',
+    image: '/images/materials/smart-locks.webp',
     subs: [{slug: 'locks', key: 'locks'}]
   }
 ];
 
-export type Product = {
-  slug: string;
-  name: string;
-  brand: Brand;
-  category: CategorySlug;
-  subcategory: string;
-  /** Short positioning line shown under the name. */
-  tagline: string;
-  /** The full, factual description (from the master doc). */
-  description: string;
-  features: string[];
-  /** Spec table rows, in display order. */
-  specs: [string, string][];
-  /** Thickness / size options (display strings). */
-  sizes: string[];
-  sizesNote?: string;
-  standards: string[];
-  useCases: string[];
-  /**
-   * Self-hosted product photos (downloaded from the original site's R2
-   * bucket). First entry is the primary shot used on cards and the gallery.
-   */
-  images?: string[];
-  /** Self-hosted décor swatch (prelam SKUs). */
-  decorImage?: string;
-  /** Smart locks: no fabricated specs — note that details come on request. */
-  specsOnRequest?: boolean;
-};
+const P = '/images/products/';
+
+const PRELAM_FAQ = [
+  {
+    q: 'What is a pre-laminated particle board?',
+    a: 'A particle board that comes with a factory-applied decorative melamine laminate on both sides. It is ready to use for furniture manufacturing without separate lamination or finishing.'
+  },
+  {
+    q: 'What are the advantages of pre-laminated boards?',
+    a: 'They save time and labour by eliminating separate lamination, give a consistent factory finish, are scratch-resistant and easy to clean, and come in a wide range of colours and textures.'
+  }
+];
+
+const prelam = (
+  code: string,
+  decor: string,
+  slugTail: string,
+  summary: string,
+  about: string,
+  uses: string[],
+  applications: Application[],
+  extraFaq: {q: string; a: string}[] = []
+): Product => ({
+  slug: `action-tesa-prelam-particle-board-${slugTail}`,
+  name: `Action TESA Prelam Particle Board ${code} – ${decor}`,
+  short: `${code} ${decor}`,
+  brand: 'Action TESA',
+  category: 'pre-laminated-particle-board',
+  subcategory: 'boards',
+  summary,
+  about,
+  specs: [
+    ['Board', 'Pre-laminated particle board'],
+    ['Décor', `${code} – ${decor}`],
+    ['Surface', 'Factory melamine laminate, both sides']
+  ],
+  sizes: ['9 MM', '11 MM', '17 MM', '25 MM'],
+  sizesLabel: 'Thickness',
+  standards: [],
+  exposure: 'dry',
+  applications,
+  uses,
+  notFor: 'High-moisture zones — use HMR or HDHMR boards there.',
+  faqs: [...PRELAM_FAQ, ...extraFaq],
+  cardImage: `/images/decor/${code}-${decor.toLowerCase().replace(/\s+/g, '-')}.avif`,
+  images: [`${P}action-tesa-prelam-particle-board-${slugTail}.jpg`],
+  decorCode: code
+});
+
+const lock = (
+  slug: string,
+  name: string,
+  summary: string,
+  uses: string[],
+  imgs: string[],
+  extra: Partial<Product> = {}
+): Product => ({
+  slug,
+  name,
+  short: name,
+  brand: 'Tenon Smart Lock',
+  category: 'smart-locks',
+  subcategory: 'locks',
+  summary,
+  about: `${name} by Tenon Smart Lock, supplied by Ananta Corporation for retail and bulk project requirements. Ask our team for current specifications, finishes and availability.`,
+  specs: [
+    ['Brand', 'Tenon Smart Lock'],
+    ['Type', name]
+  ],
+  sizes: [],
+  standards: [],
+  applications: ['doors'],
+  uses,
+  faqs: [],
+  cardImage: imgs[0],
+  images: imgs,
+  specsOnRequest: true,
+  ...extra
+});
 
 export const PRODUCTS: Product[] = [
-  // ── PLYWOOD ────────────────────────────────────────────────────────────────
+  // ── PLYWOOD (Duroply) ──────────────────────────────────────────────────────
   {
     slug: 'duroply-mr-moisture-resistant-plywood',
-    images: ['/images/products/duroply-mr-moisture-resistant-plywood.jpg', '/images/products/duroply-mr-moisture-resistant-plywood-2.webp'],
-    name: 'Duroply - MR Moisture Resistant Plywood',
+    name: 'Duroply MR Moisture Resistant Plywood',
+    short: 'Duroply MR Plywood',
     brand: 'Duroply',
     category: 'plywood',
     subcategory: 'moisture-resistant',
-    tagline:
-      'The go-to interior plywood — reliable moisture resistance for furniture, partitions and shelving.',
-    description:
-      'Duroply MR (Moisture Resistant) Plywood is the go-to choice for interior furniture, partitions, and shelving. Bonded with urea formaldehyde resin, MR plywood offers reliable moisture resistance for indoor applications. It conforms to IS 303 standards and is available in multiple grades, sizes, and thicknesses for residential and commercial projects.',
-    features: [
-      'Bonded with urea formaldehyde resin for dependable indoor moisture resistance',
-      'Conforms to IS 303 — consistent, certified quality sheet after sheet',
-      'Accurate, calibrated thickness for clean joinery and finishing',
-      'Available in multiple grades and sizes for residential and commercial work',
-      'Ready stock for immediate bulk dispatch'
-    ],
+    summary: 'Interior-grade plywood for furniture, wardrobes, shelving and partitions.',
+    about:
+      'Duroply MR (Moisture Resistant) plywood is the go-to choice for interior furniture, partitions and shelving. Bonded with urea formaldehyde resin, it offers dependable moisture resistance in normal indoor conditions and is available in multiple thicknesses for residential and commercial work.',
     specs: [
-      ['Type', 'MR (Moisture Resistant) plywood'],
+      ['Grade', 'MR — moisture resistant'],
       ['Bonding resin', 'Urea formaldehyde'],
-      ['Standard', 'IS 303'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thickness range', '4 mm – 25 mm'],
-      ['Best for', 'Interior furniture and dry indoor areas']
+      ['Sheet size', '8 × 4 ft'],
+      ['Thickness range', '4 – 25 mm']
     ],
     sizes: ['6 MM', '8 MM', '12 MM', '16 MM', '18 MM'],
-    sizesNote: 'Thicknesses from 4 mm to 25 mm available in 8 × 4 ft sheets.',
-    standards: ['IS 303'],
-    useCases: [
-      'Furniture and wardrobes',
-      'Bed frames and shelving',
-      'Wall partitions',
-      'Commercial interiors'
-    ]
+    sizesLabel: 'Thickness',
+    sizesNote: 'Thicknesses from 4 mm to 25 mm in standard 8 × 4 ft sheets.',
+    standards: [{label: 'IS 303', by: 'Duroply', detail: 'MR grade plywood for interior applications'}],
+    exposure: 'dry',
+    applications: ['wardrobes', 'furniture', 'panelling'],
+    uses: ['Furniture', 'Wardrobes', 'Bed frames', 'Shelving', 'Wall partitions'],
+    notFor: 'Areas directly exposed to water, such as sink cabinets — use BWP there.',
+    faqs: [
+      {
+        q: 'What is MR grade plywood used for?',
+        a: 'Interior applications such as furniture, wardrobes, bed frames, shelving and wall partitions. It offers good resistance to moisture in normal indoor conditions.'
+      },
+      {
+        q: 'Is MR plywood suitable for kitchen cabinets?',
+        a: 'It can be used for kitchen cabinets in areas with moderate moisture. For areas directly exposed to water, such as sink cabinets, BWP plywood is recommended.'
+      }
+    ],
+    cardImage: '/images/materials/plywood.webp',
+    images: [`${P}duroply-mr-moisture-resistant-plywood.jpg`, `${P}duroply-mr-moisture-resistant-plywood-2.webp`]
   },
   {
     slug: 'duroply-bwp-boiling-water-proof-plywood',
-    images: ['/images/products/duroply-bwp-boiling-water-proof-plywood.jpg', '/images/products/duroply-bwp-boiling-water-proof-plywood-2.webp'],
-    name: 'Duroply - BWP Boiling Water Proof Plywood',
+    name: 'Duroply BWP Boiling Water Proof Plywood',
+    short: 'Duroply BWP Plywood',
     brand: 'Duroply',
     category: 'plywood',
     subcategory: 'boiling-water-proof',
-    tagline:
-      'High-grade waterproof plywood for kitchens, bathrooms and anything that gets wet.',
-    description:
-      'Duroply BWP (Boiling Water Proof) Plywood is designed for areas exposed to constant moisture and water. Manufactured under high pressure with phenol formaldehyde resin, BWP plywood offers excellent water resistance, making it ideal for kitchen cabinets, bathroom vanities, and outdoor furniture. It meets IS 710 standards and comes in multiple thicknesses and sizes to suit diverse project requirements.',
-    features: [
-      'Phenol formaldehyde resin bonding — withstands prolonged boiling-water exposure',
-      'Meets IS 710, the marine-grade plywood standard',
-      'High-pressure manufacturing for dense, void-free construction',
-      'The right choice wherever water contact is frequent or constant',
-      'Multiple thicknesses and sizes, stocked for bulk supply'
-    ],
+    summary: 'Water-resistant plywood for kitchens, bathroom vanities and wet zones.',
+    about:
+      'Duroply BWP (Boiling Water Proof) plywood is designed for areas exposed to constant moisture and water. Manufactured under high pressure with phenol formaldehyde resin, it is suited to kitchen cabinets, bathroom vanities and exterior furniture.',
     specs: [
-      ['Type', 'BWP (Boiling Water Proof) plywood'],
+      ['Grade', 'BWP — boiling water proof'],
       ['Bonding resin', 'Phenol formaldehyde'],
-      ['Standard', 'IS 710'],
-      ['Sheet size', '8 × 4 ft (standard, custom on bulk orders)'],
-      ['Thickness range', '4 mm – 25 mm'],
-      ['Best for', 'Wet areas — kitchens, bathrooms, exteriors']
+      ['Sheet size', '8 × 4 ft'],
+      ['Thickness range', '4 – 25 mm']
     ],
     sizes: ['9 MM', '12 MM', '19 MM'],
-    sizesNote: 'Thicknesses from 4 mm to 25 mm available; custom sizes on bulk orders.',
-    standards: ['IS 710'],
-    useCases: [
-      'Kitchen cabinets and sink units',
-      'Bathroom vanities',
-      'Outdoor and semi-outdoor furniture',
-      'Marine-adjacent applications'
-    ]
+    sizesLabel: 'Thickness',
+    sizesNote: 'Standard 8 × 4 ft sheets, 4 mm to 25 mm. Custom sizes on request for bulk orders.',
+    standards: [{label: 'IS 710', by: 'Duroply', detail: 'BWP / marine grade plywood'}],
+    exposure: 'wet',
+    applications: ['kitchens', 'wet-zones', 'furniture'],
+    uses: ['Kitchen cabinets', 'Sink units', 'Bathroom vanities', 'Exterior furniture'],
+    faqs: [
+      {
+        q: 'What is BWP plywood and where is it used?',
+        a: 'BWP plywood is bonded with phenol formaldehyde resin, making it highly resistant to water and moisture. It is used in kitchens, bathrooms and exterior furniture where exposure to water is frequent.'
+      },
+      {
+        q: 'What is the difference between BWP and MR plywood?',
+        a: 'BWP uses phenol formaldehyde resin and suits wet areas. MR uses urea formaldehyde resin; it resists moisture but is not suitable for direct water exposure.'
+      }
+    ],
+    cardImage: '/images/materials/plywood-edge.webp',
+    images: [`${P}duroply-bwp-boiling-water-proof-plywood.jpg`, `${P}duroply-bwp-boiling-water-proof-plywood-2.webp`]
   },
-  // ── MDF ───────────────────────────────────────────────────────────────────
+
+  // ── MDF (Action TESA) ──────────────────────────────────────────────────────
   {
     slug: 'action-tesa-interior-grade-mdf',
-    images: ['/images/products/action-tesa-interior-grade-mdf.jpg', '/images/products/action-tesa-interior-grade-mdf-2.webp'],
-    name: 'Action Tesa - Interior Grade MDF',
+    name: 'Action TESA Interior Grade MDF',
+    short: 'Interior Grade MDF',
     brand: 'Action TESA',
     category: 'mdf',
     subcategory: 'interior-grade',
-    tagline:
-      'Premium interior MDF — German technology, homogeneous construction, CARB E1 & E2 certified.',
-    description:
-      'Action Tesa Interior Grade MDF (Medium Density Fibreboard) is engineered for indoor furniture, cabinetry, decorative wall panels, and modular kitchen components. Manufactured with German technology for homogeneous construction without layers, and CARB certified E1 & E2 grade for health-safe interior applications. With a smooth, uniform surface that accepts paint, veneer, and laminate finishes, interior MDF is the preferred choice for precision woodworking. Sourced directly from Action Tesa for guaranteed quality.',
-    features: [
-      'German-technology manufacturing — homogeneous, layer-free construction',
-      'CARB E1 & E2 certified for health-safe interiors',
-      'Smooth, uniform surface that takes paint, veneer and laminate beautifully',
-      'Precise machining and routing — ideal for CNC and decorative work',
-      'Sourced directly from Action Tesa, stocked in all popular thicknesses'
-    ],
+    summary: 'Smooth, uniform MDF for furniture, cabinetry and decorative panels.',
+    about:
+      'Action TESA Interior Grade MDF is engineered for indoor furniture, cabinetry, decorative wall panels and modular kitchen components. Its smooth, uniform surface takes paint, veneer and laminate finishes, which makes it the preferred board for precision woodworking.',
     specs: [
-      ['Type', 'Interior grade MDF'],
-      ['Construction', 'Homogeneous, layer-free (German technology)'],
-      ['Certification', 'CARB E1 & E2'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thickness range', '1.90 mm – 25 mm'],
-      ['Best for', 'Indoor furniture, panels, painted finishes']
+      ['Board', 'Medium density fibreboard — interior (regular) grade'],
+      ['Construction', 'Homogeneous, without layers'],
+      ['Finishes', 'Paint, veneer, laminate'],
+      ['Sheet size', '8 × 4 ft'],
+      ['Thickness range', '2.5 – 25 mm']
     ],
     sizes: ['1.90 MM', '3.30 MM', '5.50 MM', '7.00 MM', '11 MM', '16.50 MM', '25 MM'],
-    standards: ['CARB E1', 'CARB E2', 'German technology'],
-    useCases: [
-      'Furniture and kitchen cabinets',
-      'Wardrobes and shelving',
-      'Decorative wall panels and display units',
-      'CNC-routed and painted components'
-    ]
+    sizesLabel: 'Thickness',
+    standards: [
+      {label: 'German technology', by: 'Action TESA', detail: 'homogeneous structure, board to board'},
+      {label: 'IS 12406', by: 'Action TESA', detail: 'MDF compliance'}
+    ],
+    exposure: 'dry',
+    applications: ['furniture', 'wardrobes', 'kitchens', 'panelling'],
+    uses: ['Furniture', 'Kitchen cabinets', 'Wardrobes', 'Decorative wall panels', 'Shelving', 'Display units'],
+    faqs: [
+      {
+        q: 'What is interior grade MDF used for?',
+        a: 'Furniture, kitchen cabinets, wardrobes, decorative wall panels, shelving and display units. Its smooth surface is ideal for painting, laminating and veneering.'
+      },
+      {
+        q: 'What is the difference between MDF and plywood?',
+        a: 'MDF is compressed wood fibre with a smooth, uniform surface ideal for painted finishes. Plywood is layered veneer with greater structural strength. MDF is preferred for decorative work, plywood for load-bearing applications.'
+      }
+    ],
+    cardImage: `${P}action-tesa-interior-grade-mdf-2.webp`,
+    images: [`${P}action-tesa-interior-grade-mdf-2.webp`, `${P}action-tesa-interior-grade-mdf.jpg`]
   },
   {
     slug: 'action-tesa-exterior-grade-mdf',
-    images: ['/images/products/action-tesa-exterior-grade-mdf.jpg', '/images/products/action-tesa-exterior-grade-mdf-2.jpg'],
-    name: 'Action Tesa - Exterior Grade MDF',
+    name: 'Action TESA Exterior Grade MDF',
+    short: 'Exterior Grade MDF',
     brand: 'Action TESA',
     category: 'mdf',
     subcategory: 'exterior-grade',
-    tagline:
-      'Rugged, weather-resistant MDF for semi-outdoor and high-humidity applications.',
-    description:
-      'Action Tesa Exterior Grade MDF is specially engineered with moisture-resistant resins for semi-outdoor and high-humidity applications. Homogeneous, layer-free construction with CARB E2 certification for weather-resistant outdoor use. Ideal for signage, exterior wall cladding, outdoor furniture, and areas prone to dampness — it offers the smooth finish of standard MDF with enhanced durability.',
-    features: [
-      'Moisture-resistant resin system built for humidity and damp environments',
-      'CARB E2 certified, homogeneous layer-free construction',
-      'Keeps the smooth MDF surface and workability outdoors',
-      'For fully exposed applications, pairs with a protective coating',
-      'Stocked in six thicknesses for bulk supply'
-    ],
+    summary: 'Moisture-resistant MDF for covered, humid and semi-outdoor areas.',
+    about:
+      'Action TESA Exterior Grade MDF is made with moisture-resistant resins for semi-outdoor and high-humidity applications. It keeps the smooth, workable surface of standard MDF while resisting swelling in damp conditions — for covered balconies, bathrooms and exterior wall panelling.',
     specs: [
-      ['Type', 'Exterior grade MDF'],
-      ['Construction', 'Homogeneous, layer-free'],
-      ['Certification', 'CARB E2'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thickness range', '3.30 mm – 25 mm'],
-      ['Best for', 'Semi-outdoor, signage, humid areas']
+      ['Board', 'Medium density fibreboard — MR / exterior grade'],
+      ['Construction', 'Homogeneous, without layers'],
+      ['Exposure', 'Covered, humid and semi-outdoor areas']
     ],
     sizes: ['3.30 MM', '5.50 MM', '7.30 MM', '11 MM', '17 MM', '25 MM'],
-    standards: ['CARB E2'],
-    useCases: [
-      'Signage and display boards',
-      'Exterior wall cladding and panelling',
-      'Outdoor and balcony furniture',
-      'Bathrooms and damp-prone areas'
-    ]
+    sizesLabel: 'Thickness',
+    standards: [
+      {label: 'German technology', by: 'Action TESA', detail: 'homogeneous MDF structure'},
+      {label: 'IS 12406', by: 'Action TESA', detail: 'MDF compliance'}
+    ],
+    exposure: 'humid',
+    applications: ['wet-zones', 'panelling'],
+    uses: ['Covered balconies', 'Bathrooms', 'Exterior wall panelling', 'High-humidity interiors'],
+    notFor: 'Direct rain or standing water — fully exposed outdoor use needs a protective coating.',
+    faqs: [
+      {
+        q: 'Can exterior MDF be used outdoors?',
+        a: 'It is designed for semi-outdoor and high-humidity areas such as covered balconies, bathrooms and exterior wall panelling. For fully exposed outdoor applications, an additional protective coating is recommended.'
+      },
+      {
+        q: 'What is the difference between interior and exterior MDF?',
+        a: 'Interior MDF uses standard adhesives suited to dry indoor conditions. Exterior MDF uses moisture-resistant resins that resist swelling in humid or damp environments.'
+      }
+    ],
+    cardImage: `${P}action-tesa-exterior-grade-mdf-2.jpg`,
+    images: [`${P}action-tesa-exterior-grade-mdf-2.jpg`, `${P}action-tesa-exterior-grade-mdf.jpg`]
   },
   {
     slug: 'action-tesa-hdhmr-board',
-    images: ['/images/products/action-tesa-hdhmr-board.jpg'],
-    name: 'Action Tesa - HDHMR Board',
+    name: 'Action TESA HDHMR Board',
+    short: 'HDHMR Board',
     brand: 'Action TESA',
     category: 'mdf',
     subcategory: 'hdhmr',
-    tagline:
-      "India's premium HDHMR — 850+ kg/m³ density, moisture resistant, 10-year warranty.",
-    description:
-      "Action Tesa HDHMR (High Density High Moisture Resistant) Board combines the strength of high-density fibreboard with exceptional moisture resistance. Engineered with German technology for superior density (850+ kg/m³), moisture resistance, and a ready-to-use smooth surface with 10-year warranty protection. HDHMR boards are the preferred material for modular kitchens, bathroom vanities, and commercial interiors where both durability and water resistance are critical — they hold screws firmly, resist termites, and offer a smooth surface for laminate and veneer finishes.",
-    features: [
-      'Superior 850+ kg/m³ density — outstanding screw-holding and structural rigidity',
-      'High moisture resistance for kitchens, vanities and commercial interiors',
-      'German-technology manufacturing with a ready-to-use smooth surface',
-      '10-year warranty protection',
-      'Termite-resistant; takes laminate and veneer finishes cleanly'
-    ],
+    summary: 'High-density, high-moisture-resistant board for kitchens and vanities.',
+    about:
+      'Action TESA HDHMR (High Density High Moisture Resistant) board combines the strength of high-density fibreboard with moisture resistance. It holds screws firmly, offers a smooth surface for laminate and veneer, and is the preferred material for modular kitchens, bathroom vanities and commercial interiors.',
     specs: [
-      ['Type', 'HDHMR (High Density High Moisture Resistant) board'],
-      ['Density', '850+ kg/m³'],
-      ['Warranty', '10 years'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thickness range', '3 mm – 25 mm'],
-      ['Best for', 'Modular kitchens, heavy-duty furniture']
+      ['Board', 'High density, high moisture resistant'],
+      ['Density', 'Over 850 kg/m³'],
+      ['Surface', 'Smooth, ready for laminate or veneer'],
+      ['Sheet size', '8 × 4 ft']
     ],
     sizes: ['3 MM', '5.50 MM', '7.50 MM', '11 MM', '16.75 MM', '18 MM', '25 MM'],
-    standards: ['German technology', '10-year warranty'],
-    useCases: [
-      'Modular kitchen carcasses and shutters',
-      'Bathroom vanities',
-      'Commercial interiors',
-      'Heavy-duty furniture needing strong screw-holding'
-    ]
+    sizesLabel: 'Thickness',
+    standards: [
+      {label: 'Density > 850 kg/m³', by: 'Action TESA'},
+      {label: 'German mat-forming technology', by: 'Action TESA'}
+    ],
+    exposure: 'humid',
+    applications: ['kitchens', 'wardrobes', 'wet-zones', 'commercial'],
+    uses: ['Modular kitchens', 'Wardrobes', 'Bathroom vanities', 'Commercial furniture'],
+    faqs: [
+      {
+        q: 'What is HDHMR board?',
+        a: 'An engineered panel that combines high density for structural strength with moisture-resistant resins. It is widely used for modular kitchens, wardrobes and commercial furniture.'
+      },
+      {
+        q: 'Is HDHMR better than plywood for kitchens?',
+        a: 'HDHMR offers a smoother surface, good screw holding and consistent quality. For modular kitchen carcasses it is often preferred for its moisture resistance and uniform density.'
+      }
+    ],
+    cardImage: '/images/materials/mdf.webp',
+    images: ['/images/materials/mdf.webp']
   },
-  // ── MOIST MASTER HMR ──────────────────────────────────────────────────────
+
+  // ── HMR (Action TESA Moist Master) ─────────────────────────────────────────
   {
     slug: 'action-tesa-moist-master-hmr-board',
-    images: ['/images/products/action-tesa-moist-master-hmr-board.jpg', '/images/products/action-tesa-moist-master-hmr-board-2.webp'],
-    name: 'Action Tesa - Moist Master HMR Board',
+    name: 'Action TESA Moist Master HMR Board',
+    short: 'Moist Master HMR',
     brand: 'Action TESA',
     category: 'high-moisture-resistant-board-moist-master',
     subcategory: 'moist-master',
-    tagline:
-      'Melamine-fortified HMR board for modular kitchens and humid environments.',
-    description:
-      'Action Tesa Moist Master HMR (High Moisture Resistant) Board is engineered with melamine-fortified resin, giving it excellent resistance to moisture and humidity. HMR boards are widely used in modular kitchens, bathroom furniture, commercial interiors, and any application where humidity levels are above normal. Available in various thicknesses with a smooth surface ready for laminate application, and treated for resistance against termites and borers.',
-    features: [
-      'Melamine-fortified resin for excellent moisture and humidity resistance',
-      'Treated against termites and borers for long furniture life',
-      'Smooth surface ready for direct laminate application',
-      'The cost-effective choice for kitchen carcasses and wardrobe interiors',
-      'Stocked in 9 / 12 / 18 mm for immediate supply'
-    ],
+    summary: 'High-moisture-resistant particle board for kitchen carcasses and humid rooms.',
+    about:
+      'Action TESA Moist Master is a high moisture resistant (HMR) particle board for modular kitchens, bathroom furniture, commercial interiors and any application where humidity is above normal. It offers a smooth surface for laminate application.',
     specs: [
-      ['Type', 'HMR (High Moisture Resistant) particle board'],
-      ['Resin', 'Melamine-fortified'],
-      ['Protection', 'Termite & borer treated'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thicknesses', '9 / 12 / 18 mm'],
-      ['Best for', 'Kitchens, bathroom furniture, humid interiors']
+      ['Board', 'HMR particle board'],
+      ['Density', 'Above 750 kg/m³'],
+      ['Treatment', 'Termite and borer resistant']
     ],
     sizes: ['9 MM', '12 MM', '18 MM'],
-    standards: ['Termite & borer treated'],
-    useCases: [
-      'Modular kitchen carcasses',
-      'Bathroom furniture',
-      'Wardrobe interiors',
-      'Commercial interiors with above-normal humidity'
+    sizesLabel: 'Thickness',
+    standards: [
+      {label: 'Density > 750 kg/m³', by: 'Action TESA'},
+      {label: 'Termite & borer resistance', by: 'Action TESA'}
+    ],
+    exposure: 'humid',
+    applications: ['kitchens', 'wardrobes', 'wet-zones', 'commercial'],
+    uses: ['Modular kitchen carcasses', 'Wardrobe interiors', 'Bathroom furniture', 'Commercial furniture'],
+    faqs: [
+      {
+        q: 'What is the difference between HMR and HDHMR board?',
+        a: 'HMR is a standard-density particle board with moisture resistance. HDHMR has higher density, giving better screw holding and rigidity in addition to moisture resistance — preferred for heavy-duty applications.'
+      },
+      {
+        q: 'Is HMR board termite resistant?',
+        a: 'Yes. Action TESA Moist Master boards are treated for resistance against termites and borers.'
+      }
+    ],
+    cardImage: `${P}action-tesa-moist-master-hmr-board-2.webp`,
+    images: [`${P}action-tesa-moist-master-hmr-board-2.webp`, `${P}action-tesa-moist-master-hmr-board.jpg`]
+  },
+
+  // ── PRE-LAMINATED PARTICLE BOARD (Action TESA) ─────────────────────────────
+  prelam(
+    '1103',
+    'Frosty White',
+    '1103-frosty-white',
+    'Clean solid white for modular furniture and interiors.',
+    'Action TESA pre-laminated particle board in Frosty White (code 1103). The pre-applied melamine laminate removes the separate lamination step, saving production time and cost — for wardrobes, office furniture, modular kitchens and commercial interiors.',
+    ['Wardrobes', 'Office furniture', 'Modular kitchens', 'Commercial interiors'],
+    ['wardrobes', 'kitchens', 'commercial', 'furniture']
+  ),
+  prelam(
+    '1104',
+    'Silver Grey',
+    '1104-silver-grey',
+    'Contemporary grey for offices, wardrobes and commercial furniture.',
+    'Action TESA pre-laminated particle board in Silver Grey (code 1104) — a popular choice for modern office interiors, wardrobes and commercial furniture, without additional lamination cost.',
+    ['Office interiors', 'Wardrobes', 'Commercial furniture', 'Pantry units'],
+    ['commercial', 'wardrobes', 'furniture'],
+    [
+      {
+        q: 'Is Silver Grey pre-laminated board suitable for modular kitchens?',
+        a: 'It can be used for kitchen cabinets and pantry units. For areas with high moisture exposure, consider HMR or HDHMR boards with lamination.'
+      }
     ]
-  },
-  // ── PRE-LAMINATED PARTICLE BOARD (5 SKUs) ─────────────────────────────────
-  {
-    slug: 'action-tesa-prelam-particle-board-1103-frosty-white',
-    images: ['/images/products/action-tesa-prelam-particle-board-1103-frosty-white.jpg'],
-    name: 'Action Tesa - Prelam Particle Board 1103 – Frosty White',
-    brand: 'Action TESA',
-    category: 'pre-laminated-particle-board',
-    subcategory: 'boards',
-    tagline:
-      'Clean, modern Frosty White — the workhorse finish for wardrobes and office furniture.',
-    description:
-      'Action Tesa Pre-Laminated Particle Board in Frosty White (Code 1103) offers a clean, modern aesthetic for furniture and interior projects. The pre-applied melamine laminate eliminates the need for separate lamination, reducing production time and cost. Ideal for wardrobes, office furniture, modular kitchens, and commercial interiors.',
-    features: [
-      'Factory-applied melamine laminate on both sides — no separate lamination step',
-      'Consistent, scratch-resistant, easy-clean surface',
-      'Cuts production time and cost on volume furniture work',
-      'Part of a 150+ design catalog of solids, woodgrains and textures'
-    ],
-    specs: [
-      ['Type', 'Pre-laminated particle board'],
-      ['Design', '1103 – Frosty White (solid)'],
-      ['Surface', 'Melamine laminate, both sides'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thicknesses', '9 / 11 / 17 / 25 mm']
-    ],
-    sizes: ['9 MM', '11 MM', '17 MM', '25 MM'],
-    standards: [],
-    useCases: ['Wardrobes', 'Office furniture', 'Modular kitchens', 'Commercial interiors'],
-    decorImage: '/images/decor/1103-frosty-white.avif'
-  },
-  {
-    slug: 'action-tesa-prelam-particle-board-1104-silver-grey',
-    images: ['/images/products/action-tesa-prelam-particle-board-1104-silver-grey.jpg'],
-    name: 'Action Tesa - Prelam Particle Board 1104 – Silver Grey',
-    brand: 'Action TESA',
-    category: 'pre-laminated-particle-board',
-    subcategory: 'boards',
-    tagline: 'Sleek Silver Grey — a contemporary staple for office interiors.',
-    description:
-      'Action Tesa Pre-Laminated Particle Board in Silver Grey (Code 1104) is a popular choice for modern office interiors, wardrobes, and commercial furniture. The sleek grey finish delivers a contemporary look without additional lamination costs.',
-    features: [
-      'Factory-applied melamine laminate on both sides',
-      'Contemporary grey that pairs cleanly with whites and woodgrains',
-      'Scratch-resistant, easy-clean working surface',
-      'Ready to cut, edge-band and assemble'
-    ],
-    specs: [
-      ['Type', 'Pre-laminated particle board'],
-      ['Design', '1104 – Silver Grey (solid)'],
-      ['Surface', 'Melamine laminate, both sides'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thicknesses', '9 / 11 / 17 / 25 mm']
-    ],
-    sizes: ['9 MM', '11 MM', '17 MM', '25 MM'],
-    standards: [],
-    useCases: ['Office furniture and workstations', 'Wardrobes', 'Commercial furniture'],
-    decorImage: '/images/decor/1104-silver-grey.avif'
-  },
-  {
-    slug: 'action-tesa-prelam-particle-board-1142-pebble-beach',
-    images: ['/images/products/action-tesa-prelam-particle-board-1142-pebble-beach.jpg'],
-    name: 'Action Tesa - Prelam Particle Board 1142 - Pebble Beach',
-    brand: 'Action TESA',
-    category: 'pre-laminated-particle-board',
-    subcategory: 'boards',
-    tagline: 'Stone-inspired Pebble Beach texture for premium, designer interiors.',
-    description:
-      'Action Tesa Pre-Laminated Particle Board in Pebble Beach (Code 1142) features a sophisticated stone-inspired texture ideal for premium furniture, reception desks, and designer interiors.',
-    features: [
-      'Sophisticated stone-inspired texture',
-      'Factory melamine laminate on both sides',
-      'Premium look without premium lamination cost',
-      'Pairs well with solid colours for two-tone designs'
-    ],
-    specs: [
-      ['Type', 'Pre-laminated particle board'],
-      ['Design', '1142 – Pebble Beach (textured)'],
-      ['Surface', 'Melamine laminate, both sides'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thicknesses', '9 / 11 / 17 / 25 mm']
-    ],
-    sizes: ['9 MM', '11 MM', '17 MM', '25 MM'],
-    standards: [],
-    useCases: ['Reception desks', 'Premium furniture', 'Designer interiors'],
-    decorImage: '/images/decor/1142-pebble-beach.avif'
-  },
-  {
-    slug: 'action-tesa-prelam-particle-board-3009-classic-planked-walnut',
-    images: ['/images/products/action-tesa-prelam-particle-board-3009-classic-planked-walnut.jpg'],
-    name: 'Action Tesa - Prelam Particle Board 3009 – Classic Planked Walnut',
-    brand: 'Action TESA',
-    category: 'pre-laminated-particle-board',
-    subcategory: 'boards',
-    tagline: 'Rich planked-walnut grain — natural wood character at board prices.',
-    description:
-      'Action Tesa Pre-Laminated Particle Board in Classic Planked Walnut (Code 3009) delivers a rich wood-grain finish that replicates natural walnut using advanced printing technology — realistic grain patterns and texture at a fraction of the cost of solid wood. Perfect for wardrobes, TV units, and executive office furniture.',
-    features: [
-      'Advanced grain printing replicates natural walnut convincingly',
-      'Factory melamine laminate on both sides',
-      'Warm, executive look for feature furniture',
-      'Consistent pattern across sheets for large runs'
-    ],
-    specs: [
-      ['Type', 'Pre-laminated particle board'],
-      ['Design', '3009 – Classic Planked Walnut (woodgrain)'],
-      ['Surface', 'Melamine laminate, both sides'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thicknesses', '9 / 11 / 17 / 25 mm']
-    ],
-    sizes: ['9 MM', '11 MM', '17 MM', '25 MM'],
-    standards: [],
-    useCases: ['Wardrobes', 'TV units', 'Executive office furniture'],
-    decorImage: '/images/decor/3009-classic-planked-walnut.avif'
-  },
-  {
-    slug: 'action-tesa-prelam-particle-board-3018-mangfall-beech',
-    images: ['/images/products/action-tesa-prelam-particle-board-3018-mangfall-beech.jpg'],
-    name: 'Action Tesa - Prelam Particle Board 3018 – Mangfall Beech',
-    brand: 'Action TESA',
-    category: 'pre-laminated-particle-board',
-    subcategory: 'boards',
-    tagline: 'Light, warm Mangfall Beech — made for bright, Scandinavian-style spaces.',
-    description:
-      "Action Tesa Pre-Laminated Particle Board in Mangfall Beech (Code 3018) offers a light, warm wood-grain finish ideal for Scandinavian-style interiors, children's furniture, and modern workstations.",
-    features: [
-      'Light, warm beech grain that brightens compact rooms',
-      'Factory melamine laminate on both sides',
-      "A natural fit for children's rooms, studies and workstations",
-      'Part of the 150+ design Action Tesa décor catalog'
-    ],
-    specs: [
-      ['Type', 'Pre-laminated particle board'],
-      ['Design', '3018 – Mangfall Beech (woodgrain)'],
-      ['Surface', 'Melamine laminate, both sides'],
-      ['Sheet size', '8 × 4 ft (standard)'],
-      ['Thicknesses', '9 / 11 / 17 / 25 mm']
-    ],
-    sizes: ['9 MM', '11 MM', '17 MM', '25 MM'],
-    standards: [],
-    useCases: ["Children's furniture", 'Study tables and workstations', 'Modern interiors'],
-    decorImage: '/images/decor/3018-mangfall-beech.avif'
-  },
-  // ── FLUSH DOOR ────────────────────────────────────────────────────────────
+  ),
+  prelam(
+    '1142',
+    'Pebble Beach',
+    '1142-pebble-beach',
+    'Stone-inspired texture for reception desks and designer interiors.',
+    'Action TESA pre-laminated particle board in Pebble Beach (code 1142) — a stone-inspired texture for feature furniture, reception desks and designer interiors.',
+    ['Feature furniture', 'Reception desks', 'Designer interiors'],
+    ['commercial', 'furniture']
+  ),
+  prelam(
+    '3009',
+    'Classic Planked Walnut',
+    '3009-classic-planked-walnut',
+    'Planked walnut grain for wardrobes, TV units and office furniture.',
+    'Action TESA pre-laminated particle board in Classic Planked Walnut (code 3009) — a rich wood-grain finish that replicates natural walnut, for wardrobes, TV units and executive office furniture.',
+    ['Wardrobes', 'TV units', 'Executive office furniture'],
+    ['wardrobes', 'furniture', 'commercial']
+  ),
+  prelam(
+    '3018',
+    'Mangfall Beech',
+    '3018-mangfall-beech',
+    'Light, warm beech grain for workstations and bright interiors.',
+    "Action TESA pre-laminated particle board in Mangfall Beech (code 3018) — a light, warm wood-grain finish for Scandinavian-style interiors, children's furniture, study tables and modern workstations.",
+    ["Children's furniture", 'Study tables', 'Workstations', 'Office interiors'],
+    ['furniture', 'commercial']
+  ),
+
+  // ── FLUSH DOOR (Duroply) ───────────────────────────────────────────────────
   {
     slug: 'duro-flush-door',
-    images: ['/images/products/duro-flush-door.jpg', '/images/products/duro-flush-door-2.webp'],
-    name: 'Duro - Flush Door',
+    name: 'Duro Door Flush Door',
+    short: 'Duro Flush Door',
     brand: 'Duroply',
     category: 'flush-door',
     subcategory: 'door',
-    tagline:
-      '100% boiling water proof flush doors with a solid block-board core — built for decades of use.',
-    description:
-      'DURODOOR Flush Doors feature a solid block-board core, seasoned hardwood battens, and high-pressure bonded veneers. 100% boiling water proof and termite-resistant — ideal for bedrooms, bathrooms, and main doors. Manufactured with robust frame construction and calibrated timber for excellent dimensional stability and a smooth surface for painting or veneer application. Meets IS 2202 standards; available in standard and custom sizes.',
-    features: [
-      'Solid block-board core with seasoned hardwood battens',
-      'High-pressure bonded veneers — smooth surface for paint or veneer',
-      '100% boiling water proof; fit for bathrooms and main doors',
-      'Anti-termite treated during manufacturing',
-      'Meets IS 2202; standard and custom sizes on bulk orders'
-    ],
+    summary: 'BWP-grade flush doors in standard and custom sizes.',
+    about:
+      'Duro Door flush doors are made with a robust frame construction and calibrated timber for dimensional stability, with a smooth surface for painting or veneer. They are treated for termite resistance and suit both residential and commercial interiors — bedrooms, bathrooms and main doors.',
     specs: [
-      ['Type', 'Flush door, solid block-board core'],
-      ['Core', 'Block board with seasoned hardwood battens'],
-      ['Face', 'High-pressure bonded veneers'],
-      ['Water resistance', '100% boiling water proof'],
-      ['Standard', 'IS 2202'],
-      ['Thickness options', '30 mm / 35 mm'],
-      ['Standard sizes', '7 × 3 ft and 8 × 4 ft; custom on bulk orders']
+      ['Grade', 'BWP grade'],
+      ['Treatment', 'Termite resistant'],
+      ['Surface', 'Smooth — for paint or veneer'],
+      ['Standard sizes', '7 × 3 ft and 8 × 4 ft'],
+      ['Thickness', '30 mm, 35 mm']
     ],
-    sizes: ['Custom', '48×96', '36×93', '33×93', '33×90', '33×80', '30×80'],
-    sizesNote: 'Sizes in inches (width × height). Custom sizes available on bulk orders.',
-    standards: ['IS 2202'],
-    useCases: ['Bedroom doors', 'Bathroom doors', 'Main doors', 'Commercial buildings']
+    sizes: ['30x80', '33x80', '33x90', '33x93', '36x93', '48x96', 'Custom'],
+    sizesLabel: 'Size (in)',
+    sizesNote: 'Custom sizes can be arranged on bulk orders.',
+    standards: [
+      {label: 'IS 2202', by: 'Duroply', detail: 'available in BWP grade conforming to IS 2202'},
+      {label: 'Termite treatment', by: 'Duroply'}
+    ],
+    applications: ['doors'],
+    uses: ['Bedroom doors', 'Bathroom doors', 'Main doors', 'Commercial interiors'],
+    faqs: [
+      {
+        q: 'What is a flush door?',
+        a: 'A flat door with a solid or hollow core, covered with plywood or MDF face panels — a smooth, even surface on both sides for homes, offices and commercial buildings.'
+      },
+      {
+        q: 'What sizes of flush doors are available?',
+        a: 'Standard 7 × 3 ft and 8 × 4 ft, in 30 mm and 35 mm thickness. Custom sizes can be arranged on bulk orders.'
+      }
+    ],
+    cardImage: '/images/materials/flush-door.webp',
+    images: ['/images/materials/flush-door.webp', `${P}duro-flush-door.jpg`, `${P}duro-flush-door-2.webp`]
   },
-  // ── SMART LOCKS (8 SKUs — honest, type-based copy; no fabricated specs) ───
-  {
-    slug: 'automatic-sliding-smart-lock',
-    images: ['/images/products/automatic-sliding-smart-lock.jpg', '/images/products/automatic-sliding-smart-lock-2.jpg'],
-    name: 'Automatic Sliding Smart Lock',
-    brand: 'Tenon Smart Lock',
-    category: 'smart-locks',
-    subcategory: 'locks',
-    tagline: 'Motorised smart locking for sliding doors — closes and secures automatically.',
-    description:
-      'A Tenon smart lock purpose-built for sliding doors: it locks automatically as the door closes, replacing latches and aftermarket bolts with keyless, motorised security. Suited to residential sliding doors and commercial partitions where a clean, automatic locking action is wanted.',
-    features: [
-      'Designed specifically for sliding doors',
-      'Automatic locking on close — no manual latching',
-      'Keyless entry replaces loose keys for shared spaces',
-      'Clean, minimal hardware that suits modern interiors'
-    ],
-    specs: [
-      ['Type', 'Automatic smart lock for sliding doors'],
-      ['Brand', 'Tenon Smart Lock'],
-      ['Application', 'Sliding doors — residential & commercial']
-    ],
-    sizes: [],
-    standards: [],
-    useCases: ['Sliding doors', 'Wardrobe and partition doors', 'Offices'],
-    specsOnRequest: true
-  },
-  {
-    slug: 'fingerprint-smart-door-lock-with-app',
-    images: ['/images/products/fingerprint-smart-door-lock-with-app.jpg', '/images/products/fingerprint-smart-door-lock-with-app-2.jpg'],
-    name: 'Fingerprint Smart Door Lock with App',
-    brand: 'Tenon Smart Lock',
-    category: 'smart-locks',
-    subcategory: 'locks',
-    tagline: 'Fingerprint access plus full app control — manage entry from your phone.',
-    description:
-      'A Tenon fingerprint smart lock paired with a companion app: unlock with a fingerprint at the door, and manage access, users and entry records from your phone. A practical fit for homes and rental properties where access needs to be granted and revoked easily.',
-    features: [
-      'Fingerprint unlock at the door',
-      'Companion app for managing users and access',
-      'Keyless convenience for families and rentals',
-      'Suits residential main doors and interior doors'
-    ],
-    specs: [
-      ['Type', 'Fingerprint smart lock with app control'],
-      ['Brand', 'Tenon Smart Lock'],
-      ['Application', 'Homes, rentals, offices']
-    ],
-    sizes: [],
-    standards: [],
-    useCases: ['Main doors', 'Rental properties', 'Home offices'],
-    specsOnRequest: true
-  },
-  {
-    slug: 'high-end-smart-main-door-lock',
-    images: ['/images/products/high-end-smart-main-door-lock.jpg', '/images/products/high-end-smart-main-door-lock-2.jpg'],
-    name: 'High-End Smart Main Door Lock',
-    brand: 'Tenon Smart Lock',
-    category: 'smart-locks',
-    subcategory: 'locks',
-    tagline: "Tenon's flagship main-door lock — premium build for the front of the house.",
-    description:
-      "Tenon's premium main-door smart lock: a substantial, full-featured unit built for the most important door in the home. Multiple keyless entry options in a flagship-grade body designed for villa and apartment main doors.",
-    features: [
-      'Flagship-grade build quality for main doors',
-      'Multiple keyless entry options',
-      'Substantial hardware with a premium feel',
-      'Designed for villas and apartment entrances'
-    ],
-    specs: [
-      ['Type', 'Premium smart main-door lock'],
-      ['Brand', 'Tenon Smart Lock'],
-      ['Application', 'Villa & apartment main doors']
-    ],
-    sizes: [],
-    standards: [],
-    useCases: ['Villa main doors', 'Apartment entrances', 'Premium residences'],
-    specsOnRequest: true
-  },
-  {
-    slug: 'mini-smart-lever-lock-for-interior-doors',
-    images: ['/images/products/mini-smart-lever-lock-for-interior-doors.webp', '/images/products/mini-smart-lever-lock-for-interior-doors-2.webp'],
-    name: 'Mini Smart Lever Lock for Interior Doors',
-    brand: 'Tenon Smart Lock',
-    category: 'smart-locks',
-    subcategory: 'locks',
-    tagline: 'Compact smart lever for bedrooms, studies and interior doors.',
-    description:
-      'A compact Tenon smart lever lock sized for interior doors — bedrooms, studies and home offices. Brings keyless convenience to rooms inside the home without the bulk of a main-door unit.',
-    features: [
-      'Compact lever format sized for interior doors',
-      'Keyless entry for bedrooms and studies',
-      'Neat, unobtrusive hardware',
-      'Easy retrofit to standard interior doors'
-    ],
-    specs: [
-      ['Type', 'Compact smart lever lock'],
-      ['Brand', 'Tenon Smart Lock'],
-      ['Application', 'Interior doors']
-    ],
-    sizes: [],
-    standards: [],
-    useCases: ['Bedrooms', 'Studies and home offices', 'Interior doors'],
-    specsOnRequest: true
-  },
-  {
-    slug: 'palm-vein-face-recognition-smart-lock',
-    images: ['/images/products/palm-vein-face-recognition-smart-lock.jpg', '/images/products/palm-vein-face-recognition-smart-lock-2.jpg'],
-    name: 'Palm Vein & Face Recognition Smart Lock',
-    brand: 'Tenon Smart Lock',
-    category: 'smart-locks',
-    subcategory: 'locks',
-    tagline: 'Hands-free biometrics — palm-vein and face recognition at the door.',
-    description:
-      'A Tenon biometric smart lock using palm-vein and face recognition — two of the most secure, hands-free biometric methods available. The door recognises you and unlocks without touching a keypad, suited to premium homes that want top-tier keyless security.',
-    features: [
-      'Palm-vein recognition — biometrics that are extremely hard to spoof',
-      'Face recognition for hands-free unlocking',
-      'No keys, cards or codes needed day to day',
-      'Premium choice for security-conscious homes'
-    ],
-    specs: [
-      ['Type', 'Biometric smart lock (palm vein + face recognition)'],
-      ['Brand', 'Tenon Smart Lock'],
-      ['Application', 'Premium residential main doors']
-    ],
-    sizes: [],
-    standards: [],
-    useCases: ['Premium main doors', 'Security-conscious homes', 'Elderly-friendly hands-free entry'],
-    specsOnRequest: true
-  },
-  {
-    slug: 'sliding-fingerprint-door-lock',
-    name: 'Sliding Fingerprint Door Lock',
-    brand: 'Tenon Smart Lock',
-    category: 'smart-locks',
-    subcategory: 'locks',
-    tagline: 'Touch-activated sliding lock with OLED screen and automatic closing.',
-    description:
-      'A touch-activated sliding smart lock with OLED screen and automatic closing. Ideal for bedroom and interior sliding doors with keyless access.',
-    features: [
-      'Touch-activated fingerprint unlocking',
-      'OLED screen for status and interaction',
-      'Automatic closing action',
-      'Built for bedroom and interior sliding doors'
-    ],
-    specs: [
-      ['Type', 'Fingerprint smart lock for sliding doors'],
-      ['Display', 'OLED screen'],
-      ['Closing', 'Automatic'],
-      ['Brand', 'Tenon Smart Lock'],
-      ['Application', 'Bedroom & interior sliding doors']
-    ],
-    sizes: [],
-    standards: [],
-    useCases: ['Bedroom sliding doors', 'Interior sliding doors'],
-    specsOnRequest: true
-  },
-  {
-    slug: 'smart-lever-handle-lock',
-    images: ['/images/products/smart-lever-handle-lock.jpg', '/images/products/smart-lever-handle-lock-2.jpg'],
-    name: 'Smart Lever Handle Lock',
-    brand: 'Tenon Smart Lock',
-    category: 'smart-locks',
-    subcategory: 'locks',
-    tagline: 'A familiar lever handle, upgraded with keyless smart entry.',
-    description:
-      'A Tenon smart lock in the classic lever-handle format — the familiar action of a lever handle with keyless smart entry built in. An easy upgrade path from conventional mortise handles on residential and office doors.',
-    features: [
-      'Classic lever-handle format — familiar to every user',
-      'Keyless smart entry built into the handle',
-      'Straightforward upgrade from conventional handles',
-      'Suits homes and offices alike'
-    ],
-    specs: [
-      ['Type', 'Smart lever-handle lock'],
-      ['Brand', 'Tenon Smart Lock'],
-      ['Application', 'Residential & office doors']
-    ],
-    sizes: [],
-    standards: [],
-    useCases: ['Home doors', 'Office doors', 'Upgrades from conventional handles'],
-    specsOnRequest: true
-  },
-  {
-    slug: 'wifi-smart-door-lock',
-    images: ['/images/products/wifi-smart-door-lock.jpg', '/images/products/wifi-smart-door-lock-2.jpg'],
-    name: 'WiFi Smart Door Lock',
-    brand: 'Tenon Smart Lock',
-    category: 'smart-locks',
-    subcategory: 'locks',
-    tagline: 'Connected over WiFi — control and monitor your door from anywhere.',
-    description:
-      'A Tenon smart lock with built-in WiFi connectivity: monitor the door, manage access and unlock remotely from anywhere. The right pick for connected homes and hosts who manage access for guests or staff.',
-    features: [
-      'Built-in WiFi — no separate hub required',
-      'Remote unlocking and access management',
-      'Entry visibility wherever you are',
-      'Great for hosts, rentals and connected homes'
-    ],
-    specs: [
-      ['Type', 'WiFi-connected smart lock'],
-      ['Brand', 'Tenon Smart Lock'],
-      ['Application', 'Connected homes, rentals']
-    ],
-    sizes: [],
-    standards: [],
-    useCases: ['Connected homes', 'Guest and rental access', 'Remote monitoring'],
-    specsOnRequest: true
-  }
+
+  // ── SMART LOCKS (Tenon) — names only; specs on request (A1 has none) ───────
+  lock('automatic-sliding-smart-lock', 'Automatic Sliding Smart Lock', 'Smart lock for sliding doors.', ['Sliding doors'], [
+    `${P}automatic-sliding-smart-lock-2.jpg`,
+    `${P}automatic-sliding-smart-lock.jpg`
+  ]),
+  lock(
+    'fingerprint-smart-door-lock-with-app',
+    'Fingerprint Smart Door Lock with App',
+    'Fingerprint smart door lock with app control.',
+    ['Main doors', 'Interior doors'],
+    [`${P}fingerprint-smart-door-lock-with-app.jpg`, `${P}fingerprint-smart-door-lock-with-app-2.jpg`]
+  ),
+  lock(
+    'high-end-smart-main-door-lock',
+    'High-End Smart Main Door Lock',
+    'Smart lock for the main door.',
+    ['Main doors'],
+    [`${P}high-end-smart-main-door-lock.jpg`, `${P}high-end-smart-main-door-lock-2.jpg`]
+  ),
+  lock(
+    'mini-smart-lever-lock-for-interior-doors',
+    'Mini Smart Lever Lock for Interior Doors',
+    'Compact smart lever lock for interior doors.',
+    ['Interior doors'],
+    [`${P}mini-smart-lever-lock-for-interior-doors-2.webp`, `${P}mini-smart-lever-lock-for-interior-doors.webp`]
+  ),
+  lock(
+    'palm-vein-face-recognition-smart-lock',
+    'Palm Vein & Face Recognition Smart Lock',
+    'Smart lock with palm-vein and face recognition.',
+    ['Main doors'],
+    [`${P}palm-vein-face-recognition-smart-lock.jpg`, `${P}palm-vein-face-recognition-smart-lock-2.jpg`]
+  ),
+  lock(
+    'sliding-fingerprint-door-lock',
+    'Sliding Fingerprint Door Lock',
+    'Touch-activated sliding lock with OLED screen and automatic closing.',
+    ['Bedroom doors', 'Interior sliding doors'],
+    [`${P}sliding-fingerprint-door-lock.webp`],
+    {
+      about:
+        'A touch-activated sliding smart lock with OLED screen and automatic closing — keyless access for bedroom and interior sliding doors. Supplied by Ananta Corporation for retail and bulk project requirements.',
+      specs: [
+        ['Brand', 'Tenon Smart Lock'],
+        ['Access', 'Fingerprint, keyless'],
+        ['Display', 'OLED screen'],
+        ['Closing', 'Automatic']
+      ],
+    }
+  ),
+  lock(
+    'smart-lever-handle-lock',
+    'Smart Lever Handle Lock',
+    'Smart lock in a lever-handle format.',
+    ['Interior doors', 'Main doors'],
+    [`${P}smart-lever-handle-lock.jpg`, `${P}smart-lever-handle-lock-2.jpg`]
+  ),
+  lock('wifi-smart-door-lock', 'WiFi Smart Door Lock', 'WiFi-connected smart door lock.', ['Main doors'], [
+    `${P}wifi-smart-door-lock.jpg`,
+    `${P}wifi-smart-door-lock-2.jpg`
+  ])
 ];
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -721,9 +619,7 @@ export function productsBySubcategory(category: string, sub: string): Product[] 
 }
 
 export function productByPath(category: string, sub: string, slug: string): Product | undefined {
-  return PRODUCTS.find(
-    (p) => p.category === category && p.subcategory === sub && p.slug === slug
-  );
+  return PRODUCTS.find((p) => p.category === category && p.subcategory === sub && p.slug === slug);
 }
 
 export function categoryHref(slug: CategorySlug): Href {
@@ -741,14 +637,15 @@ export function productHref(p: Product): Href {
   } as Href;
 }
 
+/** Plain path string for client components / WhatsApp context. */
+export function productPath(p: Product): string {
+  return `/products/${p.category}/${p.subcategory}/${p.slug}`;
+}
+
 /** Related products: same category first, then same brand, excluding self. */
 export function relatedProducts(p: Product, count = 4): Product[] {
   const same = PRODUCTS.filter((x) => x.slug !== p.slug && x.category === p.category);
-  const brand = PRODUCTS.filter(
-    (x) => x.slug !== p.slug && x.category !== p.category && x.brand === p.brand
-  );
-  const rest = PRODUCTS.filter(
-    (x) => x.slug !== p.slug && x.category !== p.category && x.brand !== p.brand
-  );
+  const brand = PRODUCTS.filter((x) => x.slug !== p.slug && x.category !== p.category && x.brand === p.brand);
+  const rest = PRODUCTS.filter((x) => x.slug !== p.slug && x.category !== p.category && x.brand !== p.brand);
   return [...same, ...brand, ...rest].slice(0, count);
 }

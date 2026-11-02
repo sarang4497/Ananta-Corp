@@ -1,90 +1,81 @@
 import type {Metadata, Viewport} from 'next';
 import type {ReactNode} from 'react';
-import {Geist, Geist_Mono, Inter} from 'next/font/google';
+import {Geist, Geist_Mono} from 'next/font/google';
 import {notFound} from 'next/navigation';
 import {hasLocale, NextIntlClientProvider} from 'next-intl';
 import {setRequestLocale} from 'next-intl/server';
 import {routing} from '@/i18n/routing';
 import {siteUrl} from '@/config';
-import SmoothScroll from '@/components/SmoothScroll';
-import {Navbar} from '@/components/Navbar';
-import {Footer} from '@/components/Footer';
+import {Header} from '@/components/site/Header';
+import {Footer} from '@/components/site/Footer';
+import {ContactDock} from '@/components/site/ContactDock';
+import {RevealObserver} from '@/components/motion/RevealObserver';
 import {ChatWidget} from '@/components/chat/ChatWidget';
-import {WhatsAppButton} from '@/components/WhatsAppButton';
-import {GradientMesh} from '@/components/ui/GradientMesh';
+import {organizationJsonLd} from '@/lib/jsonld';
 import '../globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-  display: 'swap'
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-  display: 'swap'
-});
-
-// Inter (semibold) — the SaaS-standard navbar typeface; far more legible at
-// nav size than the previous display font.
-const inter = Inter({
-  variable: '--font-inter',
-  weight: '600',
-  subsets: ['latin'],
-  display: 'swap'
-});
+// One family (Geist) + its mono for technical labels. Inter was dropped.
+const geistSans = Geist({variable: '--font-geist-sans', subsets: ['latin'], display: 'swap'});
+const geistMono = Geist_Mono({variable: '--font-geist-mono', subsets: ['latin'], display: 'swap', weight: ['400', '500']});
 
 export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl)
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: 'Ananta Corporation | Plywood, MDF & Board Supplier in Ahmedabad',
+    template: '%s | Ananta Corporation'
+  },
+  openGraph: {
+    siteName: 'Ananta Corporation',
+    type: 'website',
+    locale: 'en_IN',
+    images: [{url: '/images/scenes/living-wood.webp', width: 1200, height: 546, alt: 'Wood-panelled interior'}]
+  },
+  twitter: {card: 'summary_large_image'}
 };
 
 export const viewport: Viewport = {
-  themeColor: '#ffffff'
+  themeColor: '#0b1a3c',
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover'
 };
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({locale}));
 }
 
-export default async function LocaleLayout({
-  children,
-  params
-}: {
-  children: ReactNode;
-  params: Promise<{locale: string}>;
-}) {
+// Set html.js before first paint so reveal start-states only exist when JS
+// runs (no-JS visitors and crawlers always see all content).
+const JS_FLAG = "document.documentElement.classList.add('js')";
+
+export default async function LocaleLayout({children, params}: {children: ReactNode; params: Promise<{locale: string}>}) {
   const {locale} = await params;
-
-  // Ensure the incoming `[locale]` is one we support.
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
-
-  // Enable static rendering.
+  if (!hasLocale(routing.locales, locale)) notFound();
   setRequestLocale(locale);
 
   return (
-    <html
-      lang={locale}
-      className={`${geistSans.variable} ${geistMono.variable} ${inter.variable}`}
-      suppressHydrationWarning
-    >
-      {/* overflow-x-clip (not hidden) guards against horizontal scroll on mobile
-          without creating a scroll container that would break sticky positioning. */}
+    <html lang={locale} className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{__html: JS_FLAG}} />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: JSON.stringify(organizationJsonLd())}} />
+      </head>
       <body className="min-h-dvh overflow-x-clip bg-bg text-ink antialiased">
         <NextIntlClientProvider>
-          <SmoothScroll />
-          {/* Ambient, slowly drifting multi-color backdrop (pure CSS). */}
-          <GradientMesh />
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[80] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-indigo focus:shadow-lift"
+          >
+            Skip to content
+          </a>
+          <RevealObserver />
           <div className="relative flex min-h-dvh flex-col">
-            <Navbar />
-            <main className="flex-1">{children}</main>
+            <Header />
+            <main id="main" className="flex-1">
+              {children}
+            </main>
             <Footer />
           </div>
-          {/* Sticky WhatsApp contact button (site-wide). */}
-          <WhatsAppButton />
-          {/* Floating AI assistant — its heavy panel loads in a lazy chunk. */}
+          <ContactDock />
           <ChatWidget />
         </NextIntlClientProvider>
       </body>

@@ -37,6 +37,7 @@ export function ChatOverlay({
 }) {
   // Portals need the DOM; wait until mounted on the client.
   const [mounted, setMounted] = useState(false);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only portal mount flag
   useEffect(() => setMounted(true), []);
 
   useEffect(() => {

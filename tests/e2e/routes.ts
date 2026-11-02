@@ -1,0 +1,24 @@
+/** Every public route family, one representative each + all categories. */
+export const ROUTES = [
+  '/',
+  '/products',
+  '/products/plywood',
+  '/products/plywood/boiling-water-proof',
+  '/products/mdf',
+  '/products/high-moisture-resistant-board-moist-master',
+  '/products/pre-laminated-particle-board',
+  '/products/flush-door',
+  '/products/smart-locks',
+  '/products/plywood/moisture-resistant/duroply-mr-moisture-resistant-plywood',
+  '/products/mdf/hdhmr/action-tesa-hdhmr-board',
+  '/products/pre-laminated-particle-board/boards/action-tesa-prelam-particle-board-3009-classic-planked-walnut',
+  '/products/flush-door/door/duro-flush-door',
+  '/products/smart-locks/locks/sliding-fingerprint-door-lock',
+  '/decor',
+  '/partners',
+  '/about',
+  '/contact',
+  '/privacy',
+  '/terms'
+];
+export const WIDTHS = [320, 360, 375, 390, 393, 414, 430, 768, 1024, 1280, 1440];

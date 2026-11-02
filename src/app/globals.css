@@ -1,165 +1,218 @@
 @import "tailwindcss";
 
-/* ----------------------------------------------------------------------------
-   Design tokens — Tailwind v4 CSS-first @theme.
-   Ananta Corporation brand: PRIMARY navy-royal blue (#1E40AF, brighter step
-   #1D4ED8 for hover/interactive) for brand elements and dark sections; ACCENT
-   warm orange (#F97316, light #FB923C, deep #EA580C) for CTAs, highlights and
-   hovers; warm off-white neutrals. HARD RULE: no pure black anywhere.
-   Text/borders/shadows use --ink (dark blue-slate) or blue/orange tinted
-   rgba — never #000.
----------------------------------------------------------------------------- */
+/* ============================================================================
+   ANANTA DESIGN SYSTEM — "architectural material intelligence"
+   Brand: Ananta corporate blue #1E40AF (from the logo/brand palette) with a
+   brighter interactive step #1D4ED8, a deep navy for dark proof sections, and
+   the logo's orange #F97316 used ONLY for accents, selected states, lines and
+   the high-value CTA moments. Neutrals: white, cool steel greys, a warm
+   material off-white. No pure black — graphite ink is blue-tinted.
+   Token NAMES bg/ink/muted/indigo/blue/orange/border are kept for the chat
+   module's existing classes.
+============================================================================ */
 @theme {
   --color-bg: #ffffff;
-  --color-bg-soft: #fafaf9;
-  --color-bg-warm: #f5f5f4;
-  /* Legacy alias kept for shared components (chat, focus rings) — the bright
-     blue interactive step. NOTE: the `indigo` token NAME is kept for class
-     compatibility, but its VALUE is now the navy-royal blue primary. */
-  --color-blue: #1d4ed8;
-  --color-indigo: #1e40af;
+  --color-bg-soft: #f5f6f8;
+  --color-bg-warm: #f3f1ec;
+  --color-surface-blue: #eef2fb;
+
+  --color-indigo: #1e40af; /* PRIMARY BLUE */
+  --color-blue: #1d4ed8; /* interactive step */
   --color-indigo-bright: #1d4ed8;
-  --color-orange: #f97316;
+  --color-navy: #0b1a3c; /* DEEP NAVY */
+  --color-navy-2: #12255a;
+  --color-navy-line: rgba(255, 255, 255, 0.12);
+
+  --color-orange: #f97316; /* ORANGE ACCENT */
   --color-orange-light: #fb923c;
   --color-orange-deep: #ea580c;
-  --color-red: #ef4444;
-  --color-green: #22c55e;
-  --color-ink: #1e1b3a;
-  --color-muted: #64748b;
-  --color-border: rgba(30, 64, 175, 0.12);
+  --color-orange-ink: #c2410c; /* orange text on white, AA */
+
+  --color-ink: #121a2f; /* GRAPHITE TEXT */
+  --color-muted: #566176; /* MUTED STEEL TEXT */
+  --color-steel: #8a93a6;
+  --color-border: rgba(18, 26, 47, 0.12);
+  --color-line: rgba(18, 26, 47, 0.1);
+  --color-red: #dc2626;
+  --color-green: #16a34a;
+  --color-wa: #1fa855; /* WhatsApp, AA on white for icons */
 
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
 
-  --shadow-glow: 0 24px 60px -24px rgba(29, 78, 216, 0.35);
-  --shadow-card: 0 1px 2px rgba(30, 64, 175, 0.06), 0 12px 32px -16px rgba(30, 64, 175, 0.18);
-  --shadow-orange: 0 10px 30px -12px rgba(249, 115, 22, 0.55);
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 
-  --radius-2xl: 1rem;
+  --shadow-card: 0 1px 2px rgba(18, 26, 47, 0.06), 0 8px 24px -16px rgba(18, 26, 47, 0.25);
+  --shadow-lift: 0 2px 4px rgba(18, 26, 47, 0.06), 0 24px 48px -24px rgba(11, 26, 60, 0.35);
+  --shadow-glow: 0 18px 40px -20px rgba(29, 78, 216, 0.45);
 
-  /* Full nav row (links + CTA, all inline) appears from here; below this the
-     navbar collapses to the hamburger drawer. */
-  --breakpoint-nav: 1100px;
+  --breakpoint-nav: 1080px;
 
-  --animate-wa-pulse: wa-pulse 2.4s ease-out infinite;
-  --animate-marquee: marquee 28s linear infinite;
-  --animate-drift: drift 26s ease-in-out infinite;
-  --animate-drift-slow: drift 38s ease-in-out infinite reverse;
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* Raw tokens exposed as plain CSS variables, used for gradient/shadow
-   composition and direct style references. */
 :root {
-  --bg: #ffffff;
-  --bg-soft: #fafaf9;
-  --bg-warm: #f5f5f4;
-  --blue: #1d4ed8;
-  --indigo: #1e40af;
-  --indigo-bright: #1d4ed8;
-  --orange: #f97316;
-  --orange-light: #fb923c;
-  --orange-deep: #ea580c;
-  --red: #ef4444;
-  --green: #22c55e;
-  --ink: #1e1b3a;
-  --muted: #64748b;
-  --border: rgba(30, 64, 175, 0.12);
-  --shadow: 0 24px 60px -24px rgba(29, 78, 216, 0.35);
-  /* Brand gradients: navy-blue core; the accent blend adds a subtle drift into
-     warm orange for hero/banner moments (blue → orange). */
-  --gradient-brand: linear-gradient(120deg, #1d4ed8, #1e40af);
-  --gradient-accent: linear-gradient(110deg, #1e40af 0%, #1d4ed8 55%, #ea580c 130%);
-  --gradient-wordmark: linear-gradient(100deg, #1e40af 20%, #1d4ed8 55%, #f97316 105%);
+  /* Layout: container + gutters. 16px phone gutter, grows to 40px. */
+  --gutter: clamp(16px, 4vw, 40px);
+  /* ≥768 the side gutter also reserves the floating dock column (16 + 48 + 12). */
+  --side: var(--gutter);
+  --container: 1360px;
+  --header-h: 64px;
+  /* Bottom contact bar height on phones (0 on larger screens). */
+  --dock-h: 0px;
 
-  /* Full-bleed layout: every section spans the viewport with a strict 0.75cm
-     gutter on the left/right. --nav-h is the sticky navbar's exact height. */
-  --gutter: 1.5cm;
-  --nav-h: 4.32rem;
-  --pinned-h: var(--nav-h);
+  /* Motion tokens */
+  --mo-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --mo-fast: 160ms;
+  --mo-reveal: 640ms;
+  --mo-image: 1000ms;
+
+  --gradient-brand: linear-gradient(120deg, #1d4ed8, #1e40af);
+}
+@media (min-width: 768px) {
+  :root {
+    --side: max(var(--gutter), 76px);
+  }
+}
+@media (max-width: 767px) {
+  :root {
+    --dock-h: calc(60px + env(safe-area-inset-bottom));
+  }
 }
 
-/* Offset anchored sections so they aren't hidden behind the pinned navbar. */
 html {
-  scroll-padding-top: var(--pinned-h);
+  scroll-padding-top: calc(var(--header-h) + 12px);
+  -webkit-text-size-adjust: 100%;
 }
 :where([id]) {
-  scroll-margin-top: var(--pinned-h);
+  scroll-margin-top: calc(var(--header-h) + 12px);
 }
 
-/* Sticky WhatsApp button — gentle expanding-ring pulse. */
-@keyframes wa-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.5);
+@layer base {
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: 'ss01', 'cv11';
   }
-  70% {
-    box-shadow: 0 0 0 16px rgba(37, 211, 102, 0);
+  h1,
+  h2,
+  h3,
+  h4 {
+    letter-spacing: -0.025em;
+    text-wrap: balance;
   }
-  100% {
-    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  p {
+    text-wrap: pretty;
   }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
+  ::selection {
+    background: rgba(29, 78, 216, 0.18);
+    color: var(--color-ink);
   }
-  to {
-    transform: translateX(-50%);
+  :focus-visible {
+    outline: 2px solid var(--color-blue);
+    outline-offset: 3px;
+    border-radius: 3px;
   }
-}
-
-@keyframes drift {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
+  summary {
+    cursor: pointer;
+    list-style: none;
   }
-  33% {
-    transform: translate3d(5%, -4%, 0) scale(1.12);
-  }
-  66% {
-    transform: translate3d(-4%, 5%, 0) scale(0.94);
-  }
-}
-
-/* Chat assistant: mic recording pulse + live waveform bars (CSS only). */
-@keyframes chat-pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.45);
-  }
-  70% {
-    box-shadow: 0 0 0 9px rgba(239, 68, 68, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0);
+  summary::-webkit-details-marker {
+    display: none;
   }
 }
 
-@keyframes chat-wave {
-  0%,
-  100% {
-    transform: scaleY(0.35);
+/* Horizontal scroller with snap; scrollbar hidden but still scrollable.
+   Registered with @utility so responsive variants (sm:grid, lg:overflow-visible)
+   correctly override it. */
+@utility rail {
+  display: flex;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  &::-webkit-scrollbar {
+    display: none;
   }
-  50% {
-    transform: scaleY(1);
-  }
-}
-
-@keyframes chat-rise {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
+  & > * {
+    scroll-snap-align: start;
+    flex: none;
   }
 }
 
 @layer utilities {
-  /* Full-bleed section shell: full width with the fixed side gutters. */
+  /* Centered container with fluid gutters. */
   .shell {
-    padding-left: var(--gutter);
-    padding-right: var(--gutter);
+    width: 100%;
+    max-width: calc(var(--container) + 2 * var(--side));
+    margin-inline: auto;
+    padding-inline: var(--side);
+  }
+  .shell-wide {
+    width: 100%;
+    max-width: calc(1600px + 2 * var(--side));
+    margin-inline: auto;
+    padding-inline: var(--side);
+  }
+  /* Typography scale — clamp()ed so mobile H1s stay at 3–4 lines max. */
+  .t-display {
+    font-size: clamp(2.1rem, 1.3rem + 3.2vw, 4rem);
+    line-height: 1.02;
+    font-weight: 650;
+    letter-spacing: -0.035em;
+  }
+  .t-h2 {
+    font-size: clamp(1.6rem, 1.1rem + 2vw, 2.75rem);
+    line-height: 1.08;
+    font-weight: 650;
+    letter-spacing: -0.03em;
+  }
+  .t-h3 {
+    font-size: clamp(1.15rem, 1rem + 0.5vw, 1.4rem);
+    line-height: 1.2;
+    font-weight: 600;
+  }
+  .t-lead {
+    font-size: clamp(1rem, 0.95rem + 0.3vw, 1.18rem);
+    line-height: 1.6;
+  }
+  /* Technical label: mono, small caps feel. */
+  .t-label {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    line-height: 1.3;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+  /* Hairline technical grid used behind product staging. */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgba(18, 26, 47, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(18, 26, 47, 0.06) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(to right, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .bg-gradient-brand {
+    background-image: var(--gradient-brand);
+  }
+  /* Page bottom reserve so the phone contact bar never covers the last content. */
+  .pb-dock {
+    padding-bottom: var(--dock-h);
   }
   .chat-pulse {
     animation: chat-pulse 1.4s ease-out infinite;
@@ -173,101 +226,228 @@ html {
   }
 }
 
-@layer base {
-  body {
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--font-sans);
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
-  }
-
-  /* Headings: the same sans, pushed bolder + tighter for an industrial-premium
-     display feel without shipping another font. */
-  h1,
-  h2,
-  h3 {
-    letter-spacing: -0.02em;
-  }
-
-  ::selection {
-    background: rgba(29, 78, 216, 0.18);
-    color: var(--ink);
-  }
-
-  /* Lenis smooth scroll baseline */
-  html.lenis,
-  html.lenis body {
-    height: auto;
-  }
-  .lenis.lenis-smooth {
-    scroll-behavior: auto !important;
-  }
-  .lenis.lenis-stopped {
-    overflow: clip;
-  }
+/* ============================================================================
+   MOTION SYSTEM
+   - Content is VISIBLE by default. Only when the inline head script has set
+     html.js do reveal start-states apply; RevealObserver adds .is-in when the
+     element enters the viewport (and immediately for anything already on
+     screen). No JS / reduced motion → no hidden content.
+   - data-reveal="up" (default) | "fade" | "mask" (image clip reveal) | "line"
+   - --d: per-element stagger delay (set inline, e.g. style="--d:120ms")
+============================================================================ */
+.js [data-reveal] {
+  transition:
+    opacity var(--mo-reveal) var(--mo-ease) var(--d, 0ms),
+    transform var(--mo-reveal) var(--mo-ease) var(--d, 0ms),
+    clip-path var(--mo-image) var(--mo-ease) var(--d, 0ms);
+}
+.js [data-reveal='up']:not(.is-in),
+.js [data-reveal='']:not(.is-in) {
+  opacity: 0;
+  transform: translate3d(0, 18px, 0);
+}
+.js [data-reveal='fade']:not(.is-in) {
+  opacity: 0;
+}
+.js [data-reveal='mask']:not(.is-in) {
+  clip-path: inset(0 0 100% 0);
+}
+.js [data-reveal='mask'].is-in {
+  clip-path: inset(0 0 0 0);
+}
+.js [data-reveal='mask'] img {
+  transition: transform 1400ms var(--mo-ease) var(--d, 0ms);
+}
+.js [data-reveal='mask']:not(.is-in) img {
+  transform: scale(1.08);
+}
+.js [data-reveal='line'] {
+  transform-origin: left center;
+}
+.js [data-reveal='line']:not(.is-in) {
+  transform: scaleX(0);
 }
 
-@layer utilities {
-  .bg-gradient-brand {
-    background-image: var(--gradient-brand);
+/* Hero load choreography: pure CSS, plays on first paint. The hero image is
+   painted immediately (LCP-safe); a navy panel wipes off it instead. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0);
   }
-  .bg-gradient-accent {
-    background-image: var(--gradient-accent);
-  }
-  .text-gradient-brand {
-    background-image: var(--gradient-brand);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .text-gradient-wordmark {
-    background-image: var(--gradient-wordmark);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
-
-/* Subtle sheen sweep for primary CTAs (premium, not gimmicky). It starts and
-   stays off-screen, so prefers-reduced-motion (which freezes it via the reset
-   below) simply shows no sheen. */
-@keyframes btn-sheen {
-  0% {
-    transform: translateX(-130%) skewX(-12deg);
+@keyframes hero-wipe {
+  from {
+    transform: scaleY(1);
   }
-  55%,
-  100% {
-    transform: translateX(260%) skewX(-12deg);
+  to {
+    transform: scaleY(0);
   }
 }
-.btn-sheen {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
+@keyframes hero-drift {
+  from {
+    transform: translate3d(14px, 10px, 0);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
 }
-.btn-sheen::after {
+.js .hero-in {
+  animation: hero-rise 760ms var(--mo-ease) both;
+  animation-delay: var(--d, 0ms);
+}
+.js .hero-wipe::after {
   content: '';
   position: absolute;
   inset: 0;
+  background: var(--color-navy);
+  transform-origin: top;
+  animation: hero-wipe 1100ms var(--mo-ease) 120ms both;
   pointer-events: none;
-  background: linear-gradient(
-    100deg,
-    transparent 38%,
-    rgba(255, 255, 255, 0.35) 50%,
-    transparent 62%
-  );
-  transform: translateX(-130%) skewX(-12deg);
-  animation: btn-sheen 5.5s ease-in-out infinite;
+}
+.js .hero-layer {
+  animation: hero-drift 900ms var(--mo-ease) both;
+  animation-delay: var(--d, 500ms);
 }
 
-/* Respect users who prefer less motion: kill ambient CSS animations. */
+/* Count-up roll (CountUp component): digits rise out of a clip. */
+[data-count] {
+  display: inline-block;
+}
+[data-count-roll='start'] {
+  transform: translateY(35%);
+  opacity: 0.35;
+}
+[data-count-roll='in'] {
+  transform: none;
+  opacity: 1;
+  transition:
+    transform 500ms var(--mo-ease),
+    opacity 500ms var(--mo-ease);
+}
+
+/* Product/material tile hover depth (pointer devices only). */
+@media (hover: hover) {
+  .tile-lift {
+    transition:
+      transform 220ms var(--mo-ease),
+      box-shadow 220ms var(--mo-ease),
+      border-color 220ms var(--mo-ease);
+  }
+  .tile-lift:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lift);
+  }
+  .tile-zoom img {
+    transition: transform 700ms var(--mo-ease);
+  }
+  .tile-zoom:hover img {
+    transform: scale(1.045);
+  }
+}
+/* Touch feedback */
+@media (hover: none) {
+  .tile-lift:active {
+    transform: scale(0.985);
+    transition: transform 120ms ease-out;
+  }
+}
+
+/* Arrow nudge micro-interaction */
+.arrow-nudge svg {
+  transition: transform var(--mo-fast) var(--mo-ease);
+}
+.arrow-nudge:hover svg,
+.arrow-nudge:focus-visible svg {
+  transform: translateX(3px);
+}
+
+/* Process line progress (Operations / custom furniture). */
+.js [data-progress] .progress-fill {
+  transform-origin: left center;
+  transform: scaleX(var(--p, 0));
+  transition: transform 300ms linear;
+}
+
+@keyframes chat-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(220, 38, 38, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
+}
+@keyframes chat-wave {
+  0%,
+  100% {
+    transform: scaleY(0.35);
+  }
+  50% {
+    transform: scaleY(1);
+  }
+}
+@keyframes chat-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marquee-x 90s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+/* Reduced motion: everything visible, no transforms, no ambient loops. */
 @media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+    transition: none !important;
+  }
+  .js [data-reveal] img {
+    transform: none !important;
+  }
+  .js .hero-in,
+  .js .hero-layer {
+    animation: none !important;
+  }
+  .js .hero-wipe::after {
+    display: none;
+  }
+  .marquee-track {
+    animation: none !important;
+  }
   *,
   *::before,
   *::after {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
   }
 }
