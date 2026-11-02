@@ -7,6 +7,7 @@ import {Link} from '@/i18n/navigation';
 import {whatsappUrl} from '@/lib/whatsapp';
 import {cn} from '@/lib/cn';
 import {BellaAvatar} from './BellaAvatar';
+import {GUIDE_CHIPS, matchIntent, type GuideIntent} from '@/lib/assistant/guide';
 import {ChatMarkdown} from './ChatMarkdown';
 
 /**
@@ -23,12 +24,7 @@ interface Msg {
   seed?: boolean; // greeting — shown but not sent as history
 }
 
-const STARTERS = [
-  'What products do you supply?',
-  'Which plywood is right for a kitchen?',
-  "What's the difference between MDF and HDHMR?",
-  'How do I get a price quote?'
-];
+
 
 const ERROR_MSG =
   "I'm having trouble right now — please reach us on WhatsApp (https://wa.me/918320052838) or via /contact.";
@@ -124,6 +120,15 @@ export default function ChatPanel({
       const text = (textOverride ?? input).trim();
       if (!text || busy || capped) return;
       const userMsg: Msg = {id: nextId(), role: 'user', content: text};
+      // Deterministic answer from verified data when the question is known —
+      // no model call (and it doesn't count toward the message cap).
+      const intent = matchIntent(text);
+      if (intent) {
+        // Both turns are marked `seed` so they never enter the model history.
+        setMessages([...messages, {...userMsg, seed: true}, {id: nextId(), role: 'assistant', content: intent.answer(), seed: true}]);
+        setInput('');
+        return;
+      }
       const history = [...messages, userMsg];
       setMessages(history);
       setInput('');
@@ -229,14 +234,15 @@ export default function ChatPanel({
         {/* Starter chips — only before the first user message. */}
         {!hasUserMsg && !busy ? (
           <div className="flex flex-col items-start gap-1.5 pt-1">
-            {STARTERS.map((s) => (
+            {GUIDE_CHIPS.map((g: GuideIntent) => (
               <button
-                key={s}
+                key={g.key}
                 type="button"
-                onClick={() => send(s)}
+                data-testid={`guide-${g.key}`}
+                onClick={() => send(g.label)}
                 className="rounded-full border border-indigo/20 bg-indigo/5 px-3 py-1.5 text-left text-xs font-medium text-indigo transition-all hover:border-indigo/40 hover:bg-indigo/10 hover:shadow-sm"
               >
-                {s}
+                {g.label}
               </button>
             ))}
           </div>

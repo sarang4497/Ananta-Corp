@@ -1,4 +1,5 @@
 import {test, expect} from '@playwright/test';
+import {hydrated} from './helpers';
 
 const decode = (href: string | null) => decodeURIComponent(new URL(href!).searchParams.get('text') ?? '');
 
@@ -63,19 +64,23 @@ test('contact form: required fields block submission', async ({page}) => {
 
 test('material selector routes to real products and a prefilled WhatsApp', async ({page}) => {
   await page.goto('/#selector');
+  await hydrated(page);
   const sel = page.locator('#selector');
   await sel.getByRole('button', {name: 'Bathroom & humid areas'}).click();
   await sel.getByRole('button', {name: 'Covered balcony / semi-outdoor'}).click();
-  await expect(sel.getByRole('link', {name: 'Exterior Grade MDF'})).toBeVisible();
+  await expect(sel.getByRole('link', {name: 'Exterior Grade MDF', exact: true})).toBeVisible();
   const href = await sel.getByRole('link', {name: /Get price for this selection/}).getAttribute('href');
   expect(decode(href)).toContain('Exterior Grade MDF');
 });
 
 test('compare shows only shared verified rows', async ({page}) => {
   await page.goto('/#compare');
+  await hydrated(page);
   const c = page.locator('#compare');
   await expect(c.getByRole('row', {name: /Bonding resin/})).toBeVisible();
   await c.getByLabel('Product B').selectOption('action-tesa-hdhmr-board');
-  await expect(c.getByRole('row', {name: /Density/})).toHaveCount(0); // MR has no density value
-  await expect(c.getByRole('row', {name: /Bonding resin/})).toHaveCount(0);
+  // MR has no stored density and HDHMR no stored resin → neither row may appear.
+  await expect(c.getByRole('rowheader', {name: 'Density', exact: true})).toHaveCount(0);
+  await expect(c.getByRole('rowheader', {name: 'Bonding resin', exact: true})).toHaveCount(0);
+  await expect(c.getByRole('rowheader', {name: 'Brand', exact: true})).toHaveCount(1);
 });

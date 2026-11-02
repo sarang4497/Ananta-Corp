@@ -52,7 +52,7 @@ export function Operations() {
         </div>
 
         <div className="lg:col-span-7 lg:pt-12">
-          <ol className="relative grid grid-cols-1 gap-0 sm:grid-cols-2 lg:grid-cols-4">
+          <ol className="relative grid grid-cols-2 gap-x-4 lg:grid-cols-4">
             <span aria-hidden className="absolute left-0 right-0 top-[15px] hidden h-px bg-line lg:block" />
             <span aria-hidden data-reveal="line" className="absolute left-0 right-0 top-[15px] hidden h-px bg-orange lg:block" style={{['--d' as string]: '200ms', transitionDuration: '1400ms'}} />
             {OPERATIONS.map((s, i) => (

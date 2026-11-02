@@ -1,16 +1,16 @@
 import {test, expect} from '@playwright/test';
 import {ROUTES} from './routes';
 
-test('every public route renders with one h1, title and canonical', async ({page}) => {
-  for (const r of ROUTES) {
-    const res = await page.goto(r);
+for (const r of ROUTES) {
+  test(`route ${r}: 200, one h1, title, canonical, description`, async ({page}) => {
+    const res = await page.goto(r, {waitUntil: 'domcontentloaded'});
     expect(res!.status(), r).toBe(200);
     await expect(page.locator('h1'), r).toHaveCount(1);
     expect((await page.title()).length, r).toBeGreaterThan(10);
     expect(await page.locator('link[rel="canonical"]').getAttribute('href'), r).toMatch(/^https:\/\/www\.anantacorporation\.com/);
     expect(await page.locator('meta[name="description"]').getAttribute('content'), r).toBeTruthy();
-  }
-});
+  });
+}
 
 test('404 page', async ({page}) => {
   const res = await page.goto('/products/not-a-real-thing/x/y');

@@ -49,3 +49,4 @@ ALL-POLICIES-FINAL.md
 test-results/
 playwright-report/
 .aie/
+qa/screens/

@@ -1,4 +1,5 @@
 import {test, expect, type Page} from '@playwright/test';
+import {hydrated} from './helpers';
 
 // Floating control stack: ONE dock (WhatsApp + assistant). It must stay inside
 // the viewport, never overlap the header, step aside at the footer and in-page
@@ -9,6 +10,7 @@ const isHidden = (p: Page) => dock(p).evaluate((el) => el.getAttribute('data-hid
 
 test('dock visible and inside the viewport on load', async ({page}) => {
   await page.goto('/');
+  await hydrated(page);
   await page.waitForTimeout(400);
   expect(await isHidden(page)).toBe(false);
   const box = await dock(page).boundingBox();
@@ -20,13 +22,17 @@ test('dock visible and inside the viewport on load', async ({page}) => {
 
 test('dock steps aside at the footer', async ({page}) => {
   await page.goto('/about');
+  await hydrated(page);
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForTimeout(500);
   expect(await isHidden(page)).toBe(true);
 });
 
-test('dock steps aside for the product enquiry box', async ({page}) => {
+// Phones only: on ≥768 the dock lives in the reserved gutter and never meets the box.
+test('dock steps aside for the product enquiry box (phones)', async ({page}, info) => {
+  test.skip(info.project.name !== 'mobile');
   await page.goto('/products/plywood/boiling-water-proof/duroply-bwp-boiling-water-proof-plywood');
+  await hydrated(page);
   await page.getByTestId('enquiry-box').scrollIntoViewIfNeeded();
   await page.evaluate(() => {
     const el = document.querySelector('[data-testid="enquiry-box"]')!;
@@ -39,6 +45,7 @@ test('dock steps aside for the product enquiry box', async ({page}) => {
 
 test('dock hides while typing in a form', async ({page}) => {
   await page.goto('/contact');
+  await hydrated(page);
   await page.locator('input[name="name"]').focus();
   await page.waitForTimeout(400);
   expect(await isHidden(page)).toBe(true);
@@ -49,6 +56,7 @@ test('desktop dock never overlaps content while scrolling', async ({page}, info)
   for (const w of [1024, 1280, 1440]) {
     await page.setViewportSize({width: w, height: 900});
     await page.goto('/');
+  await hydrated(page);
     for (let y = 0; y < 6000; y += 700) {
       await page.evaluate((y) => window.scrollTo(0, y), y);
       await page.waitForTimeout(120);
@@ -72,9 +80,26 @@ test('desktop dock never overlaps content while scrolling', async ({page}, info)
 
 test('assistant opens from the dock and the dock hides', async ({page}) => {
   await page.goto('/');
+  await hydrated(page);
   const launcher = page.getByTestId(page.viewportSize()!.width < 768 ? 'assistant-launcher' : 'assistant-launcher-desktop');
   await launcher.click();
   await expect(page.getByRole('dialog').first()).toBeVisible();
   await page.waitForTimeout(400);
   expect(await isHidden(page)).toBe(true);
+});
+
+test('assistant answers guided questions deterministically (no model call)', async ({page}) => {
+  let modelCalls = 0;
+  await page.route('**/api/chat', (r) => {
+    modelCalls++;
+    return r.fulfill({body: 'x'});
+  });
+  await page.goto('/');
+  await hydrated(page);
+  await page.getByTestId(page.viewportSize()!.width < 768 ? 'assistant-launcher' : 'assistant-launcher-desktop').click();
+  await page.getByTestId('guide-kitchen').click();
+  const dialog = page.getByRole('dialog').first();
+  await expect(dialog.getByRole('link', {name: 'Duroply BWP Plywood'}).first()).toBeVisible();
+  await expect(dialog).not.toContainText(/warranty|CARB|same day/i);
+  expect(modelCalls).toBe(0);
 });

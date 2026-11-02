@@ -105,9 +105,24 @@ export function CatalogBrowser() {
           />
         </label>
         {group('category', 'Category', CATEGORIES.map((c) => ({v: c.slug, l: CATEGORY_COPY[c.slug].short})))}
-        {group('brand', 'Brand', BRANDS.map((b) => ({v: b, l: b})))}
-        {group('app', 'Application', APPLICATIONS.map((a) => ({v: a.key, l: a.label})))}
-        {group('exposure', 'Exposure (boards)', (['dry', 'humid', 'wet'] as const).map((e) => ({v: e, l: EXPOSURE_LABEL[e]})))}
+        {/* Phones: secondary filters fold into a native <details> so products start
+            on screen 1. Desktop: always visible (separate copy; one is display:none). */}
+        <details className="group lg:hidden" open={!!(f.brand || f.app || f.exposure) || undefined}>
+          <summary className="flex min-h-11 items-center justify-between rounded-[6px] border border-line bg-white px-3 text-[13.5px] font-semibold text-ink">
+            More filters — brand, application, exposure
+            <span aria-hidden className="t-label text-steel group-open:rotate-45">+</span>
+          </summary>
+          <div className="mt-4 flex flex-col gap-5">
+            {group('brand', 'Brand', BRANDS.map((b) => ({v: b, l: b})))}
+            {group('app', 'Application', APPLICATIONS.map((a) => ({v: a.key, l: a.label})))}
+            {group('exposure', 'Exposure (boards)', (['dry', 'humid', 'wet'] as const).map((e) => ({v: e, l: EXPOSURE_LABEL[e]})))}
+          </div>
+        </details>
+        <div className="hidden flex-col gap-5 lg:flex">
+            {group('brand', 'Brand', BRANDS.map((b) => ({v: b, l: b})))}
+            {group('app', 'Application', APPLICATIONS.map((a) => ({v: a.key, l: a.label})))}
+            {group('exposure', 'Exposure (boards)', (['dry', 'humid', 'wet'] as const).map((e) => ({v: e, l: EXPOSURE_LABEL[e]})))}
+        </div>
       </aside>
 
       <div className="min-w-0">

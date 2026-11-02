@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import {useEffect, useRef, useState} from 'react';
+import {createPortal} from 'react-dom';
 import {ArrowRight, ChevronDown, Menu, Phone, X} from 'lucide-react';
 import {Link, usePathname} from '@/i18n/navigation';
 import {CATEGORIES, categoryHref} from '@/data/products';
@@ -84,13 +85,16 @@ export function MobileMenu() {
         {open ? <X className="h-6 w-6" aria-hidden /> : <Menu className="h-6 w-6" aria-hidden />}
       </button>
 
+      {/* Portalled to <body>: the header's backdrop-filter creates a containing
+          block for fixed children, which would collapse a fixed sheet to 0px. */}
+      {open &&
+        createPortal(
       <div
         id="mobile-menu"
         ref={sheet}
         role="dialog"
         aria-modal="true"
         aria-label="Menu"
-        hidden={!open}
         data-testid="mobile-menu"
         className="fixed inset-x-0 bottom-0 top-16 z-[60] flex flex-col bg-white"
       >
@@ -173,7 +177,9 @@ export function MobileMenu() {
             <WhatsAppIcon className="h-4 w-4" /> WhatsApp
           </a>
         </div>
-      </div>
+      </div>,
+          document.body
+        )}
     </div>
   );
 }

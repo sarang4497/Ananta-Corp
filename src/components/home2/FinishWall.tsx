@@ -49,7 +49,13 @@ export function FinishWall() {
         </ul>
       </div>
 
-      <div className="marquee mt-9 flex flex-col gap-2.5" aria-label="Sample of the décor library">
+      {/* data-overflow-ok: an intentional edge-to-edge ticker — partial swatches at the
+          edges are by design (faded), and every décor is fully reachable at /decor. */}
+      <div
+        className="marquee mt-9 flex flex-col gap-2.5 [mask-image:linear-gradient(to_right,transparent,#000_6%,#000_94%,transparent)]"
+        aria-label="Sample of the décor library"
+        data-overflow-ok
+      >
         {[ROW_A, ROW_B].map((row, r) => (
           <div key={r} className="relative overflow-hidden">
             <ul

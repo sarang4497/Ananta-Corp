@@ -1,9 +1,11 @@
 import {test, expect} from '@playwright/test';
+import {hydrated} from './helpers';
 
 test('desktop mega menu: hover, preview, keyboard, escape', async ({page}, info) => {
   test.skip(info.project.name !== 'desktop');
   await page.goto('/');
-  const trigger = page.getByRole('button', {name: 'Products'});
+  await hydrated(page);
+  const trigger = page.getByRole('button', {name: 'Products', exact: true});
   await trigger.hover();
   const panel = page.getByRole('region', {name: 'Products menu'});
   await expect(panel).toBeVisible();
@@ -23,7 +25,8 @@ test('desktop mega menu: hover, preview, keyboard, escape', async ({page}, info)
 test('brands panel shows official logos', async ({page}, info) => {
   test.skip(info.project.name !== 'desktop');
   await page.goto('/');
-  await page.getByRole('button', {name: 'Brands'}).click();
+  await hydrated(page);
+  await page.getByRole('button', {name: 'Brands', exact: true}).click();
   const panel = page.getByRole('region', {name: 'Brands menu'});
   for (const b of ['Duroply', 'Action TESA', 'Tenon Smart Lock']) await expect(panel.getByAltText(`${b} logo`)).toBeVisible();
 });
@@ -31,6 +34,7 @@ test('brands panel shows official logos', async ({page}, info) => {
 test('mobile menu: full sheet, categories, contacts, closes on navigation', async ({page}, info) => {
   test.skip(info.project.name !== 'mobile');
   await page.goto('/');
+  await hydrated(page);
   await page.getByTestId('menu-toggle').click();
   const sheet = page.getByTestId('mobile-menu');
   await expect(sheet).toBeVisible();
