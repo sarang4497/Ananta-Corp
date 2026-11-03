@@ -59,3 +59,12 @@ export function breadcrumbJsonLd(items: {name: string; url: string}[]) {
     itemListElement: items.map((it, i) => ({'@type': 'ListItem', position: i + 1, name: it.name, item: it.url}))
   };
 }
+
+/** FAQPage for first-party FAQs shown on the page (the exact visible Q&A). */
+export function faqJsonLd(items: {q: string; a: string}[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((f) => ({'@type': 'Question', name: f.q, acceptedAnswer: {'@type': 'Answer', text: f.a}}))
+  };
+}
