@@ -78,6 +78,33 @@ test('desktop dock never overlaps content while scrolling', async ({page}, info)
   }
 });
 
+test('dock hides while the mobile menu or search is open', async ({page}, info) => {
+  await page.goto('/');
+  await hydrated(page);
+  if (info.project.name === 'mobile') {
+    await page.getByTestId('menu-toggle').click();
+    await page.waitForTimeout(400);
+    expect(await isHidden(page)).toBe(true);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(400);
+    expect(await isHidden(page)).toBe(false);
+  }
+  await page.evaluate(() => window.dispatchEvent(new CustomEvent('open-search')));
+  await expect(page.getByTestId('search-dialog')).toBeVisible();
+  await page.waitForTimeout(400);
+  expect(await isHidden(page)).toBe(true);
+});
+
+test('phone dock carries page WhatsApp context', async ({page}, info) => {
+  test.skip(info.project.name !== 'mobile');
+  await page.goto('/products/plywood/boiling-water-proof/duroply-bwp-boiling-water-proof-plywood');
+  await hydrated(page);
+  const ctx = await page.locator('[data-wa-context]').first().getAttribute('data-wa-context');
+  test.skip(!ctx, 'page sets no WhatsApp context');
+  const href = await page.getByTestId('dock-whatsapp').getAttribute('href');
+  expect(decodeURIComponent(href!.replace(/\+/g, ' '))).toContain(ctx!.slice(0, 20));
+});
+
 test('assistant opens from the dock and the dock hides', async ({page}) => {
   await page.goto('/');
   await hydrated(page);

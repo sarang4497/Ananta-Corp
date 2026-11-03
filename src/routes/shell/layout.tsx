@@ -11,6 +11,7 @@ import {Footer} from '@/components/site/Footer';
 import {ContactDock} from '@/components/site/ContactDock';
 import {RevealObserver} from '@/components/motion/RevealObserver';
 import {ChatWidget} from '@/components/chat/ChatWidget';
+import {SearchHost} from '@/components/search/SearchHost';
 import {organizationJsonLd} from '@/lib/jsonld';
 import '@/styles/globals.css';
 
@@ -34,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: '#0b1a3c',
+  themeColor: '#ffffff',
   width: 'device-width',
   initialScale: 1,
   viewportFit: 'cover'
@@ -77,6 +78,7 @@ export default async function LocaleLayout({children, params}: {children: ReactN
           </div>
           <ContactDock />
           <ChatWidget />
+          <SearchHost />
         </NextIntlClientProvider>
       </body>
     </html>
