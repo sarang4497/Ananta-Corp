@@ -19,6 +19,12 @@ export const routing = defineRouting({
     '/products/[category]': '/products/[category]',
     '/products/[category]/[sub]': '/products/[category]/[sub]',
     '/products/[category]/[sub]/[slug]': '/products/[category]/[sub]/[slug]',
+    // Tools hub + individual interactive tools (slugs in src/content/tools.ts).
+    '/tools': '/tools',
+    '/tools/[tool]': '/tools/[tool]',
+    // Resources / insights (posts in src/content/blog).
+    '/blog': '/blog',
+    '/blog/[slug]': '/blog/[slug]',
     // Legal.
     '/privacy': '/privacy',
     '/terms': '/terms'

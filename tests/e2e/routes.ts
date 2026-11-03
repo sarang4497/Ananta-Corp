@@ -18,6 +18,13 @@ export const ROUTES = [
   '/partners',
   '/about',
   '/contact',
+  '/tools',
+  '/tools/material-selector',
+  '/tools/compare',
+  '/tools/requirement-builder',
+  '/tools/sheet-calculator',
+  '/blog',
+  '/blog/mdf-vs-plywood',
   '/privacy',
   '/terms'
 ];
