@@ -32,7 +32,7 @@ const GROUP_OF: Record<SearchKind, SearchGroup> = {
 
 /** Ranking weight per kind (ties broken by this, then title). */
 const BOOST: Record<SearchKind, number> = {
-  product: 3,
+  product: 6,
   category: 4,
   brand: 4,
   subcategory: 2,

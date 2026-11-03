@@ -67,7 +67,20 @@ test('desktop dock never overlaps content while scrolling', async ({page}, info)
         const out: string[] = [];
         document.querySelectorAll('main h1, main h2, main h3, main p, main a, main button, main img, main li').forEach((el) => {
           if (el.closest('[aria-hidden="true"],.marquee')) return;
-          const b = el.getBoundingClientRect();
+          // Visible box: clip by overflow ancestors (scaled hero/rv images sit in clipping frames).
+          const raw = el.getBoundingClientRect();
+          const b = {left: raw.left, right: raw.right, top: raw.top, bottom: raw.bottom, width: 0, height: 0};
+          for (let a = el.parentElement; a; a = a.parentElement) {
+            const cs = getComputedStyle(a);
+            if (cs.overflowX === 'visible' && cs.overflowY === 'visible') continue;
+            const c = a.getBoundingClientRect();
+            b.left = Math.max(b.left, c.left);
+            b.right = Math.min(b.right, c.right);
+            b.top = Math.max(b.top, c.top);
+            b.bottom = Math.min(b.bottom, c.bottom);
+          }
+          b.width = b.right - b.left;
+          b.height = b.bottom - b.top;
           if (b.width < 2 || b.height < 2) return;
           if (b.left < r.right && b.right > r.left && b.top < r.bottom && b.bottom > r.top) out.push(el.tagName + ' ' + (el.textContent || '').trim().slice(0, 30));
         });
