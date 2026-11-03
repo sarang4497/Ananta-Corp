@@ -5,37 +5,25 @@ import {createPortal} from 'react-dom';
 import {cn} from '@/lib/cn';
 
 /**
- * Positions the chat panel so it NEVER exceeds the viewport, with a backdrop and
- * Escape-to-close. Children stay mounted (so the conversation survives
- * close/reopen); only visibility toggles with `open`.
+ * Hosts the assistant panel, portalled to <body> so `position: fixed` always
+ * resolves against the viewport (sections use transforms/filters that would
+ * otherwise capture it).
  *
- * CRITICAL: the overlay is rendered through a PORTAL to <body>. A
- * `position: fixed` element is positioned relative to the nearest ancestor that
- * has a `transform`, `filter`, `will-change`, `contain` (etc.) — and this app
- * uses those on hero/section wrappers (GradientMesh, HeroVideo, animated cards).
- * Mounted inline, the panel was captured by one of those ancestors instead of
- * the viewport, so its pinned header (with the X) ended up off-screen and the
- * messages ran full-height down the page. Portalling to <body> guarantees the
- * `fixed` box resolves against the viewport — a contained box with the X always
- * visible — from BOTH the hero box and the floating launcher.
+ * - Phones (<768): a bottom SHEET — full width, rounded top, drag-handle
+ *   visual, max 85dvh, safe-area padding, with a backdrop + scroll lock. The
+ *   phone contact bar (var(--dock-h)) hides itself while the chat is open
+ *   (html[data-chat-open]); the sheet sits above it in z-order either way.
+ * - ≥768: a compact SIDE PANEL (~400px) anchored bottom-right, in front of the
+ *   dock rail (which steps aside while open), height clamped with dvh. No
+ *   backdrop: the page stays readable beside it.
  *
- * - Mobile: fixed, fills the dynamic viewport (100dvh) edge-to-edge.
- * - Desktop: a contained box anchored bottom-right above the launcher.
- *
- * The panel itself is a fixed-height flex column (header / scrolling messages /
- * input), so long answers scroll inside it and the close button in the pinned
- * header is always on-screen.
+ * Open/close is a 340ms ease (opacity + rise); reduced motion → opacity only.
+ * Focus moves into the panel on open (ChatPanel) and back to the launcher on
+ * close (ChatWidget). When closed the holder is `inert` + visibility:hidden, so nothing inside is
+ * focusable or announced. Escape closes. Children stay mounted so the
+ * conversation survives close/reopen.
  */
-export function ChatOverlay({
-  open,
-  onClose,
-  children
-}: {
-  open: boolean;
-  onClose: () => void;
-  children: ReactNode;
-}) {
-  // Portals need the DOM; wait until mounted on the client.
+export function ChatOverlay({open, onClose, children}: {open: boolean; onClose: () => void; children: ReactNode}) {
   const [mounted, setMounted] = useState(false);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- client-only portal mount flag
   useEffect(() => setMounted(true), []);
@@ -43,15 +31,19 @@ export function ChatOverlay({
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
     };
     document.addEventListener('keydown', onKey);
-    // Lock background scroll while the chat is open.
+    // Scroll lock only for the phone sheet (modal); the desktop panel is a side panel.
+    const phone = window.matchMedia('(max-width: 767px)').matches;
     const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    if (phone) document.body.style.overflow = 'hidden';
     return () => {
       document.removeEventListener('keydown', onKey);
-      document.body.style.overflow = prevOverflow;
+      if (phone) document.body.style.overflow = prevOverflow;
     };
   }, [open, onClose]);
 
@@ -59,23 +51,27 @@ export function ChatOverlay({
 
   return createPortal(
     <>
-      {/* Backdrop — click to close. Indigo-tinted, never pure black. */}
       <div
         aria-hidden
         onClick={onClose}
+        data-testid="assistant-backdrop"
         className={cn(
-          'fixed inset-0 z-[60] bg-ink/40 backdrop-blur-sm transition-opacity duration-200',
-          open ? 'opacity-100' : 'pointer-events-none hidden opacity-0'
+          'fixed inset-0 z-[60] bg-ink/35 backdrop-blur-[2px] transition-opacity duration-[340ms] ease-[cubic-bezier(.22,1,.36,1)] md:hidden',
+          open ? 'opacity-100' : 'pointer-events-none opacity-0'
         )}
       />
-      {/* Panel holder — a small CONTAINED box on EVERY breakpoint (never
-          full-screen). Anchored bottom-right with margin so the backdrop shows
-          around it (tap-to-close). Lifted clear of the mobile safe-area inset. */}
       <div
+        inert={!open}
+        data-state={open ? 'open' : 'closed'}
+        data-testid="assistant-holder"
         className={cn(
-          'fixed z-[65] right-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] w-[min(92vw,360px)] h-[min(70dvh,520px)] max-h-[min(70dvh,520px)]',
-          'sm:right-6 sm:bottom-24 sm:h-[min(80vh,640px)] sm:max-h-[min(80vh,640px)] sm:w-[430px]',
-          open ? 'block' : 'hidden'
+          'fixed z-[65] flex flex-col',
+          // phone: bottom sheet
+          'inset-x-0 bottom-0 max-h-[85dvh] h-[min(85dvh,640px)]',
+          // ≥768: compact side panel, bottom-right
+          'md:inset-x-auto md:right-4 md:bottom-5 md:w-[400px] md:max-w-[calc(100vw-2rem)] md:h-[min(640px,calc(100dvh-var(--header-h)-2.5rem))] md:max-h-[calc(100dvh-var(--header-h)-2.5rem)]',
+          'transition-[opacity,transform,visibility] duration-[340ms] ease-[cubic-bezier(.22,1,.36,1)] motion-reduce:transform-none',
+          open ? 'visible translate-y-0 opacity-100' : 'invisible pointer-events-none translate-y-6 opacity-0 md:translate-y-3'
         )}
       >
         {children}

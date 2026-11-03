@@ -7,7 +7,7 @@ import {Fragment, type ReactNode} from 'react';
  * clickable. Internal links open in the same tab; external in a new one.
  */
 
-const linkCls = 'font-medium text-blue underline-offset-2 hover:underline break-words';
+const linkCls = 'font-medium text-blue underline-offset-2 hover:underline [overflow-wrap:anywhere]';
 
 function linkProps(href: string) {
   return href.startsWith('/')

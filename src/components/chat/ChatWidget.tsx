@@ -1,34 +1,48 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import {useEffect, useState} from 'react';
+import {useCallback, useEffect, useRef, useState} from 'react';
 import {ChatOverlay} from './ChatOverlay';
 
-// The panel (chat UI + voice + Turnstile + gates) is code-split into its own
-// chunk. ssr:false + dynamic import keeps all of it out of the initial payload;
-// the JS only downloads the first time the visitor opens the chat.
+// The panel (chat UI + voice + read-aloud) is code-split into its own chunk and
+// only downloads the first time the visitor opens the assistant.
 const ChatPanel = dynamic(() => import('./ChatPanel'), {ssr: false});
 
 /**
- * The materials assistant host. Mounted globally; renders nothing until the
- * ContactDock (or any AskBellaButton) dispatches `open-bella`, then loads the
- * panel chunk inside a viewport-contained overlay. The launcher lives in the
- * ContactDock so WhatsApp + assistant read as one contact system.
+ * The materials assistant host. Mounted globally; renders nothing until any
+ * CTA dispatches `open-bella` (detail?: {message?: string}), then loads the
+ * panel chunk inside the overlay. The launcher lives in the ContactDock, which
+ * steps aside while html[data-chat-open] is set.
  */
 export function ChatWidget() {
   const [open, setOpen] = useState(false);
   const [everOpened, setEverOpened] = useState(false);
-  const [seed, setSeed] = useState<string | undefined>(undefined);
+  const [seed, setSeed] = useState<{message: string; n: number} | undefined>(undefined);
+  const returnTo = useRef<HTMLElement | null>(null);
 
-  const close = () => setOpen(false);
+  const close = useCallback(() => {
+    setOpen(false);
+    // Speech never outlives the panel.
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+    // Return focus to the launcher once the dock is interactive again
+    // (it un-inerts after data-chat-open is removed).
+    const back = returnTo.current;
+    window.setTimeout(() => {
+      const fallback = document.querySelector<HTMLElement>(
+        window.matchMedia('(max-width: 767px)').matches ? '[data-testid="assistant-launcher"]' : '[data-testid="assistant-launcher-desktop"]'
+      );
+      const target = back && back.isConnected && !back.closest('[inert]') ? back : fallback;
+      target?.focus({preventScroll: true});
+    }, 60);
+  }, []);
 
-  // The single, site-wide entry point: any chat CTA (see AskBellaButton)
-  // dispatches `open-bella`; callers can also pass a typed message in
-  // `detail.message` so it's auto-sent as the first turn.
   useEffect(() => {
+    let n = 0;
     const openChat = (e: Event) => {
-      const message = (e as CustomEvent<{message?: string}>).detail?.message;
-      if (message) setSeed(message);
+      const message = (e as CustomEvent<{message?: string} | undefined>).detail?.message?.trim();
+      const active = document.activeElement;
+      if (active instanceof HTMLElement && active !== document.body && !active.closest('[data-testid="assistant-holder"]')) returnTo.current = active;
+      if (message) setSeed({message, n: ++n});
       setEverOpened(true);
       setOpen(true);
     };
@@ -36,25 +50,15 @@ export function ChatWidget() {
     return () => window.removeEventListener('open-bella', openChat);
   }, []);
 
-  // Tell the ContactDock (the single floating-control manager, which owns the
-  // assistant launcher) to step aside while the panel is open.
   useEffect(() => {
     const html = document.documentElement;
     if (open) html.dataset.chatOpen = '1';
     else delete html.dataset.chatOpen;
   }, [open]);
 
-  return (
-    <>
-      {/* The ONE chat panel site-wide — mounted once on first open and kept
-          alive (hidden) so the conversation survives close/reopen. The overlay
-          keeps it inside the viewport with a backdrop + Escape close. */}
-      {everOpened ? (
-        <ChatOverlay open={open} onClose={close}>
-          <ChatPanel onClose={close} initialMessage={seed} />
-        </ChatOverlay>
-      ) : null}
-
-    </>
-  );
+  return everOpened ? (
+    <ChatOverlay open={open} onClose={close}>
+      <ChatPanel open={open} onClose={close} seed={seed} />
+    </ChatOverlay>
+  ) : null;
 }

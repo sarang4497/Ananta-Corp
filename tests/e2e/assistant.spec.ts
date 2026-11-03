@@ -33,7 +33,7 @@ test('assistant: known, unknown, typo, nonsense, product, brand, price → zero 
   });
   const panel = page.getByTestId('assistant-panel');
   // chips
-  await panel.getByRole('button', {name: 'Which board for a kitchen?'}).click();
+  await panel.getByRole('button', {name: 'Find a board for kitchen'}).click();
   await expect(panel.locator('[data-intent="selector:kitchen"]')).toBeVisible();
   // free text
   for (const q of INPUTS) {
