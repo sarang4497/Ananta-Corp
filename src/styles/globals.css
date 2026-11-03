@@ -60,7 +60,17 @@
   /* ≥768 the side gutter also reserves the floating dock column (16 + 48 + 12). */
   --side: var(--gutter);
   --container: 1360px;
-  --header-h: 64px;
+  /* Named gutter aliases (documentation + use in components that need the
+     value outside .shell). --gutter is the single source; these resolve to it. */
+  --page-gutter-mobile: 16px; /* 320–479 */
+  --page-gutter-tablet: clamp(20px, 4vw, 32px); /* 480–1079 */
+  --page-gutter-desktop: clamp(32px, 3vw, 40px); /* ≥1080 */
+  /* Height of the STICKY part of the header (the main bar; the desktop utility
+     bar scrolls away). Phones/tablets: 64px bar + notch inset. Desktop: the
+     compacted (scrolled) main bar. Used by scroll-margin and sticky offsets. */
+  --header-h: calc(64px + env(safe-area-inset-top));
+  --header-full: 88px;
+  --header-compact: 76px;
   /* Bottom contact bar height on phones (0 on larger screens). */
   --dock-h: 0px;
 
@@ -72,14 +82,24 @@
 
   --gradient-brand: linear-gradient(120deg, #1d4ed8, #1e40af);
 }
+@media (min-width: 480px) {
+  :root {
+    --gutter: clamp(20px, 4vw, 40px);
+  }
+}
 @media (min-width: 768px) {
   :root {
     --side: max(var(--gutter), 76px);
   }
 }
+@media (min-width: 1080px) {
+  :root {
+    --header-h: var(--header-compact);
+  }
+}
 @media (max-width: 767px) {
   :root {
-    --dock-h: calc(60px + env(safe-area-inset-bottom));
+    --dock-h: calc(62px + env(safe-area-inset-bottom));
   }
 }
 
@@ -161,6 +181,20 @@ html {
     margin-inline: auto;
     padding-inline: var(--side);
   }
+  /* Header row container: same box as .shell, but between 1080 and 1279 it
+     uses the plain --gutter (the dock rail lives at the bottom, never next to
+     the header) so seven menus + search + CTA fit without wrapping. */
+  .shell-header {
+    width: 100%;
+    max-width: calc(var(--container) + 2 * var(--side));
+    margin-inline: auto;
+    padding-inline: var(--side);
+  }
+  @media (min-width: 1080px) and (max-width: 1279px) {
+    .shell-header {
+      padding-inline: var(--gutter);
+    }
+  }
   /* Typography scale — clamp()ed so mobile H1s stay at 3–4 lines max. */
   .t-display {
     font-size: clamp(2.1rem, 1.3rem + 3.2vw, 4rem);
@@ -210,6 +244,13 @@ html {
   .bg-gradient-brand {
     background-image: var(--gradient-brand);
   }
+  /* Section rhythm. */
+  .section {
+    padding-block: clamp(3.5rem, 2.25rem + 4.2vw, 7.5rem);
+  }
+  .section-tight {
+    padding-block: clamp(2.5rem, 1.75rem + 2.6vw, 4.75rem);
+  }
   /* Page bottom reserve so the phone contact bar never covers the last content. */
   .pb-dock {
     padding-bottom: var(--dock-h);
@@ -227,14 +268,30 @@ html {
 }
 
 /* ============================================================================
-   MOTION SYSTEM
-   - Content is VISIBLE by default. Only when the inline head script has set
-     html.js do reveal start-states apply; RevealObserver adds .is-in when the
-     element enters the viewport (and immediately for anything already on
-     screen). No JS / reduced motion → no hidden content.
-   - data-reveal="up" (default) | "fade" | "mask" (image clip reveal) | "line"
-   - --d: per-element stagger delay (set inline, e.g. style="--d:120ms")
+   MOTION SYSTEM (Santa-grade choreography on Ananta's no-JS-safe infra)
+   - Content is VISIBLE by default. Start states apply only under html.js (set
+     by the inline head script); RevealObserver adds .is-in when an element
+     enters the viewport (immediately if already on screen). No JS or
+     prefers-reduced-motion → everything visible, nothing moves.
+   - data-reveal values:
+       up      (default) fade + 18px rise                      640ms
+       fade    opacity only                                    640ms
+       mask    text line rises inside a fixed mask:
+               translateY(105%)→0 with a counter-moving
+               clip-path, so NO overflow:hidden is needed       1000ms
+       line    hairline draws left→right (scaleX 0→1)          700ms
+       image   frame opens clip-path inset(18% 0 0 0)→inset(0)  950ms
+               and its <img> settles scale(1.04)→1              1100ms
+       curtain a colour panel (::after, --curtain colour,
+               default navy) lifts off: scaleY 1→0              1100ms
+   - Stagger: style={{'--d':'120ms'} as React.CSSProperties}
+   - Easing: --mo-mask cubic-bezier(.76,0,.24,1) for image/curtain/mask,
+     --mo-ease for up/fade/line.
+   - `image` and `curtain` need a positioned frame (relative) for ::after.
 ============================================================================ */
+:root {
+  --mo-mask: cubic-bezier(0.76, 0, 0.24, 1);
+}
 .js [data-reveal] {
   transition:
     opacity var(--mo-reveal) var(--mo-ease) var(--d, 0ms),
@@ -249,11 +306,18 @@ html {
 .js [data-reveal='fade']:not(.is-in) {
   opacity: 0;
 }
-.js [data-reveal='mask']:not(.is-in) {
-  clip-path: inset(0 0 100% 0);
+
+/* mask: the element moves down by 105% while its clip window moves up by the
+   same amount — the visible window stays put, the line rises through it. */
+.js [data-reveal='mask'] {
+  transition:
+    transform 1000ms var(--mo-mask) var(--d, 0ms),
+    clip-path 1000ms var(--mo-mask) var(--d, 0ms);
+  clip-path: inset(-0.25em -0.1em -0.25em -0.1em);
 }
-.js [data-reveal='mask'].is-in {
-  clip-path: inset(0 0 0 0);
+.js [data-reveal='mask']:not(.is-in) {
+  transform: translate3d(0, 105%, 0);
+  clip-path: inset(calc(-105% - 0.25em) -0.1em calc(105% - 0.25em) -0.1em);
 }
 .js [data-reveal='mask'] img {
   transition: transform 1400ms var(--mo-ease) var(--d, 0ms);
@@ -261,11 +325,128 @@ html {
 .js [data-reveal='mask']:not(.is-in) img {
   transform: scale(1.08);
 }
+
 .js [data-reveal='line'] {
   transform-origin: left center;
+  transition: transform 700ms var(--mo-ease) var(--d, 0ms);
 }
 .js [data-reveal='line']:not(.is-in) {
   transform: scaleX(0);
+}
+
+.js [data-reveal='image'] {
+  transition: clip-path 950ms var(--mo-mask) var(--d, 0ms);
+  clip-path: inset(0 0 0 0);
+}
+.js [data-reveal='image']:not(.is-in) {
+  clip-path: inset(18% 0 0 0);
+}
+.js [data-reveal='image'] img {
+  transition: transform 1100ms var(--mo-mask) var(--d, 0ms);
+}
+.js [data-reveal='image']:not(.is-in) img {
+  transform: scale(1.04);
+}
+
+.js [data-reveal='curtain'] {
+  transition: none;
+}
+.js [data-reveal='curtain']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--curtain, var(--color-navy));
+  transform-origin: top;
+  transition: transform 1100ms var(--mo-mask) var(--d, 0ms);
+  pointer-events: none;
+}
+.js [data-reveal='curtain'].is-in::after {
+  transform: scaleY(0);
+}
+
+/* ── Hero utilities (load choreography, CSS-only, play on first paint) ──────
+   For the home hero and page intros; no observer needed.
+     .hero-line     a heading line rises through a mask (wrap each line in a
+                    block/inline-block element). 1000ms, --d for stagger.
+     .hero-curtain  positioned frame; a navy panel lifts off it (::after,
+                    colour via --curtain). Image underneath paints at once
+                    (LCP-safe).
+     .photo-settle  an image settles scale 1.06→1 over 1600ms.
+     .rise          fade + 22px rise, 760ms (alias of .hero-in).
+   All honour --d and are disabled under reduced motion. */
+@keyframes line-up {
+  from {
+    transform: translate3d(0, 105%, 0);
+    clip-path: inset(calc(-105% - 0.25em) -0.1em calc(105% - 0.25em) -0.1em);
+  }
+  to {
+    transform: none;
+    clip-path: inset(-0.25em -0.1em -0.25em -0.1em);
+  }
+}
+@keyframes photo-settle {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: none;
+  }
+}
+.js .hero-line {
+  display: inline-block;
+  animation: line-up 1000ms var(--mo-mask) both;
+  animation-delay: var(--d, 0ms);
+}
+.js .hero-curtain {
+  position: relative;
+}
+.js .hero-curtain::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: var(--curtain, var(--color-navy));
+  transform-origin: top;
+  animation: hero-wipe 1100ms var(--mo-mask) both;
+  animation-delay: var(--d, 120ms);
+  pointer-events: none;
+}
+.js .photo-settle {
+  animation: photo-settle 1600ms var(--mo-ease) both;
+  animation-delay: var(--d, 0ms);
+}
+.js .rise {
+  animation: hero-rise 760ms var(--mo-ease) both;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Mega-panel / sheet entrance (header, search). */
+@keyframes panel-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, -6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes sheet-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.panel-in {
+  animation: panel-in 160ms var(--mo-ease) both;
+}
+.sheet-up {
+  animation: sheet-up 220ms var(--mo-ease) both;
 }
 
 /* Hero load choreography: pure CSS, plays on first paint. The hero image is
@@ -432,11 +613,23 @@ html {
   .js [data-reveal] img {
     transform: none !important;
   }
-  .js .hero-in,
-  .js .hero-layer {
-    animation: none !important;
+  .js [data-reveal]::after {
+    display: none !important;
   }
-  .js .hero-wipe::after {
+  .js .hero-in,
+  .js .hero-layer,
+  .js .hero-line,
+  .js .photo-settle,
+  .js .rise,
+  .panel-in,
+  .sheet-up {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  .js .hero-wipe::after,
+  .js .hero-curtain::after {
     display: none;
   }
   .marquee-track {

@@ -1,56 +1,70 @@
 'use client';
 
-import Image from 'next/image';
-import {useCallback, useEffect, useId, useRef, useState} from 'react';
-import {ArrowRight, ChevronDown, Phone} from 'lucide-react';
+import {useCallback, useEffect, useId, useRef, useState, type KeyboardEvent as ReactKeyboardEvent} from 'react';
+import {ChevronDown, Mail, MapPin, Phone, Search} from 'lucide-react';
 import {Link, usePathname} from '@/i18n/navigation';
-import {CATEGORIES, PRODUCTS, categoryHref, productHref, subcategoryHref} from '@/data/products';
-import {CATEGORY_COPY, SUB_NAMES} from '@/content/categories';
-import {BRAND_ASSETS, COMPANY, WA} from '@/content/site';
-import {BRANDS, STATS, countByBrand, countByCategory} from '@/data/stats';
-import {BrandLogo} from './BrandLogo';
-import {MobileMenu} from './MobileMenu';
-import {Logo} from './Logo';
-import {WhatsAppIcon} from '@/components/ui/Button';
+import {NAV_MENUS, SEARCH_PLACEHOLDER, UTILITY, type MenuId} from '@/content/nav';
+import {quoteWhatsappUrl} from '@/lib/quote';
 import {whatsappUrl} from '@/lib/whatsapp';
+import {WhatsAppIcon} from '@/components/ui/Button';
 import {cn} from '@/lib/cn';
+import {MobileMenu} from './MobileMenu';
+import {MegaPanel} from './MegaPanels';
+import {Logo} from './Logo';
 
-type Panel = 'products' | 'brands' | 'capabilities' | null;
+const PANEL_LABEL: Record<MenuId, string> = {
+  products: 'Products menu',
+  brands: 'Brands menu',
+  applications: 'Applications menu',
+  tools: 'Tools menu',
+  resources: 'Resources menu'
+};
 
-export const CAPABILITIES = [
-  {label: 'Material supply', body: 'Plywood, MDF, boards, doors and smart locks from one source.', href: '/products' as const},
-  {label: 'Ready stock', body: `Inventory held in ${COMPANY.facility} of warehouse and workshop space.`, href: {pathname: '/about', hash: 'operations'} as const},
-  {label: 'Custom furniture', body: 'Custom sizes and furniture made to your drawings.', href: {pathname: '/about', hash: 'custom'} as const},
-  {label: 'Project support', body: 'Bulk orders, contractor partnerships, design + execution support.', href: {pathname: '/about', hash: 'support'} as const}
-];
+/** Opens site search (SearchHost listens). */
+export function openSearch(q?: string) {
+  window.dispatchEvent(new CustomEvent('open-search', {detail: q ? {q} : undefined}));
+}
 
 /**
- * Sticky header. Desktop (≥1080): Products mega menu with live category
- * preview, Brands and Capabilities panels — open on hover-intent (~140 ms),
- * click, or keyboard; Escape closes and returns focus. Phones/tablets: the
- * full-height MobileMenu sheet.
+ * Big white header.
+ *  Desktop (≥1080, `nav:`): a slim utility bar (GSTIN · location · phone ·
+ *  email · WhatsApp) that scrolls away, then the sticky 88px main bar: logo,
+ *  seven menus (five with mega panels), an inline search trigger (⌘K / Ctrl-K
+ *  / "/"), phone and the "Get Price" CTA. On scroll the bar compacts to 76px
+ *  and gains a hairline + soft shadow.
+ *  Panels open on hover-intent (~140 ms; ~100 ms when switching, ~180 ms
+ *  close — a delay corridor instead of a safe triangle), on click, or by
+ *  keyboard (Enter/Space toggle, ArrowDown opens and focuses the first link);
+ *  Escape closes and returns focus; route change closes.
+ *  Phones/tablets: 64px bar (+ notch inset) with search + menu icons.
  */
 export function Header() {
-  const [open, setOpen] = useState<Panel>(null);
-  const [preview, setPreview] = useState(CATEGORIES[0].slug);
-  const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState<MenuId | null>(null);
+  const [seen, setSeen] = useState<Partial<Record<MenuId, true>>>({});
+  const [compact, setCompact] = useState(false);
   const timer = useRef<number | undefined>(undefined);
   const pathname = usePathname();
-  const ids = {products: useId(), brands: useId(), capabilities: useId()};
-  const triggers = useRef<Record<string, HTMLButtonElement | null>>({});
+  const uid = useId();
+  const triggers = useRef<Partial<Record<MenuId, HTMLButtonElement | null>>>({});
+  const panels = useRef<Partial<Record<MenuId, HTMLDivElement | null>>>({});
+  const focusFirst = useRef<MenuId | null>(null);
 
-  // Close panels on navigation (state derived during render, not in an effect).
+  // Close panels on navigation (derived during render, not in an effect).
   const [path, setPath] = useState(pathname);
   if (path !== pathname) {
     setPath(pathname);
     setOpen(null);
   }
+  // Mount a panel's body on first open (lazy imagery, small initial DOM).
+  if (open && !seen[open]) setSeen((s) => ({...s, [open]: true}));
+
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setCompact(window.scrollY > 40);
     onScroll();
     window.addEventListener('scroll', onScroll, {passive: true});
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -59,230 +73,195 @@ export function Header() {
         setOpen(null);
       }
     };
+    const onDown = (e: PointerEvent) => {
+      const t = e.target as Node;
+      if (!document.querySelector('[data-testid="site-header"]')?.contains(t)) setOpen(null);
+    };
     window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
+    document.addEventListener('pointerdown', onDown);
+    return () => {
+      window.removeEventListener('keydown', onKey);
+      document.removeEventListener('pointerdown', onDown);
+    };
   }, [open]);
 
-  const intent = useCallback((p: Panel, delay: number) => {
+  // ArrowDown → focus the first link once the panel body exists.
+  useEffect(() => {
+    if (open && focusFirst.current === open) {
+      focusFirst.current = null;
+      panels.current[open]?.querySelector<HTMLElement>('a,button')?.focus();
+    }
+  }, [open, seen]);
+
+  useEffect(() => () => window.clearTimeout(timer.current), []);
+
+  const intent = useCallback((p: MenuId | null, delay: number) => {
     window.clearTimeout(timer.current);
     timer.current = window.setTimeout(() => setOpen(p), delay);
   }, []);
 
-  const cat = CATEGORIES.find((c) => c.slug === preview)!;
-  const copy = CATEGORY_COPY[cat.slug];
-  const catProducts = PRODUCTS.filter((p) => p.category === cat.slug);
+  const onTriggerKey = (p: MenuId) => (e: ReactKeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      focusFirst.current = p;
+      setOpen(p);
+    }
+  };
 
-  const trigger = (p: Exclude<Panel, null>, label: string) => (
-    <button
-      ref={(n) => {
-        triggers.current[p] = n;
-      }}
-      type="button"
-      aria-expanded={open === p}
-      aria-controls={ids[p]}
-      onClick={() => setOpen((v) => (v === p ? null : p))}
-      onPointerEnter={(e) => e.pointerType === 'mouse' && intent(p, open ? 0 : 140)}
-      onPointerLeave={(e) => e.pointerType === 'mouse' && intent(null, 180)}
-      className={cn(
-        'inline-flex h-10 items-center gap-1 rounded-[5px] px-3 text-[14px] font-medium transition-colors duration-150',
-        open === p ? 'bg-bg-soft text-indigo' : 'text-ink hover:text-indigo'
-      )}
-    >
-      {label}
-      <ChevronDown className={cn('h-3.5 w-3.5 transition-transform duration-150', open === p && 'rotate-180')} aria-hidden />
-    </button>
-  );
+  const panelId = (p: MenuId) => `${uid}-${p}`;
+  const menuText = 'text-[14.5px] font-medium min-[1280px]:text-[15px]';
 
   return (
-    <header className="sticky top-0 z-50" data-testid="site-header">
-      {/* Utility bar — desktop only, first-party lines (A1 announcement bar). */}
-      <div className="hidden bg-navy text-white/80 nav:block">
-        <div className="shell flex h-8 items-center justify-between gap-6 text-[12px]">
-          <p className="truncate">
-            <span className="text-orange-light">●</span>&nbsp; Bulk orders &amp; contractor partnerships · Material supply + custom furniture
+    <header
+      className="group/header sticky top-0 z-50 nav:-top-9"
+      data-testid="site-header"
+      data-compact={compact ? '1' : undefined}
+    >
+      {/* Utility bar — desktop only; scrolls away (header sticks at -36px). */}
+      <div className="hidden border-b border-line bg-bg-soft text-[12.5px] text-muted nav:block">
+        <div className="shell-header flex min-h-9 flex-wrap items-center justify-between gap-x-6 gap-y-1 py-1.5">
+          <p className="flex flex-wrap items-center gap-x-5 gap-y-1">
+            <span>
+              <span className="font-medium text-ink">GSTIN</span> {UTILITY.gstin}
+            </span>
+            <a href={UTILITY.mapsHref} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 hover:text-indigo">
+              <MapPin className="h-3.5 w-3.5 text-orange-ink" aria-hidden /> {UTILITY.location}
+            </a>
           </p>
-          <div className="flex shrink-0 items-center gap-5">
-            <a href={COMPANY.phoneHref} className="hover:text-white">
-              {COMPANY.phoneDisplay}
+          <p className="flex flex-wrap items-center gap-x-5 gap-y-1">
+            <a href={UTILITY.phoneHref} className="inline-flex items-center gap-1.5 hover:text-indigo">
+              <Phone className="h-3.5 w-3.5" aria-hidden /> {UTILITY.phoneDisplay}
             </a>
-            <a href={`mailto:${COMPANY.email}`} className="hover:text-white">
-              {COMPANY.email}
+            <a href={`mailto:${UTILITY.email}`} className="inline-flex items-center gap-1.5 hover:text-indigo">
+              <Mail className="h-3.5 w-3.5" aria-hidden /> {UTILITY.email}
             </a>
-          </div>
+            <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 text-wa hover:text-ink">
+              <WhatsAppIcon className="h-3.5 w-3.5" /> WhatsApp
+            </a>
+          </p>
         </div>
       </div>
 
       <div
         className={cn(
-          'relative border-b bg-white/95 backdrop-blur-md transition-[box-shadow,border-color] duration-200',
-          scrolled || open ? 'border-line shadow-[0_8px_24px_-20px_rgba(11,26,60,0.5)]' : 'border-transparent'
+          'relative border-b bg-white transition-[box-shadow,border-color] duration-300',
+          compact || open ? 'border-line shadow-[0_10px_30px_-22px_rgba(11,26,60,0.45)]' : 'border-transparent'
         )}
+        style={{paddingTop: 'env(safe-area-inset-top)'}}
         onPointerLeave={(e) => e.pointerType === 'mouse' && intent(null, 180)}
       >
-        <div className="shell flex h-16 items-center justify-between gap-4">
-          <Logo />
+        <div
+          className={cn(
+            'shell-header flex min-h-16 items-center justify-between gap-3 transition-[min-height] duration-300 min-[1280px]:gap-5',
+            compact ? 'nav:min-h-[var(--header-compact)]' : 'nav:min-h-[var(--header-full)]'
+          )}
+        >
+          <Logo size="lg" />
 
-          <nav aria-label="Main" className="hidden items-center gap-0.5 nav:flex">
-            {trigger('products', 'Products')}
-            {trigger('brands', 'Brands')}
-            {trigger('capabilities', 'Capabilities')}
-            <Link href="/about" className="inline-flex h-10 items-center px-3 text-[14px] font-medium text-ink hover:text-indigo">
-              About
-            </Link>
-            <Link href="/contact" className="inline-flex h-10 items-center px-3 text-[14px] font-medium text-ink hover:text-indigo">
-              Contact
-            </Link>
+          <nav aria-label="Main" className="hidden items-center nav:flex">
+            {NAV_MENUS.map((m) =>
+              m.panel ? (
+                <button
+                  key={m.id}
+                  ref={(n) => {
+                    triggers.current[m.id] = n;
+                  }}
+                  type="button"
+                  aria-expanded={open === m.id}
+                  aria-controls={panelId(m.id)}
+                  data-menu={m.id}
+                  onClick={() => setOpen((v) => (v === m.id ? null : m.id))}
+                  onKeyDown={onTriggerKey(m.id)}
+                  onPointerEnter={(e) => e.pointerType === 'mouse' && intent(m.id, open ? 100 : 140)}
+                  className={cn(
+                    'inline-flex min-h-11 items-center gap-1 rounded-[6px] px-2 transition-colors duration-150 min-[1280px]:px-3',
+                    menuText,
+                    open === m.id ? 'bg-bg-soft text-indigo' : 'text-ink hover:text-indigo'
+                  )}
+                >
+                  {m.label}
+                  <ChevronDown className={cn('h-3.5 w-3.5 text-steel transition-transform duration-150', open === m.id && 'rotate-180 text-indigo')} aria-hidden />
+                </button>
+              ) : (
+                <Link
+                  key={m.id}
+                  href={m.href}
+                  onPointerEnter={(e) => e.pointerType === 'mouse' && open && intent(null, 120)}
+                  className={cn('inline-flex min-h-11 items-center rounded-[6px] px-2 text-ink hover:text-indigo min-[1280px]:px-3', menuText)}
+                >
+                  {m.label}
+                </Link>
+              )
+            )}
           </nav>
 
-          <div className="hidden items-center gap-2 nav:flex">
-            <a
-              href={COMPANY.phoneHref}
-              className="inline-flex h-10 items-center gap-2 px-2 text-[13px] font-medium text-muted hover:text-indigo"
-              aria-label={`Call ${COMPANY.phoneDisplay}`}
+          <div className="flex items-center gap-1 nav:gap-2">
+            {/* Desktop search trigger, styled as an inline field. */}
+            <button
+              type="button"
+              onClick={() => openSearch()}
+              data-testid="search-trigger"
+              aria-label="Search the site"
+              aria-keyshortcuts="Control+K Meta+K /"
+              className="hidden min-h-11 shrink-0 items-center gap-2 rounded-[8px] border border-line bg-bg-soft px-3 text-left text-[13.5px] text-muted transition-colors duration-150 hover:border-indigo/30 hover:bg-white nav:inline-flex min-[1440px]:min-w-[270px]"
             >
-              <Phone className="h-4 w-4" aria-hidden />
+              <Search className="h-4 w-4 shrink-0 text-indigo" aria-hidden />
+              <span className="min-[1440px]:hidden">Search</span>
+              <span className="hidden flex-1 min-[1440px]:inline">{SEARCH_PLACEHOLDER}</span>
+              <kbd className="hidden rounded-[4px] border border-line bg-white px-1.5 font-mono text-[11px] text-steel min-[1180px]:inline min-[1440px]:hidden">⌘K</kbd>
+            </button>
+            <a
+              href={UTILITY.phoneHref}
+              aria-label={`Call ${UTILITY.phoneDisplay}`}
+              className="hidden h-11 w-11 shrink-0 place-items-center rounded-[8px] text-ink hover:bg-bg-soft hover:text-indigo min-[1536px]:grid"
+            >
+              <Phone className="h-[18px] w-[18px]" aria-hidden />
             </a>
             <a
-              href={whatsappUrl(WA.default)}
+              href={quoteWhatsappUrl({source: 'Header'})}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex h-10 items-center gap-2 rounded-[6px] bg-orange px-4 text-[13.5px] font-semibold text-white transition-colors duration-150 hover:bg-orange-deep"
+              data-testid="header-get-price"
+              className="hidden min-h-11 shrink-0 items-center gap-2 rounded-[8px] bg-orange px-4 text-[14px] font-semibold text-white shadow-[0_8px_20px_-12px_rgba(234,88,12,0.8)] transition-colors duration-150 hover:bg-orange-deep nav:inline-flex"
             >
-              <WhatsAppIcon className="h-4 w-4" />
-              Request price
+              <WhatsAppIcon className="h-4 w-4" /> Get Price
             </a>
-          </div>
 
-          <MobileMenu />
+            {/* Phones/tablets */}
+            <button
+              type="button"
+              onClick={() => openSearch()}
+              data-testid="search-trigger-mobile"
+              aria-label="Search the site"
+              className="grid h-11 w-11 place-items-center rounded-[8px] text-ink hover:bg-bg-soft nav:hidden"
+            >
+              <Search className="h-[22px] w-[22px]" aria-hidden />
+            </button>
+            <MobileMenu />
+          </div>
         </div>
 
-        {/* ── Panels ─────────────────────────────────────────────────────── */}
-        <div
-          id={ids.products}
-          role="region"
-          aria-label="Products menu"
-          hidden={open !== 'products'}
-          onPointerEnter={(e) => e.pointerType === 'mouse' && intent('products', 0)}
-          className="absolute inset-x-0 top-full hidden border-b border-line bg-white shadow-lift nav:block"
-        >
-          <div className="shell grid grid-cols-[300px_1fr_260px] gap-8 py-7">
-            <ul className="flex flex-col">
-              {CATEGORIES.map((c) => (
-                <li key={c.slug}>
-                  <Link
-                    href={categoryHref(c.slug)}
-                    onPointerEnter={() => setPreview(c.slug)}
-                    onFocus={() => setPreview(c.slug)}
-                    className={cn(
-                      'flex items-center justify-between gap-3 border-l-2 px-3 py-2.5 text-[14.5px] transition-colors duration-150',
-                      preview === c.slug ? 'border-orange bg-bg-soft font-semibold text-indigo' : 'border-transparent text-ink hover:text-indigo'
-                    )}
-                  >
-                    {CATEGORY_COPY[c.slug].name}
-                    <span className="t-label text-steel">{countByCategory(c.slug)}</span>
-                  </Link>
-                </li>
-              ))}
-              <li className="mt-3 border-t border-line pt-3">
-                <Link href="/products" className="arrow-nudge flex items-center gap-1.5 px-3 py-1.5 text-[13.5px] font-semibold text-indigo">
-                  All {STATS.products} products <ArrowRight className="h-3.5 w-3.5" aria-hidden />
-                </Link>
-              </li>
-            </ul>
-
-            {/* Live preview of the hovered/focused category */}
-            <div className="grid grid-cols-[200px_1fr] gap-6" aria-live="polite">
-              <div className="relative aspect-square overflow-hidden rounded-md bg-bg-soft">
-                <Image src={cat.image} alt="" fill sizes="200px" className="object-cover" />
-              </div>
-              <div className="min-w-0">
-                <p className="t-label text-orange-ink">{copy.brands.join(' · ')}</p>
-                <p className="mt-1.5 text-lg font-semibold text-ink">{copy.name}</p>
-                <p className="mt-1.5 text-[13.5px] leading-relaxed text-muted">{copy.what}</p>
-                <p className="mt-3 text-[12.5px] text-muted">
-                  <span className="font-semibold text-ink">Best for:</span> {copy.bestFor}
-                </p>
-                <ul className="mt-3 flex flex-wrap gap-1.5">
-                  {(cat.subs.length > 1
-                    ? cat.subs.map((s) => ({label: SUB_NAMES[s.slug], href: subcategoryHref(cat.slug, s.slug)}))
-                    : catProducts.slice(0, 5).map((p) => ({label: p.short, href: productHref(p)}))
-                  ).map((l) => (
-                    <li key={l.label}>
-                      <Link
-                        href={l.href}
-                        className="inline-flex rounded-[4px] border border-line px-2.5 py-1 text-[12.5px] text-ink hover:border-indigo/40 hover:text-indigo"
-                      >
-                        {l.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+        {/* ── Mega panels ─────────────────────────────────────────────── */}
+        {NAV_MENUS.filter((m) => m.panel).map((m) => {
+          const id = m.id as MenuId;
+          return (
+            <div
+              key={id}
+              id={panelId(id)}
+              ref={(n) => {
+                panels.current[id] = n;
+              }}
+              role="region"
+              aria-label={PANEL_LABEL[id]}
+              hidden={open !== id}
+              data-panel={id}
+              onPointerEnter={(e) => e.pointerType === 'mouse' && intent(id, 0)}
+              className="panel-in absolute inset-x-0 top-full hidden max-h-[calc(100dvh-var(--header-compact)-8px)] overflow-y-auto overscroll-contain border-b border-t border-line bg-white shadow-lift nav:block"
+            >
+              <div className="shell-header">{seen[id] && <MegaPanel id={id} />}</div>
             </div>
-
-            <div className="flex flex-col gap-2 border-l border-line pl-6">
-              <p className="t-label text-steel">Tools</p>
-              <Link href="/decor" className="group rounded-md p-2 hover:bg-bg-soft">
-                <span className="block text-[14px] font-semibold text-ink group-hover:text-indigo">Décor library</span>
-                <span className="text-[12.5px] text-muted">{STATS.decors} prelam finishes by code</span>
-              </Link>
-              <Link href={{pathname: '/', hash: 'selector'}} className="group rounded-md p-2 hover:bg-bg-soft">
-                <span className="block text-[14px] font-semibold text-ink group-hover:text-indigo">Material selector</span>
-                <span className="text-[12.5px] text-muted">Application → grade → product</span>
-              </Link>
-              <Link href={{pathname: '/', hash: 'compare'}} className="group rounded-md p-2 hover:bg-bg-soft">
-                <span className="block text-[14px] font-semibold text-ink group-hover:text-indigo">Compare boards</span>
-                <span className="text-[12.5px] text-muted">Two products, side by side</span>
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        <div
-          id={ids.brands}
-          role="region"
-          aria-label="Brands menu"
-          hidden={open !== 'brands'}
-          onPointerEnter={(e) => e.pointerType === 'mouse' && intent('brands', 0)}
-          className="absolute inset-x-0 top-full hidden border-b border-line bg-white shadow-lift nav:block"
-        >
-          <div className="shell grid grid-cols-3 gap-6 py-7">
-            {BRANDS.map((b) => (
-              <Link
-                key={b}
-                href={{pathname: '/partners', hash: BRAND_ASSETS[b].slug}}
-                className="group flex flex-col gap-3 rounded-md border border-line p-5 transition-colors duration-150 hover:border-indigo/40"
-              >
-                <div className="flex h-10 items-center">
-                  <BrandLogo brand={b} height={b === 'Action TESA' ? 34 : 24} />
-                </div>
-                <p className="t-label text-orange-ink">
-                  {BRAND_ASSETS[b].relation} · {countByBrand(b)} products
-                </p>
-                <p className="text-[13.5px] leading-relaxed text-muted">{BRAND_ASSETS[b].supplies}</p>
-              </Link>
-            ))}
-          </div>
-        </div>
-
-        <div
-          id={ids.capabilities}
-          role="region"
-          aria-label="Capabilities menu"
-          hidden={open !== 'capabilities'}
-          onPointerEnter={(e) => e.pointerType === 'mouse' && intent('capabilities', 0)}
-          className="absolute inset-x-0 top-full hidden border-b border-line bg-white shadow-lift nav:block"
-        >
-          <div className="shell grid grid-cols-4 gap-6 py-7">
-            {CAPABILITIES.map((c, i) => (
-              <Link key={c.label} href={c.href} className="group border-t-2 border-line pt-4 hover:border-orange">
-                <span className="t-label text-steel">0{i + 1}</span>
-                <span className="mt-1 block text-[15px] font-semibold text-ink group-hover:text-indigo">{c.label}</span>
-                <span className="mt-1 block text-[13px] leading-relaxed text-muted">{c.body}</span>
-              </Link>
-            ))}
-          </div>
-        </div>
+          );
+        })}
       </div>
     </header>
   );

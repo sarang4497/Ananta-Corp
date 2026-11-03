@@ -14,7 +14,7 @@ export type ButtonSize = 'sm' | 'md' | 'lg';
  * Rectangular 6px radius — architectural, not pill-shaped.
  */
 const base =
-  'group inline-flex min-h-11 items-center justify-center gap-2 rounded-[6px] font-semibold no-underline whitespace-nowrap ' +
+  'group inline-flex min-h-11 items-center justify-center gap-2 rounded-[6px] font-semibold no-underline text-center text-balance ' +
   'transition-[background-color,border-color,color,box-shadow,transform] duration-150 ease-out ' +
   'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue ' +
   'active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none';

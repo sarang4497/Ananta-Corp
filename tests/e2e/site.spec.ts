@@ -77,3 +77,37 @@ test('scroll reveals resolve when scrolling fast', async ({page}) => {
   const stuck = await page.evaluate(() => [...document.querySelectorAll('[data-reveal]')].filter((e) => !e.classList.contains('is-in')).length);
   expect(stuck).toBe(0);
 });
+
+test('shell: sticky header height matches --header-h; footer has the full IA', async ({page}) => {
+  await page.goto('/about');
+  await page.waitForFunction(() => document.documentElement.dataset.motion === 'ready');
+  await page.evaluate(() => window.scrollTo(0, 1200));
+  await page.waitForTimeout(450);
+  const {bar, token} = await page.evaluate(() => {
+    const h = document.querySelector('[data-testid="site-header"]')!;
+    const r = h.getBoundingClientRect();
+    const probe = document.createElement('div');
+    probe.style.height = 'var(--header-h)';
+    document.body.appendChild(probe);
+    const token = probe.getBoundingClientRect().height;
+    probe.remove();
+    return {bar: r.bottom, token};
+  });
+  expect(Math.abs(bar - token)).toBeLessThanOrEqual(2);
+  const footer = page.getByTestId('site-footer');
+  for (const t of ['Products', 'Brands', 'Applications', 'Resources', 'Company', 'Privacy', 'Terms', 'GSTIN']) await expect(footer).toContainText(t);
+});
+
+test('reduced motion: image/curtain/mask reveals are not clipped', async ({browser}) => {
+  const ctx = await browser.newContext({reducedMotion: 'reduce'});
+  const page = await ctx.newPage();
+  await page.goto('/');
+  const bad = await page.evaluate(() =>
+    [...document.querySelectorAll('[data-reveal]')].filter((e) => {
+      const cs = getComputedStyle(e);
+      return cs.opacity === '0' || (cs.clipPath !== 'none' && cs.clipPath !== '') || cs.transform !== 'none';
+    }).length
+  );
+  expect(bad).toBe(0);
+  await ctx.close();
+});
