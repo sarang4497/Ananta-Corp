@@ -20,11 +20,15 @@ export type LeadInput = {
   company?: string;
   product?: string;
   size?: string;
+  /** Finish / décor (quote context). */
+  finish?: string;
   category?: string;
   quantity?: string;
   city?: string;
   message?: string;
   source?: string;
+  /** Where the quote context came from, e.g. "Product page" (QUOTE_QUERY_KEYS `source`). */
+  origin?: string;
   page?: string;
   /** Honeypot — real visitors never fill it. */
   website?: string;
@@ -56,11 +60,13 @@ export function validateLead(body: LeadInput, now = new Date(), id = cryptoId())
       company: clip(body.company, 160),
       product: clip(body.product, 200),
       size: clip(body.size, 60),
+      finish: clip(body.finish, 120),
       category: clip(body.category, 120),
       quantity: clip(body.quantity, 160),
       city: clip(body.city, 120),
       message: clip(body.message, 3000),
       source: clip(body.source, 60) ?? 'website',
+      origin: clip(body.origin, 120),
       page: clip(body.page, 300)
     }
   };
@@ -81,10 +87,12 @@ export function leadEmail(lead: Lead) {
     ['Email', lead.email],
     ['Product', lead.product],
     ['Selected size', lead.size],
+    ['Finish / décor', lead.finish],
     ['Category', lead.category],
     ['Quantity', lead.quantity],
     ['City / site', lead.city],
     ['Message', lead.message],
+    ['Request origin', lead.origin],
     ['Source page', lead.page ?? lead.source],
     ['Received', lead.at],
     ['Reference', lead.id]

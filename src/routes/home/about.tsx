@@ -1,16 +1,16 @@
 import type {Metadata} from 'next';
 import Image from 'next/image';
 import {setRequestLocale} from 'next-intl/server';
-import {ArrowRight} from 'lucide-react';
 import {Link} from '@/i18n/navigation';
 import {CATEGORIES, categoryHref} from '@/data/products';
 import {CATEGORY_COPY} from '@/content/categories';
-import {COMPANY, WA} from '@/content/site';
+import {AUDIENCES, COMPANY, WA} from '@/content/site';
 import {STATS, countByCategory} from '@/data/stats';
 import {PageIntro} from '@/components/catalog2/PageIntro';
-import {Operations, CustomFurniture} from '@/components/home2/Operations';
-import {Voices} from '@/components/home2/Voices';
-import {BrandLogo} from '@/components/site/BrandLogo';
+import {Operations, CustomFurniture} from '@/components/home3/Operations';
+import {Voices} from '@/components/home3/Voices';
+import {BrandPartners} from '@/components/home3/BrandPartners';
+import {ContactBand} from '@/components/home3/ContactBand';
 import {CountUp} from '@/components/motion/CountUp';
 import {WhatsAppIcon} from '@/components/ui/Button';
 import {whatsappUrl} from '@/lib/whatsapp';
@@ -52,18 +52,20 @@ export default async function AboutPage({params}: Params) {
       />
 
       <section aria-label="Key facts" className="border-b border-line bg-white">
-        <dl className="shell grid grid-cols-2 gap-px bg-line lg:grid-cols-4">
+        <dl className="shell grid grid-cols-2 gap-px bg-line sm:grid-cols-3 lg:grid-cols-6">
           {[
             {v: COMPANY.since, l: 'Supplying since'},
             {v: COMPANY.facility.replace(' sq. ft.', ''), l: 'Sq. ft. warehouse & workshop'},
             {v: String(STATS.products), l: 'Products listed'},
-            {v: String(STATS.decors), l: 'Prelam décors'}
+            {v: String(STATS.decors), l: 'Prelam décors'},
+            {v: String(STATS.categories), l: 'Material categories'},
+            {v: String(STATS.brands), l: 'Manufacturer brands'}
           ].map((f) => (
             <div key={f.l} className="flex flex-col gap-1 bg-white px-4 py-6" data-reveal="up">
-              <dd className="text-[clamp(1.8rem,1.4rem+1.4vw,2.5rem)] font-semibold leading-none tracking-tight text-indigo">
+              <dt className="order-2 text-[13px] text-ink">{f.l}</dt>
+              <dd className="order-1 text-[clamp(1.8rem,1.4rem+1.4vw,2.5rem)] font-semibold leading-none tracking-tight text-indigo">
                 <CountUp value={f.v} />
               </dd>
-              <dt className="text-[13px] text-ink">{f.l}</dt>
             </div>
           ))}
         </dl>
@@ -123,6 +125,34 @@ export default async function AboutPage({params}: Params) {
         </div>
       </section>
 
+      <section aria-labelledby="serve-title" className="bg-white py-12 sm:py-16">
+        <div className="shell">
+          <p className="t-label text-orange-ink" data-reveal="up">
+            Who we serve
+          </p>
+          <h2 id="serve-title" className="t-h2 mt-3 max-w-[24ch] text-ink" data-reveal="up">
+            Professionals and homeowners, one supply desk.
+          </h2>
+          <ul className="mt-8 grid grid-cols-1 gap-px border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+            {AUDIENCES.map((a, i) => (
+              <li key={a.key} className="flex flex-col gap-2 bg-white p-5 sm:p-6" data-reveal="up" style={{['--d' as string]: `${(i % 3) * 80}ms`}}>
+                <h3 className="text-[16px] font-semibold text-ink">{a.label}</h3>
+                <p className="text-[14px] leading-relaxed text-muted">{a.line}</p>
+                <ul className="mt-auto flex flex-wrap gap-1.5 pt-2">
+                  {a.categories.map((c) => (
+                    <li key={c}>
+                      <Link href={categoryHref(c)} className="inline-flex min-h-9 items-center rounded-[4px] bg-surface-blue px-2.5 py-1 text-[12.5px] font-medium text-indigo hover:bg-indigo hover:text-white">
+                        {CATEGORY_COPY[c].short}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <Operations />
       <CustomFurniture />
 
@@ -158,22 +188,10 @@ export default async function AboutPage({params}: Params) {
         </div>
       </section>
 
-      <section aria-label="Brands" className="border-y border-line bg-bg-soft">
-        <div className="shell flex flex-col items-start gap-5 py-8 sm:flex-row sm:items-center sm:justify-between">
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-4">
-            <span className="t-label text-steel">Authorized distributor</span>
-            <BrandLogo brand="Duroply" height={24} />
-            <BrandLogo brand="Action TESA" height={34} />
-            <span className="t-label text-steel">Also supplying</span>
-            <BrandLogo brand="Tenon Smart Lock" height={18} />
-          </div>
-          <Link href="/partners" className="arrow-nudge inline-flex items-center gap-1.5 text-[14px] font-semibold text-indigo">
-            Brands <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
-        </div>
-      </section>
+      <BrandPartners />
 
       <Voices exclude="Ketanbhai Shah" />
+      <ContactBand />
     </>
   );
 }

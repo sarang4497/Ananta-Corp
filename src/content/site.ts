@@ -32,6 +32,9 @@ export const COMPANY = {
   mapsQuery: 'Nanukaka Estate, Pirana Road, Piplaj, Ahmedabad 382405'
 } as const;
 
+/** Google Maps search link for the warehouse (built from COMPANY.mapsQuery). */
+export const MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(COMPANY.mapsQuery)}`;
+
 /** Official logo assets (manufacturer-supplied; never recoloured or stretched). */
 export const BRAND_ASSETS = {
   Duroply: {
@@ -90,41 +93,76 @@ export const EXPOSURE_LABEL: Record<Exposure, string> = {
   wet: 'Wet zones'
 };
 
-/** Audience entry points — "what can I source here?" (A1 audiences). */
+/**
+ * Audience entry points — "what can I source here?" (A1 audiences: architects,
+ * interior designers, furniture manufacturers, contractors; builders and
+ * homeowners via A1 "residential and industrial projects" / "homeowners").
+ * `key` matches BlogAudience in src/content/blog/types.ts. `applications`
+ * picks the example products (from each product's own application mapping);
+ * `tools` are ToolSlugs from src/content/tools.ts. No exclusive services.
+ */
 export const AUDIENCES: {
-  key: string;
+  key: 'interior-designer' | 'architect' | 'furniture-manufacturer' | 'contractor' | 'builder' | 'homeowner';
   label: string;
   line: string;
   categories: CategorySlug[];
+  applications: Application[];
+  tools: string[];
   extra?: string;
 }[] = [
   {
-    key: 'designers',
-    label: 'Interior designers',
+    key: 'interior-designer',
+    label: 'Interior Designer',
     line: 'Finishes, boards and doors for residential and commercial interiors.',
     categories: ['pre-laminated-particle-board', 'mdf', 'plywood', 'flush-door', 'smart-locks'],
-    extra: 'Browse the full prelam décor library by colour family and code.'
+    applications: ['wardrobes', 'kitchens', 'panelling'],
+    tools: ['finish-explorer', 'material-selector', 'compare'],
+    extra: 'Browse the full prelam décor library by family and code.'
   },
   {
-    key: 'manufacturers',
-    label: 'Furniture manufacturers',
+    key: 'architect',
+    label: 'Architect',
+    line: 'Grades matched to exposure, with the manufacturer standard named on each product.',
+    categories: ['plywood', 'mdf', 'high-moisture-resistant-board-moist-master', 'flush-door'],
+    applications: ['wet-zones', 'commercial', 'panelling'],
+    tools: ['material-selector', 'compare'],
+    extra: 'Specify by exposure first, then compare the published attributes side by side.'
+  },
+  {
+    key: 'furniture-manufacturer',
+    label: 'Furniture Manufacturer',
     line: 'Carcass and shutter boards in the thicknesses production needs.',
     categories: ['mdf', 'high-moisture-resistant-board-moist-master', 'plywood', 'pre-laminated-particle-board'],
+    applications: ['furniture', 'wardrobes', 'kitchens'],
+    tools: ['compare', 'sheet-calculator', 'requirement-builder'],
     extra: 'Material supply plus custom furniture to your drawings.' // A1 "End-to-end: Material Supply + Custom Furniture"
   },
   {
-    key: 'specifiers',
-    label: 'Architects & specifiers',
-    line: 'Grades matched to exposure, with the manufacturer standard named on each product.',
-    categories: ['plywood', 'mdf', 'high-moisture-resistant-board-moist-master', 'flush-door'],
-    extra: 'Use the material selector and side-by-side comparison below.'
-  },
-  {
-    key: 'contractors',
-    label: 'Contractors & project teams',
+    key: 'contractor',
+    label: 'Contractor',
     line: 'Bulk requirements across plywood, MDF, boards and doors from one supplier.',
     categories: ['plywood', 'mdf', 'flush-door', 'high-moisture-resistant-board-moist-master', 'smart-locks'],
+    applications: ['kitchens', 'wet-zones', 'doors'],
+    tools: ['requirement-builder', 'sheet-calculator'],
     extra: 'Bulk orders and contractor partnerships available.' // A1 announcement bar
+  },
+  {
+    key: 'builder',
+    label: 'Builder',
+    line: 'Boards, flush doors and smart locks for residential and commercial projects.',
+    categories: ['flush-door', 'smart-locks', 'plywood', 'mdf'],
+    applications: ['doors', 'kitchens', 'commercial'],
+    tools: ['requirement-builder', 'sheet-calculator'],
+    extra: 'Send a multi-category requirement list in one message.'
+  },
+  {
+    key: 'homeowner',
+    label: 'Homeowner',
+    line: 'Plywood, finished boards, doors and smart locks for your own home interior.',
+    categories: ['plywood', 'pre-laminated-particle-board', 'flush-door', 'smart-locks'],
+    applications: ['wardrobes', 'kitchens', 'doors'],
+    tools: ['material-selector', 'finish-explorer'],
+    extra: 'Not sure which grade? Start with the material selector, then ask the team.'
   }
 ];
 
