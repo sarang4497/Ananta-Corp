@@ -9,7 +9,6 @@ import {BRANDS, STATS, countByApplication, countByBrand, countByCategory} from '
 import {CATEGORY_COPY, SUB_NAMES} from '@/content/categories';
 import {APPLICATIONS, BRAND_ASSETS, COMPANY} from '@/content/site';
 import {TOOLS, type Tool} from '@/content/tools';
-import {POSTS, BLOG_CATEGORY_LABEL} from '@/content/blog';
 
 export type NavLink = {label: string; href: Href; count?: number};
 
@@ -98,19 +97,11 @@ export const NAV_TOOLS: Tool[] = TOOLS;
 
 export type NavPost = {slug: string; title: string; excerpt: string; category: string; image: string; imageAlt: string; minutes: number; href: Href};
 
-export const NAV_POSTS: NavPost[] = POSTS.slice(0, 3).map((p) => ({
-  slug: p.slug,
-  title: p.title,
-  excerpt: p.excerpt,
-  category: BLOG_CATEGORY_LABEL[p.category],
-  image: p.image,
-  imageAlt: p.imageAlt,
-  minutes: p.readingMinutes,
-  href: {pathname: '/blog/[slug]', params: {slug: p.slug}} as Href
-}));
+// NAV_POSTS lives in ./nav-posts.ts (server-only: importing POSTS here would ship every article body to the client).
+
 
 export const NAV_RESOURCES: NavLink[] = [
-  {label: 'Guides & articles', href: '/blog', count: POSTS.length || undefined},
+  {label: 'Guides & articles', href: '/blog'},
   {label: 'Décor library', href: '/decor', count: STATS.decors},
   {label: 'All tools', href: '/tools', count: TOOLS.length}
 ];

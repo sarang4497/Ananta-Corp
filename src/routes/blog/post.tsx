@@ -56,7 +56,12 @@ export default async function PostPage({params}: Params) {
 
   const url = `${siteUrl}/blog/${p.slug}`;
   const toc = tocFor(p);
-  const products = p.relatedProducts.map((s) => PRODUCTS.find((x) => x.slug === s)).filter((x): x is Product => Boolean(x));
+  // Products already rendered inline by a `products` block are not repeated in the closing section.
+  const inline = new Set(p.blocks.flatMap((b) => (b.type === 'products' ? b.slugs : [])));
+  const products = p.relatedProducts
+    .filter((s) => !inline.has(s))
+    .map((s) => PRODUCTS.find((x) => x.slug === s))
+    .filter((x): x is Product => Boolean(x));
   const tools = (p.relatedTools ?? []).map((s) => TOOLS.find((t) => t.slug === s)).filter((t): t is (typeof TOOLS)[number] => Boolean(t));
   const related = relatedPostsFor(p, 3);
   const quote = {source: `Guide: ${p.title}`};

@@ -4,11 +4,12 @@ import Image from 'next/image';
 import {useState} from 'react';
 import {ArrowRight, ArrowUpRight} from 'lucide-react';
 import {Link} from '@/i18n/navigation';
-import {NAV_APPLICATIONS, NAV_BRANDS, NAV_CATEGORIES, NAV_POSTS, NAV_TOOLS, NAV_TOTAL, type MenuId} from '@/content/nav';
+import {NAV_APPLICATIONS, NAV_BRANDS, NAV_CATEGORIES, NAV_TOOLS, NAV_TOTAL, type MenuId} from '@/content/nav';
 import {STATS} from '@/data/stats';
 import {quoteWhatsappUrl} from '@/lib/quote';
 import {WhatsAppIcon} from '@/components/ui/Button';
 import {cn} from '@/lib/cn';
+import {useNavPosts} from './NavPosts';
 import {BrandLogo} from './BrandLogo';
 import {ToolIcon} from './ToolIcon';
 
@@ -236,6 +237,7 @@ function ToolsPanel() {
 }
 
 function ResourcesPanel() {
+  const NAV_POSTS = useNavPosts();
   const explorer = NAV_TOOLS.find((t) => t.slug === 'finish-explorer');
   return (
     <div className="grid grid-cols-[1fr_300px] gap-8 py-7">

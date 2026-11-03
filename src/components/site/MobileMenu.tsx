@@ -5,10 +5,11 @@ import {useEffect, useRef, useState, type ReactNode} from 'react';
 import {createPortal} from 'react-dom';
 import {ArrowRight, ChevronDown, ChevronRight, Menu, Phone, Search, X} from 'lucide-react';
 import {Link, usePathname} from '@/i18n/navigation';
-import {NAV_APPLICATIONS, NAV_BRANDS, NAV_CATEGORIES, NAV_COMPANY, NAV_POSTS, NAV_RESOURCES, NAV_TOOLS, NAV_TOTAL, SEARCH_PLACEHOLDER, UTILITY} from '@/content/nav';
+import {NAV_APPLICATIONS, NAV_BRANDS, NAV_CATEGORIES, NAV_COMPANY, NAV_RESOURCES, NAV_TOOLS, NAV_TOTAL, SEARCH_PLACEHOLDER, UTILITY} from '@/content/nav';
 import {quoteContactHref, quoteWhatsappUrl} from '@/lib/quote';
 import {WhatsAppIcon} from '@/components/ui/Button';
 import {cn} from '@/lib/cn';
+import {useNavPosts} from './NavPosts';
 import {ToolIcon} from './ToolIcon';
 
 type Section = 'brands' | 'applications' | 'tools' | 'resources';
@@ -23,6 +24,7 @@ type Section = 'brands' | 'applications' | 'tools' | 'resources';
  * so the bottom utility bar steps aside.
  */
 export function MobileMenu() {
+  const NAV_POSTS = useNavPosts();
   const [open, setOpen] = useState(false);
   const [section, setSection] = useState<Section | null>(null);
   const [q, setQ] = useState('');

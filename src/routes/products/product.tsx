@@ -93,7 +93,7 @@ export default async function ProductPage({params}: Params) {
           <Breadcrumbs items={crumbs} />
           <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-12">
             <div className="min-w-0 lg:sticky lg:top-[calc(var(--header-h,72px)+24px)] lg:self-start">
-              <Gallery images={p.images} name={p.name} />
+              <Gallery images={[p.cardImage, ...p.images.filter((im) => im !== p.cardImage)]} name={p.name} />
             </div>
             <div className="flex min-w-0 flex-col">
               <div className="hero-in flex flex-wrap items-center gap-3">

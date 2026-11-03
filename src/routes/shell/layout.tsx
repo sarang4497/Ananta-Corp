@@ -7,6 +7,8 @@ import {setRequestLocale} from 'next-intl/server';
 import {routing} from '@/i18n/routing';
 import {siteUrl} from '@/config';
 import {Header} from '@/components/site/Header';
+import {NavPostsProvider} from '@/components/site/NavPosts';
+import {NAV_POSTS} from '@/content/nav-posts';
 import {Footer} from '@/components/site/Footer';
 import {ContactDock} from '@/components/site/ContactDock';
 import {RevealObserver} from '@/components/motion/RevealObserver';
@@ -70,7 +72,9 @@ export default async function LocaleLayout({children, params}: {children: ReactN
           </a>
           <RevealObserver />
           <div className="relative flex min-h-dvh flex-col">
-            <Header />
+            <NavPostsProvider posts={NAV_POSTS}>
+              <Header />
+            </NavPostsProvider>
             <main id="main" className="flex-1">
               {children}
             </main>
