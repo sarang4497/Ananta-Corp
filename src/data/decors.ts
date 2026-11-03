@@ -1,5 +1,6 @@
 /**
- * The Action Tesa pre-laminated board décor catalog — 156 designs, swatches
+ * The Action Tesa pre-laminated board décor catalog (one entry per code; the
+ * count is computed from this list), swatches
  * self-hosted in /public/images/decor (downloaded from actiontesa.com).
  * Display names are cleaned up from the source (typos fixed); codes are real.
  * Generated from docs/ananta-full-site.md Section 4.
@@ -37,7 +38,6 @@ export const DECORS: Decor[] = [
   {code: '1138', name: 'Hong Kong Blue', image: '/images/decor-thumbs/1138-hong-kong-blue.webp', type: 'solid'},
   {code: '1140', name: 'Irish Blue', image: '/images/decor-thumbs/1140-irish-blue.webp', type: 'solid'},
   {code: '1141', name: 'Night Grey', image: '/images/decor-thumbs/1141-night-grey.webp', type: 'solid'},
-  {code: '1141', name: 'Night Grey', image: '/images/decor-thumbs/1141-night-grey-2.webp', type: 'solid'},
   {code: '1142', name: 'Pebble Beach', image: '/images/decor-thumbs/1142-pebble-beach.webp', type: 'solid'},
   {code: '1143', name: 'Coral Pink', image: '/images/decor-thumbs/1143-coarl-pink.webp', type: 'solid'},
   {code: '1144', name: 'Chocolate', image: '/images/decor-thumbs/1144-chocolate.webp', type: 'solid'},

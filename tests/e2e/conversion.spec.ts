@@ -110,7 +110,7 @@ test('contact form: required fields block submission', async ({page}) => {
 });
 
 test('material selector routes to real products and a prefilled WhatsApp', async ({page}) => {
-  await page.goto('/#selector');
+  await page.goto('/tools/material-selector');
   await hydrated(page);
   const sel = page.locator('#selector');
   await sel.getByRole('button', {name: 'Bathroom & humid areas'}).click();
@@ -118,10 +118,11 @@ test('material selector routes to real products and a prefilled WhatsApp', async
   await expect(sel.getByRole('link', {name: 'Exterior Grade MDF', exact: true})).toBeVisible();
   const href = await sel.getByRole('link', {name: /Get price for this selection/}).getAttribute('href');
   expect(decode(href)).toContain('Exterior Grade MDF');
+  expect(decode(href)).toContain('Material Selector');
 });
 
 test('compare shows only shared verified rows', async ({page}) => {
-  await page.goto('/#compare');
+  await page.goto('/tools/compare');
   await hydrated(page);
   const c = page.locator('#compare');
   await expect(c.getByRole('row', {name: /Bonding resin/})).toBeVisible();

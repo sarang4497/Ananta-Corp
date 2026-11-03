@@ -4,6 +4,8 @@ import {categoryHref} from '@/data/products';
 import {STATS} from '@/data/stats';
 import {PageIntro} from '@/components/catalog2/PageIntro';
 import {DecorLibrary} from '@/components/catalog2/DecorLibrary';
+import {RelatedTools} from '@/components/tools/RelatedTools';
+import {TOOL_PAGES} from '@/content/tools-data';
 import {buildAlternates} from '@/lib/metadata';
 
 type Params = {params: Promise<{locale: string}>};
@@ -22,7 +24,7 @@ export default async function DecorPage({params}: Params) {
   setRequestLocale(locale);
   return (
     <>
-      <span hidden data-wa-context="Hello! I'm looking for a pre-laminated board décor. Please share price and availability." />
+      <span hidden data-wa-context={TOOL_PAGES['finish-explorer'].wa} />
       <PageIntro
         crumbs={[
           {label: 'Home', href: '/'},
@@ -32,13 +34,14 @@ export default async function DecorPage({params}: Params) {
         ]}
         eyebrow="Action TESA · pre-laminated particle board"
         title={`${STATS.decors} décors, by code.`}
-        lead="Woodgrains, solids, stone and marble looks, fabric weaves and textures. Search by name or design code and ask for any finish on WhatsApp."
+        lead="Woodgrains, solids, stone and marble looks, fabric weaves and textures. Search by name or design code, enlarge any swatch, and shortlist finishes to send on WhatsApp in one message."
       />
       <section className="bg-bg-soft py-8 sm:py-12">
         <div className="shell">
           <DecorLibrary />
         </div>
       </section>
+      <RelatedTools slugs={TOOL_PAGES['finish-explorer'].related} />
     </>
   );
 }
