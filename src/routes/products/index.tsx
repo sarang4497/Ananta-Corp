@@ -1,3 +1,4 @@
+import type {CSSProperties} from 'react';
 import type {Metadata} from 'next';
 import Image from 'next/image';
 import {setRequestLocale} from 'next-intl/server';
@@ -32,23 +33,25 @@ export default async function ProductsPage({params}: Params) {
         lead={`${STATS.products} products across ${STATS.categories} categories from ${STATS.brands} brands — filter by brand, application or exposure, or search by grade, thickness or décor code.`}
       />
       <nav aria-label="Categories" className="border-b border-line bg-white">
-        <ul className="shell rail gap-3 py-4 lg:grid lg:grid-cols-6">
-          {CATEGORIES.map((c) => (
-            <li key={c.slug} className="w-[150px] lg:w-auto">
-              <Link href={categoryHref(c.slug)} className="tile-lift group flex items-center gap-3 rounded-[6px] border border-line p-2">
-                <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-[4px] bg-bg-soft">
-                  <Image src={c.image} alt="" fill sizes="44px" className="object-cover" />
+        <ul className="shell rail gap-3 py-4 lg:grid lg:grid-cols-6 lg:overflow-visible">
+          {CATEGORIES.map((c, i) => (
+            <li key={c.slug} className="w-[168px] shrink-0 snap-start lg:w-auto" data-reveal="up" style={{'--d': `${i * 40}ms`} as CSSProperties}>
+              <Link href={categoryHref(c.slug)} className="tile-lift tile-zoom group flex h-full items-center gap-3 rounded-[10px] border border-line bg-white p-2.5">
+                <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-[6px] bg-bg-soft">
+                  <Image src={c.image} alt="" fill sizes="48px" className="object-cover" />
                 </span>
                 <span className="min-w-0">
-                  <span className="block truncate text-[13px] font-semibold text-ink group-hover:text-indigo">{CATEGORY_COPY[c.slug].short}</span>
-                  <span className="t-label text-steel">{countByCategory(c.slug)}</span>
+                  <span className="block text-[13px] font-semibold leading-snug text-ink group-hover:text-indigo">{CATEGORY_COPY[c.slug].short}</span>
+                  <span className="t-label text-steel">
+                    {countByCategory(c.slug)} product{countByCategory(c.slug) === 1 ? '' : 's'}
+                  </span>
                 </span>
               </Link>
             </li>
           ))}
         </ul>
       </nav>
-      <section className="bg-bg-soft py-8 sm:py-12">
+      <section className="bg-bg-soft pb-[calc(3rem+env(safe-area-inset-bottom))] pt-6 sm:py-12">
         <div className="shell">
           <CatalogBrowser />
         </div>

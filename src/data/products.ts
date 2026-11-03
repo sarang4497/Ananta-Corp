@@ -231,11 +231,12 @@ export const PRODUCTS: Product[] = [
       ['Grade', 'MR — moisture resistant'],
       ['Bonding resin', 'Urea formaldehyde'],
       ['Sheet size', '8 × 4 ft'],
-      ['Thickness range', '4 – 25 mm']
+      ['Overall thickness range', '4 – 25 mm']
     ],
     sizes: ['6 MM', '8 MM', '12 MM', '16 MM', '18 MM'],
     sizesLabel: 'Thickness',
-    sizesNote: 'Thicknesses from 4 mm to 25 mm in standard 8 × 4 ft sheets.',
+    // Listed sizes = A1 size selector; 4–25 mm = A1 FAQ (first-party, not a Duroply statement).
+    sizesNote: 'Thicknesses listed for this product: 6, 8, 12, 16 and 18 mm. Ananta quotes an overall 4–25 mm range in 8 × 4 ft sheets — ask the team about other thicknesses.',
     standards: [{label: 'IS 303', by: 'Duroply', detail: 'MR grade plywood for interior applications'}],
     exposure: 'dry',
     applications: ['wardrobes', 'furniture', 'panelling'],
@@ -268,11 +269,12 @@ export const PRODUCTS: Product[] = [
       ['Grade', 'BWP — boiling water proof'],
       ['Bonding resin', 'Phenol formaldehyde'],
       ['Sheet size', '8 × 4 ft'],
-      ['Thickness range', '4 – 25 mm']
+      ['Overall thickness range', '4 – 25 mm']
     ],
     sizes: ['9 MM', '12 MM', '19 MM'],
     sizesLabel: 'Thickness',
-    sizesNote: 'Standard 8 × 4 ft sheets, 4 mm to 25 mm. Custom sizes on request for bulk orders.',
+    // Listed sizes = A1 size selector; 4–25 mm = A1 copy (first-party).
+    sizesNote: 'Thicknesses listed for this product: 9, 12 and 19 mm. Ananta quotes an overall 4–25 mm range in standard 8 × 4 ft sheets; custom sizes on request for bulk orders.',
     standards: [{label: 'IS 710', by: 'Duroply', detail: 'BWP / marine grade plywood'}],
     exposure: 'wet',
     applications: ['kitchens', 'wet-zones', 'furniture'],
@@ -307,10 +309,11 @@ export const PRODUCTS: Product[] = [
       ['Construction', 'Homogeneous, without layers'],
       ['Finishes', 'Paint, veneer, laminate'],
       ['Sheet size', '8 × 4 ft'],
-      ['Thickness range', '2.5 – 25 mm']
+      ['Overall thickness range', '2.5 – 25 mm']
     ],
     sizes: ['1.90 MM', '3.30 MM', '5.50 MM', '7.00 MM', '11 MM', '16.50 MM', '25 MM'],
     sizesLabel: 'Thickness',
+    sizesNote: 'The listed thicknesses are the options Ananta shows for this board; the overall 2.5–25 mm range is indicative — confirm the exact thickness with the team.',
     standards: [
       {label: 'German technology', by: 'Action TESA', detail: 'homogeneous structure, board to board'},
       {label: 'IS 12406', by: 'Action TESA', detail: 'MDF compliance'}
