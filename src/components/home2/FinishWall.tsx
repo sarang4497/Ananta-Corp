@@ -23,7 +23,7 @@ const ROW_B = DECORS.filter((_, i) => i % 4 === 2);
  */
 export function FinishWall() {
   return (
-    <section aria-labelledby="finish-title" className="overflow-hidden border-y border-line bg-white py-14 sm:py-20">
+    <section aria-labelledby="finish-title" className="border-y border-line bg-white py-[clamp(3.5rem,2.25rem+4.2vw,7.5rem)]">
       <div className="shell grid grid-cols-1 gap-6 lg:grid-cols-[1fr_auto] lg:items-end">
         <div data-reveal="up">
           <p className="t-label text-orange-ink">Pre-laminated finishes</p>
@@ -68,9 +68,9 @@ export function FinishWall() {
                     <span className="relative block aspect-[4/5] overflow-hidden rounded-[4px] bg-bg-soft">
                       <Image src={d.image} alt={`${d.code} ${d.name}`} fill sizes="132px" loading="lazy" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                     </span>
-                    <span className="mt-1.5 flex items-baseline gap-1.5 text-[11.5px]">
+                    <span className="mt-1.5 flex flex-wrap items-baseline gap-x-1.5 text-[11.5px] leading-snug">
                       <span className="t-label text-ink">{d.code}</span>
-                      <span className="truncate text-muted">{d.name}</span>
+                      <span className="text-muted">{d.name}</span>
                     </span>
                   </Link>
                 </li>

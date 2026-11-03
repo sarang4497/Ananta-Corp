@@ -4,13 +4,13 @@ import {ArrowRight} from 'lucide-react';
 import {Link} from '@/i18n/navigation';
 import {PRODUCTS, categoryHref} from '@/data/products';
 import {CATEGORY_COPY} from '@/content/categories';
-import {BRAND_ASSETS, WA} from '@/content/site';
+import {BRAND_ASSETS} from '@/content/site';
 import {BRANDS, countByBrand} from '@/data/stats';
 import {PageIntro} from '@/components/catalog2/PageIntro';
 import {ProductTile} from '@/components/catalog2/ProductTile';
 import {BrandLogo} from '@/components/site/BrandLogo';
 import {WhatsAppIcon} from '@/components/ui/Button';
-import {whatsappUrl} from '@/lib/whatsapp';
+import {quoteWhatsappUrl} from '@/lib/quote';
 import {buildAlternates} from '@/lib/metadata';
 
 type Params = {params: Promise<{locale: string}>};
@@ -51,7 +51,7 @@ export default async function PartnersPage({params}: Params) {
           <section key={b} id={a.slug} aria-labelledby={`${a.slug}-title`} className={i % 2 ? 'bg-bg-soft py-12 sm:py-16' : 'bg-white py-12 sm:py-16'}>
             <div className="shell grid grid-cols-1 gap-8 lg:grid-cols-12">
               <div className="lg:col-span-4" data-reveal="up">
-                <div className="flex h-24 items-center justify-center rounded-[10px] border border-line bg-white px-6">
+                <div className="flex min-h-24 items-center justify-center rounded-[10px] py-4 border border-line bg-white px-6">
                   <BrandLogo brand={b} height={b === 'Action TESA' ? 52 : b === 'Duroply' ? 25 : 24} />
                 </div>
                 <p className="t-label mt-5 text-orange-ink">
@@ -70,11 +70,14 @@ export default async function PartnersPage({params}: Params) {
                     </li>
                   ))}
                 </ul>
+                <Link href={{pathname: '/products', query: {brand: b}}} className="arrow-nudge mt-5 flex min-h-11 items-center gap-1.5 text-[14px] font-semibold text-indigo">
+                  View all {countByBrand(b)} {b} products in the catalogue <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+                </Link>
                 <a
-                  href={whatsappUrl(WA.category(`${b} products`))}
+                  href={quoteWhatsappUrl({category: `${b} products`, source: 'Brands page'})}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-5 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-indigo hover:underline"
+                  className="mt-1 inline-flex min-h-11 items-center gap-2 text-[14px] font-semibold text-indigo hover:underline"
                 >
                   <WhatsAppIcon className="h-4 w-4 text-wa" /> Ask for {b} pricing
                 </a>

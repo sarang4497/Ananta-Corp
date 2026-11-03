@@ -10,6 +10,15 @@ describe('lead validation', () => {
     expect(v.ok).toBe(true);
     if (v.ok) expect(v.lead).toMatchObject({id: 'L-1', email: 'ravi@example.com', size: '12 MM', at: now.toISOString()});
   });
+  it('keeps quote-context fields (finish, origin) and omits empty ones', () => {
+    const v = validateLead({...base, finish: '  1103 Frosty White ', origin: 'Requirement Builder'}, now, 'L-3');
+    expect(v.ok).toBe(true);
+    if (v.ok) {
+      expect(v.lead).toMatchObject({finish: '1103 Frosty White', origin: 'Requirement Builder'});
+      expect(v.lead.size).toBeUndefined();
+      expect(leadEmail(v.lead).text).toContain('Request origin: Requirement Builder');
+    }
+  });
   it.each([
     [{...base, name: ''}, 'missing-name'],
     [{...base, phone: '123'}, 'invalid-phone'],
@@ -23,12 +32,12 @@ describe('lead validation', () => {
 });
 
 describe('notification email', () => {
-  const v = validateLead({...base, company: 'Shah Interiors', product: 'Action TESA HDHMR Board', size: '18 MM', category: 'MDF', quantity: '20', city: 'Surat', message: 'Need <b>fast</b>', page: '/products/mdf'}, now, 'L-2');
+  const v = validateLead({...base, company: 'Shah Interiors', product: 'Action TESA HDHMR Board', size: '18 MM', finish: '3009 Classic Planked Walnut', origin: 'Product page', category: 'MDF', quantity: '20', city: 'Surat', message: 'Need <b>fast</b>', page: '/products/mdf'}, now, 'L-2');
   const lead = v.ok ? v.lead : (null as never);
   it('subject + all available fields, escaped html', () => {
     const m = leadEmail(lead);
     expect(m.subject).toBe('ANANTA — New Enquiry — Ravi Shah / Shah Interiors');
-    for (const s of ['Ravi Shah', 'Shah Interiors', '+91 98765 43210', 'ravi@example.com', 'Action TESA HDHMR Board', '18 MM', 'MDF', 'Surat', '/products/mdf', '2026-11-02T10:00:00.000Z', 'L-2'])
+    for (const s of ['Ravi Shah', 'Shah Interiors', '+91 98765 43210', 'ravi@example.com', 'Action TESA HDHMR Board', '18 MM', '3009 Classic Planked Walnut', 'Product page', 'MDF', 'Surat', '/products/mdf', '2026-11-02T10:00:00.000Z', 'L-2'])
       expect(m.text).toContain(s);
     expect(m.html).toContain('&lt;b&gt;fast&lt;/b&gt;');
     expect(m.replyTo).toBe('ravi@example.com');
